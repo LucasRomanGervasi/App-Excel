@@ -1,0 +1,109 @@
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.wrapper{
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  overflow-x: hidden;
+  padding: 20px;
+}
+
+.title{
+  display: flex;
+  justify-content: center;
+  color: #2f2f2f;
+  margin-bottom: 20px;
+}
+
+.form{
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.btn{
+  margin: 10px 0;
+  padding: 5px 5px 5px 5px;
+  width: 200px;
+  color: rgb(255, 255, 255);
+  background-color: blue;
+  border: none;
+  border-radius: 5px;
+}
+
+.btn-no{
+  margin: 10px 0;
+  padding: 5px 5px 5px 5px;
+  width: 200px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(205, 205, 205);
+  border: none;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-radius: 5px;
+}
+
+.view{
+  width: 100%;
+  background-color: #f9f9f9;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border: solid 0.2px rgba(80, 80, 80, 0.326);
+}
+
+input[type="file"] {
+  border: none;
+}
+
+.alert{
+  background-color: rgb(255, 62, 62);
+  color: white;
+  display: flex;
+  padding: 20px;
+  width: 350px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.excelTitle{
+  margin: 10px;
+}
+
+.excelTable{
+  margin: 10px;
+  padding: 10px;
+  font-size: 15px;
+}
+.excelTableTitle{
+  margin: 10px;
+  padding: 10px;
+  font-size: 13px;
+  color: rgb(25, 25, 132);
+  border: solid 1px rgb(102, 102, 241);
+}
+.excelTableValores{
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 13px;
+  color: rgb(38, 38, 38);
+  border: solid 1px  rgb(156, 156, 156);
+}
