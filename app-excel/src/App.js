@@ -1,12 +1,14 @@
 import { useState } from "react";
 import * as XLSX from 'xlsx';
+import logo from './images/SOSCONTADOR.PNG';
+import {BsDatabaseAdd, BsArrowDownCircle} from "react-icons/bs";
 
 function App(){
   const [excelFile, setExcelFile] = useState(null);
   const [typeError, setTypeError] = useState(null);
   const [title, setTitle] = useState(null)
   const [excelData, setExcelData] = useState(null);
-  
+  console.log(excelData)
   //onchange event 
   const handleFile = (e) => {
     let fileTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','text/csv'];
@@ -60,25 +62,33 @@ function App(){
   return (
     <div className="wrapper">
 
-      <h3 className="title">Cargar Excel</h3>
+    {/*<h3 className="title">SOS</h3>*/}
+    <div className="containerLogo">
+    <img className="logo" src={logo} alt="logo"></img>
+    </div>
 
+      <div className="containerForm">
       <form className="form" onSubmit={handleFileSubmit}>
         <input type="file" id="input-file" className="form-control" required onChange={handleFile} />
         {     
           typeError?(
-            <button className="btn-no">SUBIR ARCHIVO</button>
+            <button className="btn-no">SUBIR ARCHIVO  {/*<span className="icons"><BsArrowDownCircle/></span>*/}</button>
             ):(
-            <button type="submit" className="btn">SUBIR ARCHIVO</button>
+            <button type="submit" className="btn" >SUBIR ARCHIVO {/*<span className="icons"><BsArrowDownCircle/></span>*/}</button>
             )     
         }
+      </form>
         {
           typeError&&(
             <div className="alert" role="alert">{typeError}</div> 
           )
         }
-      </form>
+      </div>
 
-      <h3 className="title">Vista previa</h3>
+      <div className="dataBase">
+      <h3 className="subtitle">Vista previa del archivo</h3>
+            <button className="btnDataBase" >ENVIAR A BASE DE DATOS <span className="icons"><BsDatabaseAdd/></span></button> 
+            </div>
       <div className="view">
         {excelData?(
           <div className="table-res">
