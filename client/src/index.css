@@ -110,17 +110,6 @@ code {
   background-color: #151414;
 }
 
-.btn-no{
-  padding: 5px;
-  width: 300px;
-  color: rgb(255, 255, 255);
-  background-color: rgb(201, 201, 201);
-  border: none;
-  cursor: not-allowed;
-  pointer-events: none;
-  border-radius: 5px;
-}
-
 .dataBase{
   display: flex;
   justify-content: space-between;
@@ -151,6 +140,7 @@ code {
   color: white;
 }
 
+
 .btnDataBaseDelete{
   margin: 10px 0;
   font-family: 'DIN-Medium', sans-serif ;
@@ -171,6 +161,18 @@ code {
   transition: all 0.5s;
   color: white;
 }
+
+.btn-no{
+  padding: 5px;
+  width: 300px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(201, 201, 201);
+  border: none;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-radius: 5px;
+}
+
 
 .icons{
   font-size: 18px;

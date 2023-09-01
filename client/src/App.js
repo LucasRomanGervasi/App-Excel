@@ -3,7 +3,8 @@ import * as XLSX from 'xlsx';
 import logo from './images/SOSCONTADOR.PNG';
 import { BsDatabaseAdd } from "react-icons/bs";
 import { getDate } from "./utils/getDate";
-import Axios from "axios";
+import axios from "axios";
+import { validateDate } from "./utils/validateDate";
 
 function App() {
   const [excelFile, setExcelFile] = useState(null);
@@ -13,7 +14,7 @@ function App() {
   const [excelData, setExcelData] = useState(null);
   const [impoCompraVenta, setImpoCompraVenta] = useState()
   const [archivo, setArchivo] = useState({})
-
+  const [isoDate, setIsoDate] = useState("")
   //onchange event 
   const handleFile = (e) => {
     let fileTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv'];
@@ -81,24 +82,33 @@ function App() {
       const parsedData = restOfArray.map((data) => {
         const values = Object.values(data)
         //ISO IMPOCOMPRAVENTA
-        const [day, month, year] = values[0].split('/');
+        console.log(values[0], validateDate(values[0]))
+        if (validateDate(values[0])) {
+        const dateParts = values[0].split('/');
+        const [day, month, year] = dateParts;
         const dateObject = new Date(`${year}-${month}-${day}`);
-        const isoDate = dateObject.toISOString().substring(0, 10);
-        let nextIdImpo = 0
+        setIsoDate(dateObject.toISOString().substring(0, 10))
+      }
+      else{
+          setExcelData("")
+          setTypeError("Hay una fecha no encontrada en el archivo")
+        }
+        let nextIdImpo = 0;
+        //REVICION
         return {
           "id": nextIdImpo + 1,
           "idarchivo": 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
           "fecha": isoDate, //formato ISO
           "tipoCFE": values[1],
           "serie": values[2],
-          "numero": values[3],
-          "RUTEmisor": values[4],
-          "moneda": values[5],
-          "montoneto": values[6], //formato money
-          "montoiva": values[7],  //formato money
-          "montototal": values[8],  //formato money
-          "montoretper": values[9],  //formato money
-          "montocredfiscal": values[10],  //formato money
+          "numero":values[3],
+          "RUTEmisor":values[4],
+          "moneda":values[5],
+          "montoneto":values[6], //formato money
+          "montoiva":values[7] , //formato money
+          "montototal":values[8], //formato money
+          "montoretper":values[9],  //formato money
+          "montocredfiscal":values[10] //formato money
         }
       })
       let nextId = 0
@@ -113,6 +123,9 @@ function App() {
         "fechahasta": isoFechaHasta,
         "fechaupload": getDate()
       }
+      if(typeError){
+        alert("No exis")
+      }
       setImpoCompraVenta([...parsedData])
       setArchivo({ ...archivo })
     } else {
@@ -122,10 +135,10 @@ function App() {
 
 
   const addDataBase = () => {
-    Axios.post('http://localhost:3001/data', { "impoCompraVenta": impoCompraVenta, "archivo": archivo })
-      .then(() => {
-        alert("Registrado");
-      })
+    axios.post('http://localhost:3001/data', { "impoCompraVenta": impoCompraVenta, "archivo": archivo })
+    .then(() => {
+      alert("Registrado");
+    })
       .catch(error => {
         console.error("Error en la solicitud:", error);
         setTypeError("Seleccioná tu archivo Excel y examinalo")
@@ -133,9 +146,9 @@ function App() {
   };
 
   const deleteDataBase = () => {
-    Axios.delete('http://localhost:3001/data')
+    axios.delete('http://localhost:3001/data')
       .then(() => {
-        alert("Eliminado")
+        alert("Base de datos eliminada")
         setExcelData()
         setArchivo()
         setImpoCompraVenta()
@@ -183,8 +196,8 @@ function App() {
 
       <div className="dataBase">
         <h3 className="subtitle">Vista previa del archivo</h3>
-        <button className="btnDataBase" onClick={addDataBase} >ENVIAR A BASE DE DATOS <span className="icons"><BsDatabaseAdd /></span></button>
-        <button className="btnDataBaseDelete" onClick={deleteDataBase} >ELIMINAR BASE DE DATOS <span className="icons"><BsDatabaseAdd /></span></button>
+        <button className={`btnDataBase ${typeError ? "btn-no" : ""}`} onClick={addDataBase} >ENVIAR A BASE DE DATOS <span className="icons"><BsDatabaseAdd /></span></button>
+        <button className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`} onClick={deleteDataBase} >ELIMINAR BASE DE DATOS <span className="icons"><BsDatabaseAdd /></span></button>
       </div>
       <div className="view">
         {excelData ? (
