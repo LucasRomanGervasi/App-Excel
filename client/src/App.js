@@ -196,6 +196,7 @@ function App() {
 
       <div className="dataBase">
         <h3 className="subtitle">Vista previa del archivo</h3>
+        <h3 className="subtitleReparacion">REPARACION DEL SITIO</h3>
         <button className={`btnDataBase ${typeError ? "btn-no" : ""}`} onClick={addDataBase} >ENVIAR A BASE DE DATOS <span className="icons"><BsDatabaseAdd /></span></button>
         <button className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`} onClick={deleteDataBase} >ELIMINAR BASE DE DATOS <span className="icons"><BsDatabaseAdd /></span></button>
       </div>

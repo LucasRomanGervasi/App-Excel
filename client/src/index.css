@@ -50,6 +50,10 @@ code {
   color: #2f2f2f;
 }
 
+.subtitleReparacion{
+  display: none;
+}
+
 .containerForm{
   display: flex;
   flex-direction: column;
@@ -221,4 +225,78 @@ code {
   font-size: 13px;
   color: rgb(38, 38, 38);
   border: solid 1px  rgb(193, 193, 193);
+}
+
+/*Mobile*/
+
+@media (max-width: 1200px) {
+  #input-file{ 
+    width: 500px;
+  }
+  .btn{
+    width: 200px;
+  }
+  .btn-no{
+    width: 200px;
+  }
+}
+
+@media (max-width: 800px) {
+  #input-file{ 
+    width: 300px;
+  }
+  .btn{
+    width: 150px;
+  }
+  .btn-no{
+    width: 150px;
+  }
+  .view{
+    display: none;
+  }
+  .btnDataBase{
+    display: none;
+  }
+  .btnDataBaseDelete{
+    display: none;
+  }
+  .subtitle{
+    display: none;
+  }
+  .subtitleReparacion{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:15px;
+    color: #2f2f2f;
+    width: 100%;
+  }
+}
+
+@media (max-width: 555px) {
+  .form{
+    width: 100%;
+    margin: 0px
+  }
+  #input-file{ 
+    width: 200px;
+    padding: 5px;
+  }
+  .btn{
+    width: 100%;
+    font-size: 10px;
+    margin: 5px;
+  }
+  .btn-no{
+    width: 150px;
+    font-size: 10px;
+  }
+  .subtitleReparacion{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:15px;
+    color: #2f2f2f;
+    width: 100%;
+  }
 }
