@@ -14,7 +14,7 @@ function App() {
   const [excelData, setExcelData] = useState(null);
   const [impoCompraVenta, setImpoCompraVenta] = useState()
   const [archivo, setArchivo] = useState({})
-  const [isoDate, setIsoDate] = useState("")
+  const [isoDate, setIsoDate] = useState()
   //onchange event 
   const handleFile = (e) => {
     let fileTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv'];
@@ -82,12 +82,13 @@ function App() {
       const parsedData = restOfArray.map((data) => {
         const values = Object.values(data)
         //ISO IMPOCOMPRAVENTA
-        console.log(values[0], validateDate(values[0]))
+        let isoDate = null;
         if (validateDate(values[0])) {
+          console.log("entro")
         const dateParts = values[0].split('/');
         const [day, month, year] = dateParts;
         const dateObject = new Date(`${year}-${month}-${day}`);
-        setIsoDate(dateObject.toISOString().substring(0, 10))
+        isoDate = dateObject.toISOString().substring(0, 10)
       }
       else{
           setExcelData("")
@@ -95,6 +96,7 @@ function App() {
         }
         let nextIdImpo = 0;
         //REVICION
+        console.log(isoDate, isoDate ? isoDate: null )
         return {
           "id": nextIdImpo + 1,
           "idarchivo": 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",

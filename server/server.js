@@ -18,6 +18,15 @@ db.connect(err => {
   console.log('Conexión a la base de datos exitosa');
 });
 
+app.get('/', (req, res) =>{
+  if (err) {
+    console.error('Erroe', err);
+    return res.status(500).send('Error interno del servidor');
+  }
+  console.log('GET');
+  return res.status(200).send('WELCOME');
+});
+
 app.post('/data', (req, res) => {
   const impoCompraVenta = req.body.impoCompraVenta;
   const archivoData = req.body.archivo;
