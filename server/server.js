@@ -18,15 +18,6 @@ db.connect(err => {
   console.log('Conexión a la base de datos exitosa');
 });
 
-app.get('/', (req, res) =>{
-  if (err) {
-    console.error('Erroe', err);
-    return res.status(500).send('Error interno del servidor');
-  }
-  console.log('GET');
-  return res.status(200).send('WELCOME');
-});
-
 app.post('/data', (req, res) => {
   const impoCompraVenta = req.body.impoCompraVenta;
   const archivoData = req.body.archivo;
@@ -46,6 +37,7 @@ app.post('/data', (req, res) => {
 
     impoCompraVenta.forEach((data1, index) => {
       const { fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal } = data1;
+      console.log(fecha, "ACA ESTA LA FECHA")
       const sqlImpo = `INSERT INTO impo_compraventa (id, idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal) VALUES (${index + 1},${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montoneto}, ${montoiva}, ${montototal}, ${montoretper}, ${montocredFiscal || 0})`;
 
       db.query(sqlImpo, (err, resultImpo) => {
