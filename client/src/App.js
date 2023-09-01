@@ -84,7 +84,6 @@ function App() {
         //ISO IMPOCOMPRAVENTA
         let isoDate = null;
         if (validateDate(values[0])) {
-          console.log("entro")
         const dateParts = values[0].split('/');
         const [day, month, year] = dateParts;
         const dateObject = new Date(`${year}-${month}-${day}`);
@@ -96,7 +95,6 @@ function App() {
         }
         let nextIdImpo = 0;
         //REVICION
-        console.log(isoDate, isoDate ? isoDate: null )
         return {
           "id": nextIdImpo + 1,
           "idarchivo": 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
