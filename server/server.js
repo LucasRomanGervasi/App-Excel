@@ -1,22 +1,27 @@
 const express = require('express');
+require('dotenv').config();
 const mysql = require('mysql2');
 const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  host: 'localhost',
+const db = mysql.createPool({
+  database:'railway',
   user: 'root',
-  password: '192837465',
-  port: 3306,
-  database: 'appexcel'
-});
+  host:'containers-us-west-190.railway.app',
+  port:'7782',
+  password:'fpBGPVooo4V5ad1TxiCs',
 
-db.connect(err => {
-  if (err) throw err;
-  console.log('Conexión a la base de datos exitosa');
-});
+})
+
+//const MYSQL_URL = 'mysql://root:fpBGPVooo4V5ad1TxiCs@containers-us-west-190.railway.app:7782/railway',
+
+console.log('Connected to PlanetScale!')
+
+app.get('/', (req,res) => {
+  return res.status(200).send('Backend Conectado');
+})
 
 app.post('/data', (req, res) => {
   const impoCompraVenta = req.body.impoCompraVenta;
@@ -38,14 +43,14 @@ app.post('/data', (req, res) => {
     impoCompraVenta.forEach((data1, index) => {
       const { fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal } = data1;
       console.log(fecha, "ACA ESTA LA FECHA")
-      const sqlImpo = `INSERT INTO impo_compraventa (id, idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal) VALUES (${index + 1},${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montoneto}, ${montoiva}, ${montototal}, ${montoretper}, ${montocredFiscal || 0})`;
+      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal) VALUES ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montoneto}, ${montoiva}, ${montototal}, ${montoretper}, ${montocredFiscal || 0})`;
 
       db.query(sqlImpo, (err, resultImpo) => {
         if (err) {
           console.error('Error al insertar impo_compraventa en la base de datos:', err);
           insertionErrors.push(err);
         } else {
-          console.log('Dato insertado correctamente en la posición', index);
+          console.log('Dato insertado correctamente en la posición');
         }
 
         if (index === impoCompraVenta.length - 1) {
@@ -86,17 +91,6 @@ app.delete('/data', (req, res) => {
     checkAllOperationsCompleted();
   });
   
-  // Reiniciar el contador de auto-incremento de archivo
-  db.query('ALTER TABLE archivo AUTO_INCREMENT = 1', (err, result) => {
-    if (err) {
-      console.error('Error al reiniciar el contador de auto-incremento:', err);
-      return res.status(500).send('Error interno del servidor');
-    }
-    
-    console.log('Contador de auto-incremento de archivo reiniciado correctamente');
-    operationsCompleted++;
-    checkAllOperationsCompleted();
-  });
 
   function checkAllOperationsCompleted() {
     if (operationsCompleted === 3) { // Ajusta el número total de operaciones
