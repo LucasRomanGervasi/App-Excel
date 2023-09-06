@@ -17,7 +17,6 @@ const db = mysql.createPool({
 
 //const MYSQL_URL = 'mysql://root:fpBGPVooo4V5ad1TxiCs@containers-us-west-190.railway.app:7782/railway',
 
-console.log('Connected to PlanetScale!')
 
 app.get('/', (req,res) => {
   return res.status(200).send('Backend Conectado');
