@@ -168,10 +168,10 @@ function App() {
   };
 
   const deleteDataBase = () => {
-    setLoading(true);
     axios
       .delete("https://app-excel-production.up.railway.app/data")
       .then(() => {
+        alert("Base de Datos eliminada")
         setTypeSuccess("Eliminado correctamente");
         setExcelFile(null);
         setExcelData(null);
