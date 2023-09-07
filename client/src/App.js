@@ -174,12 +174,11 @@ function App() {
       .then(() => {
         alert("Base de datos eliminada");
         setTypeSuccess("Eliminado correctamente");
+        setLoading(false);
         fileInputRef("");
         setExcelData(null);
         setArchivo(null);
         setImpoCompraVenta(null);
-        setLoading(false);
-        fileInputRef.current.value = "";
       })
       .catch((error) => {
         console.error("Error en la solicitud:", error);
