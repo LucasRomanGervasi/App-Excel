@@ -172,13 +172,12 @@ function App() {
     axios
       .delete("https://app-excel-production.up.railway.app/data")
       .then(() => {
-        alert("Base de datos eliminada");
         setTypeSuccess("Eliminado correctamente");
-        setLoading(false);
-        fileInputRef("");
+        setExcelFile(null);
         setExcelData(null);
         setArchivo(null);
         setImpoCompraVenta(null);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error en la solicitud:", error);
