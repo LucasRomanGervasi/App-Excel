@@ -135,7 +135,7 @@ function App() {
 
 
   const addDataBase = () => {
-    axios.post('http://localhost:3001/data', { "impoCompraVenta": impoCompraVenta, "archivo": archivo })
+    axios.post('https://app-excel-production.up.railway.app/data', { "impoCompraVenta": impoCompraVenta, "archivo": archivo })
     .then(() => {
       alert("Registrado");
     })
@@ -146,7 +146,7 @@ function App() {
   };
 
   const deleteDataBase = () => {
-    axios.delete('http://localhost:3001/data')
+    axios.delete('https://app-excel-production.up.railway.app/data')
       .then(() => {
         alert("Base de datos eliminada")
         setExcelData()
