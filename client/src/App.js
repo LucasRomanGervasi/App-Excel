@@ -177,14 +177,14 @@ function App() {
         setExcelData(null);
         setArchivo(null);
         setImpoCompraVenta(null);
-        setLoading(false);
         fileInputRef.current.value = "";
+        setLoading(false); 
       })
       .catch((error) => {
         console.error("Error en la solicitud:", error);
         alert("Hubo un error al procesar la solicitud.");
+        setLoading(false); 
       });
-      setLoading(false);
   };
 
   useEffect(() => {
