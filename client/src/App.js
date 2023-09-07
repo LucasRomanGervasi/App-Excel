@@ -145,7 +145,7 @@ function App() {
   const addDataBase = () => {
     setLoading(true);
     axios
-      .post("https://app-excel-production.up.railway.app/data/data", {
+      .post("https://app-excel-production.up.railway.app/data", {
         impoCompraVenta: impoCompraVenta,
         archivo: archivo,
       })
