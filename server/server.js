@@ -90,44 +90,23 @@ app.post("/data", (req, res) => {
   });
 });
 
-  // Eliminar datos de moneda_cotizacion
+  // Pedir datos de moneda_cotizacion
 
-app.get("/cotizacion-usd", (req, res) => {
-  // Query SQL para obtener datos de la tabla "actualizas"
-  const sqlQuery = "SELECT * FROM moneda_cotizacion";
-
-  db.query(sqlQuery, (err, result) => {
-    if (err) {
-      console.error("Error al consultar la tabla moneda_cotizacion:", err);
-      return res.status(500).send("Error interno del servidor");
-    }
-    
-    // Enviar los datos obtenidos como respuesta
-    return res.status(200).json(result);
+  app.get("/cotizacion-usd", (req, res) => {
+    // Query SQL para obtener datos de la tabla "actualizas"
+    const sqlQuery = "SELECT * FROM moneda_cotizacion";
+  
+    db.query(sqlQuery, (err, result) => {
+      if (err) {
+        console.error("Error al consultar la tabla moneda_cotizacion:", err);
+        return res.status(500).send("Error interno del servidor");
+      }
+      
+      // Enviar los datos obtenidos como respuesta
+      return res.status(200).json(result);
+    });
   });
-});
-
-  // Eliminar datos de impo_compraventa
-  db.query("SELECT FROM impo_compraventa", (err, result) => {
-    if (err) {
-      console.error("Error al eliminar datos previos:", err);
-      return res.status(500).send("Error interno del servidor");
-    }
-    console.log("Datos de impo_compraventa eliminados correctamente");
-    operationsCompleted++;
-    checkAllOperationsCompleted();
-  });
-
-  // Eliminar datos de archivo
-  db.query("DELETE FROM archivo", (err, result) => {
-    if (err) {
-      console.error("Error al eliminar datos previos:", err);
-      return res.status(500).send("Error interno del servidor");
-    }
-    console.log("Datos de archivo eliminados correctamente");
-    operationsCompleted++;
-    checkAllOperationsCompleted();
-  });
+  
 
 app.delete("/data", (req, res) => {
   let operationsCompleted = 0;
