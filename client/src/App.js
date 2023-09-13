@@ -2,10 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import logo from "./images/SOSCONTADOR.PNG";
 import { BsDatabaseAdd } from "react-icons/bs";
+import {FaHandHoldingUsd } from "react-icons/fa";
+import { FaRegCircleXmark} from "react-icons/fa6";
+import {AiOutlineCheckCircle} from "react-icons/ai";
+import {MdDelete} from "react-icons/md";
 import { getDate } from "./utils/getDate";
 import axios from "axios";
 import { validateDate } from "./utils/validateDate";
 import ReactLoading from "react-loading";
+import View from "./components/View";
 
 function App() {
   const [excelFile, setExcelFile] = useState(null);
@@ -17,6 +22,8 @@ function App() {
   const [excelData, setExcelData] = useState(null);
   const [impoCompraVenta, setImpoCompraVenta] = useState();
   const [archivo, setArchivo] = useState({});
+  const [cotizacionUSD, setCotizacionUSD] = useState()
+  const [excelDataCotizacion, setExcelDataCotizacion] = useState()
   const [loading, setLoading] = useState(false);
   //onchange event
   const handleFile = (e) => {
@@ -187,6 +194,53 @@ function App() {
       });
   };
 
+const valoresCotizacion = () => {
+  // // Inicializar un objeto para almacenar las fechas más cercanas
+  // const fechasMasCercanas = {};
+
+  // // Recorrer todas las fechas de cotizacionUSD
+  // cotizacionUSD.forEach((cotizacion, cotizacionIndex) => {
+  //   const fechaCotizacionDeseada = cotizacion["fecha"].substring(0, 10);
+  //   const montoCmabioFecha = cotizacion[]
+  //   // Inicializar la fecha más cercana para esta cotización
+  //   let fechaMasCercana = null;
+
+  //   // Recorrer el array impoCompraVenta para encontrar la fecha más cercana
+  //   impoCompraVenta.forEach((compraVenta) => {
+  //     const fechaCompraVenta = new(compraVenta["fecha"]);
+
+  //     // Verificar si la fecha es más cercana a la fecha de cotización deseada
+  //     if (!fechaMasCercana || Math.abs(fechaCompraVenta - fechaCotizacionDeseada) < Math.abs(fechaMasCercana - fechaCotizacionDeseada)) {
+  //       fechaMasCercana = fechaCompraVenta;
+  //     }
+  //   });
+
+  //   // Almacenar la fecha más cercana en el objeto de fechasMasCercanas
+  //   fechasMasCercanas[cotizacionIndex] = fechaMasCercana;
+  // });
+  // console.log("Fechas más cercanas:", fechasMasCercanas);
+  console.log("excelData:", excelData)
+  console.log("impo Compra Venta:", impoCompraVenta )
+  console.log("cotizacion:", cotizacionUSD)
+};
+  
+
+  const getCotizacionUSD = () => {
+    setLoading(true);
+    axios
+    .get("https://app-excel-production.up.railway.app/cotizacion-usd")
+    .then((response) => {
+      setCotizacionUSD(response.data)
+      setLoading(false)
+      valoresCotizacion()
+    })
+    .catch((error) => {
+      console.log("eeror")
+      setLoading(false)
+    });
+  };
+
+
   useEffect(() => {
     if (excelData) {
       valores(excelData);
@@ -194,8 +248,9 @@ function App() {
     const timer = setTimeout(() => {
       setTypeSuccess(null);
     }, 2000);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timer), valores(excelData);
   }, [excelData]);
+
 
   return (
     <div className="wrapper">
@@ -238,14 +293,22 @@ function App() {
             </button>
           )}
         </form>
-        {typeError && (
+        {typeError ===  "Hay una fecha no encontrada en el archivo, intentar nuevamente con otro archivo" || typeError === null ? (
+          null
+        ) : (
           <div className="alert" role="alert">
             {typeError}
+            <div style={{margin: '0px 10px', fontSize:'19px'}}>
+            <FaRegCircleXmark/>
+            </div>
           </div>
         )}
         {typeSuccess && (
           <div className="alertSuccess" role="alert">
             {typeSuccess}
+            <div style={{margin: '0px 10px', fontSize:'19px'}}>
+            <AiOutlineCheckCircle/>
+            </div>
           </div>
         )}
         {loading === true ? (
@@ -262,8 +325,6 @@ function App() {
       </div>
 
       <div className="dataBase">
-        <h3 className="subtitle">Vista previa del archivo</h3>
-        <h3 className="subtitleReparacion">REPARACION DEL SITIO</h3>
         <button
           className={`btnDataBase ${typeError ? "btn-no" : ""}`}
           onClick={addDataBase}
@@ -274,52 +335,36 @@ function App() {
           </span>
         </button>
         <button
+          className={`btnDataBaseCotizacion ${excelData === null ? "btn-no" : ""}`}
+          onClick={getCotizacionUSD}
+        >
+          AGREGAR COTIZACION USD{" "}
+          <span className="icons">
+            <FaHandHoldingUsd />
+          </span>
+        </button>
+        <button
           className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
           onClick={deleteDataBase}
         >
           ELIMINAR BASE DE DATOS{" "}
           <span className="icons">
-            <BsDatabaseAdd />
+            <MdDelete />
           </span>
         </button>
       </div>
       <div className="view">
-        {excelData ? (
-          <div className="table-res">
-            <h3 className="excelTitle">{title}</h3>
-            <table className="table">
-              <tbody className="excel">
-                {excelData.map((individualExcelData, index) =>
-                  index < 3 ? (
-                    <tr key={index}>
-                      {Object.keys(individualExcelData).map((key) => (
-                        <td className="excelTable" key={key}>
-                          {individualExcelData[key]}
-                        </td>
-                      ))}
-                    </tr>
-                  ) : (
-                    <tr className="excelTableTitleContainer" key={index}>
-                      {Object.keys(individualExcelData).map((key) =>
-                        index === 3 ? (
-                          <td className="excelTableTitle" key={key}>
-                            {individualExcelData[key]}
-                          </td>
-                        ) : (
-                          <td className="excelTableValores" key={key}>
-                            {individualExcelData[key]}
-                          </td>
-                        )
-                      )}
-                    </tr>
-                  )
-                )}
-              </tbody>
-            </table>
+          <View excelData={cotizacionUSD? excelDataCotizacion: excelData} title={title}/>
+      </div>
+      <div style={{margin:'10px 20px'}}>
+         {typeError ===
+            "Hay una fecha no encontrada en el archivo, intentar nuevamente con otro archivo" ? (
+              <div className="alert" role="alert">
+            {typeError}
           </div>
-        ) : (
-          <div>¡Aún no se ha subido ningún archivo!</div>
-        )}
+            ) :
+            null
+          }
       </div>
     </div>
   );

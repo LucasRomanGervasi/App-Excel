@@ -91,7 +91,7 @@ code {
 }
 
 .alertSuccess{
-  background-color: rgba(87, 255, 57, 0.907);
+  background-color: rgba(94, 222, 71, 0.64);
   color: white;
   display: flex;
   justify-content: center;
@@ -165,6 +165,26 @@ code {
   color: white;
 }
 
+.btnDataBaseCotizacion{
+  margin: 10px 0;
+  font-family: 'DIN-Medium', sans-serif ;
+  font-weight: bold;
+  padding: 5px;
+  width: 250px;
+  color: #fff;
+  background-color: #111;
+  border: none;
+  border-radius: 5px;
+  cursor:pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btnDataBaseCotizacion:hover{
+  opacity: 0.8;
+  transition: all 0.5s;
+  color: white;
+}
 
 .btnDataBaseDelete{
   margin: 10px 0;
@@ -235,7 +255,7 @@ code {
 .excelTableTitle{
   margin: 10px;
   padding: 10px;
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(0, 0, 0, 0.822);
   font-weight: bold;
   border: 1px solid black;
@@ -243,7 +263,7 @@ code {
 .excelTableValores{
   margin-top: 10px;
   padding: 10px;
-  font-size: 13px;
+  font-size: 11px;
   color: rgb(38, 38, 38);
   border: solid 1px  rgb(193, 193, 193);
 }
