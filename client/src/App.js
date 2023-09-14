@@ -14,18 +14,18 @@ import View from "./components/View";
 
 function App() {
   const [excelFile, setExcelFile] = useState(null);
+  const [excelDataCotizacion, setExcelDataCotizacion] = useState(null)
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   const [typeError, setTypeError] = useState(null);
   const [typeSuccess, setTypeSuccess] = useState(null);
   const [title, setTitle] = useState(null);
   const [excelData, setExcelData] = useState(null);
-  const [impoCompraVenta, setImpoCompraVenta] = useState();
+  const [impoCompraVenta, setimpoCompraVenta] = useState();
   const [archivo, setArchivo] = useState({});
   const [cotizacionUSD, setCotizacionUSD] = useState()
-  const [excelDataCotizacion, setExcelDataCotizacion] = useState()
   const [loading, setLoading] = useState(false);
-  //onchange event
+    //onchange event
   const handleFile = (e) => {
     let fileTypes = [
       "application/vnd.ms-excel",
@@ -96,7 +96,7 @@ function App() {
 
       const parsedData = restOfArray.map((data) => {
         const values = Object.values(data);
-        //ISO IMPOCOMPRAVENTA
+        //ISO impoCompraVenta
         let isoDate = null;
         if (validateDate(values[0])) {
           const dateParts = values[0].split("/");
@@ -142,7 +142,7 @@ function App() {
       if (typeError) {
         console.log("error");
       }
-      setImpoCompraVenta([...parsedData]);
+      setimpoCompraVenta([...parsedData]);
       setArchivo({ ...archivo });
     } else {
       console.log("error");
@@ -161,7 +161,7 @@ function App() {
         setExcelFile(null);
         setExcelData(null);
         setArchivo(null);
-        setImpoCompraVenta(null);
+        setimpoCompraVenta(null);
         setLoading(false);
         fileInputRef.current.value = "";
       })
@@ -169,7 +169,7 @@ function App() {
         console.error("Error en la solicitud:", error);
         setTypeError(
           "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos"
-        );
+          );
         setLoading(false);
       });
   };
@@ -183,7 +183,7 @@ function App() {
         setExcelFile(null);
         setExcelData(null);
         setArchivo(null);
-        setImpoCompraVenta(null);
+        setimpoCompraVenta(null);
         fileInputRef.current.value = "";
         setLoading(false); 
       })
@@ -192,55 +192,71 @@ function App() {
         alert("Hubo un error al procesar la solicitud.");
         setLoading(false); 
       });
-  };
+    };
 
-const valoresCotizacion = () => {
-  // // Inicializar un objeto para almacenar las fechas más cercanas
-  // const fechasMasCercanas = {};
-
-  // // Recorrer todas las fechas de cotizacionUSD
-  // cotizacionUSD.forEach((cotizacion, cotizacionIndex) => {
-  //   const fechaCotizacionDeseada = cotizacion["fecha"].substring(0, 10);
-  //   const montoCmabioFecha = cotizacion[]
-  //   // Inicializar la fecha más cercana para esta cotización
-  //   let fechaMasCercana = null;
-
-  //   // Recorrer el array impoCompraVenta para encontrar la fecha más cercana
-  //   impoCompraVenta.forEach((compraVenta) => {
-  //     const fechaCompraVenta = new(compraVenta["fecha"]);
-
-  //     // Verificar si la fecha es más cercana a la fecha de cotización deseada
-  //     if (!fechaMasCercana || Math.abs(fechaCompraVenta - fechaCotizacionDeseada) < Math.abs(fechaMasCercana - fechaCotizacionDeseada)) {
-  //       fechaMasCercana = fechaCompraVenta;
-  //     }
-  //   });
-
-  //   // Almacenar la fecha más cercana en el objeto de fechasMasCercanas
-  //   fechasMasCercanas[cotizacionIndex] = fechaMasCercana;
-  // });
-  // console.log("Fechas más cercanas:", fechasMasCercanas);
-  console.log("excelData:", excelData)
-  console.log("impo Compra Venta:", impoCompraVenta )
-  console.log("cotizacion:", cotizacionUSD)
-};
+    const getCotizacionUSD = () => {
+      setLoading(true);
+      axios
+      .get("https://app-excel-production.up.railway.app/cotizacion-usd")
+      .then((response) => {
+        setCotizacionUSD(response.data)
+        setLoading(false)
+        valoresCotizacion(cotizacionUSD)
+      })
+      .catch((error) => {
+        console.log("eeror")
+        setLoading(false)
+      });
+    };
+    
+    function valoresCotizacion() {
+      const fechaCotizacion = [];
+    const excelCotizacionData = [
+      { 'CFE Recibidos': 'Comprobante', 'cant': 'Todos' },
+      { 'fechadesde': 'Fecha desde', 'valor': '01/07/2023'},
+      { 'fechahasta': 'Fecha hasta', 'valor': '31/07/2023'},
+      { 'CFE Recibidos': "Fecha", 'tipoCFE': "Tipo CFE", 'seroe': "Serie", 'numero' : "Número", 'rutemisor' : "RUT Emisor", 'moneda' : "Moneda",
+      'montoneto': "Monto Neto",'ivaventas': "IVA Ventas",'montototal': "Monto Total",'montoRet/Per': "Monto Ret/Per",'montoCredFiscal': "Monto Cred. Fiscal",
+      'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares'
+      }
+    ]
+    for (let index = 0; index < cotizacionUSD?.length; index++) {
+    if(cotizacionUSD[index]['codigoiso_monedacotiz'] == 'USD'){
+      var cotizacion = {
+        'montoventa': cotizacionUSD[index]['montoventa'],
+        'fecha': cotizacionUSD[index]['fecha'].slice(0,10)
+      }
+      fechaCotizacion.push(cotizacion);
+    }else{
+      console.log("esa moneda no me sirve")
+    }
+    }
+    for (let index = 0; index < impoCompraVenta?.length; index++) {
+      var nuevoImporte = {
+        fecha: impoCompraVenta[index]['fecha'],
+        tipoCFE: impoCompraVenta[index]['tipoCFE'],
+        serie: impoCompraVenta[index]['serie'],
+        numero: impoCompraVenta[index]['numero'],
+        RUTEmisor: impoCompraVenta[index]['RUTEmisor'],
+        moneda: impoCompraVenta[index]['moneda'],
+        montoneto: impoCompraVenta[index]['montoneto'],
+        montoiva: impoCompraVenta[index]['montoiva'],
+        montototal: impoCompraVenta[index]['montototal'],
+        montoretper: impoCompraVenta[index]['montoretper'],
+        montocredfiscal: impoCompraVenta[index]['montocredfiscal'],
+        tipodecambiodelafecha: cotizacionUSD[index]['montoventa'],
+        montoendolares: impoCompraVenta[index]['moneda'] == 'UYU'? cotizacionUSD[index]['montoventa'] / impoCompraVenta[index]['montototal']: impoCompraVenta[index]['montototal'],
+      };
+      // Agregar el objeto nuevoImporte al array excelCotizacionData
+      excelCotizacionData.push(nuevoImporte);
+    }
+    console.log("fechaycotizacion:", fechaCotizacion)
+    setExcelDataCotizacion(excelCotizacionData)
+    return excelCotizacionData;
+  }
   
-
-  const getCotizacionUSD = () => {
-    setLoading(true);
-    axios
-    .get("https://app-excel-production.up.railway.app/cotizacion-usd")
-    .then((response) => {
-      setCotizacionUSD(response.data)
-      setLoading(false)
-      valoresCotizacion()
-    })
-    .catch((error) => {
-      console.log("eeror")
-      setLoading(false)
-    });
-  };
-
-
+  
+  
   useEffect(() => {
     if (excelData) {
       valores(excelData);
@@ -326,7 +342,7 @@ const valoresCotizacion = () => {
 
       <div className="dataBase">
         <button
-          className={`btnDataBase ${typeError ? "btn-no" : ""}`}
+          className={`btnDataBase ${typeError || excelDataCotizacion? "btn-no" : ""}`}
           onClick={addDataBase}
         >
           ENVIAR A BASE DE DATOS{" "}
@@ -353,8 +369,8 @@ const valoresCotizacion = () => {
           </span>
         </button>
       </div>
-      <div className="view">
-          <View excelData={cotizacionUSD? excelDataCotizacion: excelData} title={title}/>
+      <div>
+          <View excelData={excelDataCotizacion?excelDataCotizacion:excelData} title={title}/>
       </div>
       <div style={{margin:'10px 20px'}}>
          {typeError ===
