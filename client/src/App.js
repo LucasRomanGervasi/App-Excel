@@ -5,10 +5,12 @@ import { BsDatabaseAdd } from "react-icons/bs";
 import {FaHandHoldingUsd } from "react-icons/fa";
 import { FaRegCircleXmark} from "react-icons/fa6";
 import {AiOutlineCheckCircle} from "react-icons/ai";
+import {FiRefreshCw} from "react-icons/fi";
 import {MdDelete} from "react-icons/md";
 import { getDate } from "./utils/getDate";
-import axios from "axios";
 import { validateDate } from "./utils/validateDate";
+import { getCloserDate } from "./utils/getCloserDate";
+import axios from "axios";
 import ReactLoading from "react-loading";
 import View from "./components/View";
 
@@ -170,8 +172,8 @@ function App() {
         setTypeError(
           "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos"
           );
-        setLoading(false);
-      });
+          setLoading(false);
+        });
   };
 
   const deleteDataBase = () => {
@@ -194,23 +196,23 @@ function App() {
       });
     };
 
+
+    
+    
     const getCotizacionUSD = () => {
-      setLoading(true);
       axios
       .get("https://app-excel-production.up.railway.app/cotizacion-usd")
       .then((response) => {
         setCotizacionUSD(response.data)
-        setLoading(false)
-        valoresCotizacion(cotizacionUSD)
       })
       .catch((error) => {
         console.log("eeror")
         setLoading(false)
       });
-    };
+    }
     
     function valoresCotizacion() {
-      const fechaCotizacion = [];
+        const fechaCotizacion = [];
     const excelCotizacionData = [
       { 'CFE Recibidos': 'Comprobante', 'cant': 'Todos' },
       { 'fechadesde': 'Fecha desde', 'valor': '01/07/2023'},
@@ -221,18 +223,19 @@ function App() {
       }
     ]
     for (let index = 0; index < cotizacionUSD?.length; index++) {
-    if(cotizacionUSD[index]['codigoiso_monedacotiz'] == 'USD'){
+    if(cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD'){
       var cotizacion = {
         'montoventa': cotizacionUSD[index]['montoventa'],
         'fecha': cotizacionUSD[index]['fecha'].slice(0,10)
       }
       fechaCotizacion.push(cotizacion);
-    }else{
-      console.log("esa moneda no me sirve")
     }
-    }
+  }
     for (let index = 0; index < impoCompraVenta?.length; index++) {
-      var nuevoImporte = {
+      const fechaBuscada = getCloserDate(fechaCotizacion, impoCompraVenta[index]['fecha'].replace(/-/g, '/'))
+      const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
+      console.log(resultado)
+        var nuevoImporte = {
         fecha: impoCompraVenta[index]['fecha'],
         tipoCFE: impoCompraVenta[index]['tipoCFE'],
         serie: impoCompraVenta[index]['serie'],
@@ -244,30 +247,39 @@ function App() {
         montototal: impoCompraVenta[index]['montototal'],
         montoretper: impoCompraVenta[index]['montoretper'],
         montocredfiscal: impoCompraVenta[index]['montocredfiscal'],
-        tipodecambiodelafecha: cotizacionUSD[index]['montoventa'],
-        montoendolares: impoCompraVenta[index]['moneda'] == 'UYU'? cotizacionUSD[index]['montoventa'] / impoCompraVenta[index]['montototal']: impoCompraVenta[index]['montototal'],
+        tipodecambiodelafecha: resultado.montoventa,
+        montoendolares: impoCompraVenta[index]['moneda'] === 'UYU'? impoCompraVenta[index]['montototal'] / resultado.montoventa : impoCompraVenta[index]['montototal'],
       };
-      // Agregar el objeto nuevoImporte al array excelCotizacionData
       excelCotizacionData.push(nuevoImporte);
     }
-    console.log("fechaycotizacion:", fechaCotizacion)
+    setTypeSuccess("Se calculó correctamente la cotización del monto en dolares")
     setExcelDataCotizacion(excelCotizacionData)
-    return excelCotizacionData;
-  }
+    const timer = setTimeout(() => {
+      setTypeSuccess(null);
+    }, 3000);
+    return () => clearTimeout(timer)
+  };
   
-  
-  
+
+  const reiniciarExcel = () => {
+    setExcelDataCotizacion(null); // Establece el estado a 0
+  };
+
+  console.log(excelDataCotizacion)
+
+
   useEffect(() => {
     if (excelData) {
       valores(excelData);
     }
+    getCotizacionUSD();
     const timer = setTimeout(() => {
       setTypeSuccess(null);
-    }, 2000);
+    }, 3000);
     return () => clearTimeout(timer), valores(excelData);
   }, [excelData]);
-
-
+  
+  
   return (
     <div className="wrapper">
       {/*<h3 className="title">SOS</h3>*/}
@@ -350,17 +362,28 @@ function App() {
             <BsDatabaseAdd />
           </span>
         </button>
-        <button
-          className={`btnDataBaseCotizacion ${excelData === null ? "btn-no" : ""}`}
-          onClick={getCotizacionUSD}
-        >
+           <button
+          className={`btnDataBaseCotizacion ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
+          onClick={valoresCotizacion}
+          >
           AGREGAR COTIZACION USD{" "}
           <span className="icons">
             <FaHandHoldingUsd />
           </span>
         </button>
         <button
-          className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
+             className={`btnDataBaseCotizacionRefresh ${excelDataCotizacion === null ? "btnDataBaseCotizacionRefreshNo" : ""}`}
+          // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
+          onClick={reiniciarExcel}
+        >
+          RECARGAR TABLA ORIGINAL{" "}
+          <span className="icons">
+            <FiRefreshCw />
+          </span>
+        </button>
+        <button
+             className={`btnDataBaseDelete`}
+          // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
           onClick={deleteDataBase}
         >
           ELIMINAR BASE DE DATOS{" "}
@@ -370,7 +393,10 @@ function App() {
         </button>
       </div>
       <div>
-          <View excelData={excelDataCotizacion?excelDataCotizacion:excelData} title={title}/>
+          {excelDataCotizacion?
+          <View excelData={excelDataCotizacion} title={title}/>:
+          <View excelData={excelData} title={title}/>
+          }
       </div>
       <div style={{margin:'10px 20px'}}>
          {typeError ===

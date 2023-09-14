@@ -1,40 +1,30 @@
-const getCloserDate = (date) => {
-
-    const fechas = ["22/07/2023", "23/07/2023", "24/07/2023"];
-    const fechaObjetivo = "25/08/2023";
-    
+export function getCloserDate(fechas, fechaObjetivo) {
     // Función para convertir fechas en objetos Date
-    function convertirFecha(fecha) {
-        const partes = fecha.split("/");
-        // El formato de Date es (año, mes - 1, día)
-        return new Date(partes[2], partes[1] - 1, partes[0]);
+    
+
+
+ const fechasEdit = Object.values(fechas).map(item => item.fecha.replace(/-/g, '/'));
+  // Convierte la fecha objetivo en un objeto Date
+  const fechaObjetivoDate = new Date(fechaObjetivo);
+
+  // Inicializa la fecha más cercana y la diferencia mínima
+  let fechaMasCercana = fechasEdit[0];
+  let diferenciaMinima = Math.abs(fechaObjetivoDate - new Date(fechasEdit[0]));
+
+  // Itera a través de las fechas
+  for (const fecha of fechasEdit) {
+    // Convierte la fecha actual en un objeto Date
+    const fechaActualDate = new Date(fecha);
+
+    // Calcula la diferencia en milisegundos entre la fecha objetivo y la fecha actual
+    const diferencia = Math.abs(fechaObjetivoDate - fechaActualDate);
+
+    // Si la diferencia actual es menor que la diferencia mínima, actualiza la fecha más cercana y la diferencia mínima
+    if (diferencia < diferenciaMinima) {
+      fechaMasCercana = fecha;
+      diferenciaMinima = diferencia;
     }
-    
-    // Convertir la fecha objetivo en objeto Date
-    const fechaObjetivoObj = convertirFecha(fechaObjetivo);
-    
-    // Función para encontrar la fecha más cercana
-    function encontrarFechaMasCercana(fechas, fechaObjetivo) {
-        const fechasObj = fechas.map(fecha => convertirFecha(fecha));
-    
-        // Inicializar la fecha más cercana como la primera fecha del array
-        let fechaMasCercana = fechasObj[0];
-        let diferenciaMasCercana = Math.abs(fechaObjetivo - fechaMasCercana);
-    
-        // Iterar sobre las fechas y encontrar la más cercana
-        for (const fecha of fechasObj) {
-            const diferencia = Math.abs(fechaObjetivo - fecha);
-            if (diferencia < diferenciaMasCercana) {
-                fechaMasCercana = fecha;
-                diferenciaMasCercana = diferencia;
-            }
-        }
-    
-        return fechaMasCercana.toLocaleDateString();
-    }
-    
-    // Encontrar la fecha más cercana
-    const fechaMasCercana = encontrarFechaMasCercana(fechas, fechaObjetivoObj);
-    
-    console.log("La fecha más cercana es:", fechaMasCercana);
+  }
+
+  return fechaMasCercana;
 }

@@ -192,7 +192,7 @@ code {
   color: white;
 }
 
-.btnDataBaseDelete{
+.btnDataBaseCotizacionRefresh{
   margin: 10px 0;
   font-family: 'DIN-Medium', sans-serif ;
   font-weight: bold;
@@ -206,6 +206,33 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.btnDataBaseCotizacionRefresh:hover{
+  opacity: 0.8;
+  transition: all 0.5s;
+  color: white;
+}
+
+.btnDataBaseCotizacionRefreshNo{
+  display: none;
+}
+
+.btnDataBaseDelete{
+  margin: 10px 0;
+  font-family: 'DIN-Medium', sans-serif ;
+  font-weight: bold;
+  padding: 5px;
+  width: 250px;
+  color: #fff;
+  /* background-color: #111; */
+  background-color: rgb(201, 201, 201);
+  border: none;
+  border-radius: 5px;
+  cursor:pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: not-allowed
 }
 .btnDataBaseDelete:hover{
   opacity: 0.8;
@@ -240,12 +267,13 @@ code {
   border-radius: 10px;
   border-top: solid 0.2px rgba(80, 80, 80, 0.326);
   border-left: solid 0.2px rgba(80, 80, 80, 0.326);
+  font-size: 13px;
 }
 
 
 .excelTitle{
   margin: 10px;
-  color: #dc3545;
+  font-size: 20px;
 }
 
 .excelTable{
@@ -286,9 +314,24 @@ code {
   .btn-no{
     width: 200px;
   }
+  .excelTableTitle{
+    margin: 5px;
+    padding: 5px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.822);
+    font-weight: bold;
+    border: 1px solid black;
+  }
+  .excelTableValores{
+    margin-top: 5px;
+    padding:2px;
+    font-size: 8px;
+    color: rgb(38, 38, 38);
+    border: solid 1px  rgb(193, 193, 193);
+  }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 850px) {
   #input-file{ 
     width: 300px;
   }
@@ -297,9 +340,6 @@ code {
   }
   .btn-no{
     width: 150px;
-  }
-  .view{
-    display: none;
   }
   .btnDataBase{
     display: none;
@@ -317,6 +357,28 @@ code {
     font-size:15px;
     color: #2f2f2f;
     width: 100%;
+  }
+  
+  .excelTable{
+    margin: 8px;
+    padding: 8px;
+    font-size: 12px;
+  }
+  
+  .excelTableTitle{
+    margin: 2px;
+    padding: 2px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.822);
+    font-weight: bold;
+    border: 1px solid black;
+  }
+  .excelTableValores{
+    margin-top: 5px;
+    padding:2px;
+    font-size: 8px;
+    color: rgb(38, 38, 38);
+    border: solid 1px  rgb(193, 193, 193);
   }
 }
 
