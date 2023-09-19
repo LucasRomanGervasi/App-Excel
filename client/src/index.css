@@ -28,7 +28,8 @@ code {
 .containerLogo{
   display: flex;
   width: 100%;
-  background-color: #333;
+  background-color: #ffffff;
+  border-bottom: solid 2px #333;
   justify-content: flex-start;
   padding: 5px 30px;
 }
@@ -37,7 +38,7 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100px;
+  width: 300px;
   height: 80px;
 }
 
@@ -61,23 +62,33 @@ code {
   align-content: center;
   margin: 20px 0px;
   padding: 0px 20px;
+  margin: 50px 10px 20px 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  background-color: #f2f2f2;
+  border-top: solid 0.2px rgba(80, 80, 80, 0.326);
+  border-left: solid 0.2px rgba(80, 80, 80, 0.326);
+  border-radius: 10px;
+  
 }
 
 .form{
-    margin: 50px 10px 20px 10px;
+    margin: 20px 10px 20px 10px;
     padding: 10px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
-    justify-content: space-evenly;
-    background-color: #f2f2f2;
-    border-top: solid 0.2px rgba(80, 80, 80, 0.326);
-    border-left: solid 0.2px rgba(80, 80, 80, 0.326);
+    flex-direction: column;
     border-radius: 10px;
+    display: flex;
     
 }
 
+.form-control{
+  display: none;
+}
 .alert{
   background-color: rgb(255, 62, 62);
   color: white;
@@ -112,7 +123,7 @@ code {
 
 #input-file{
   padding: 5px;
-  width: 700px;
+  width: 1000px;
   border-radius: 5px;
   border: 1px solid rgba(56, 56, 56, 0.304);
   display: flex;
@@ -123,11 +134,12 @@ code {
   margin: 10px 0;
   font-family: 'DIN-Medium', sans-serif;
   font-weight: bold;
-  padding: 5px;
-  width: 250px;
-  color: #fff;
-  background-color: #111;
-  border: none;
+  padding: 5px 2px;
+  width: 190px;
+  font-size: 12px;
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #000000;
   border-radius: 5px;
   cursor: pointer;
   display: flex;
@@ -146,7 +158,7 @@ code {
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  padding: 0px 30px;
+  padding: 10px 10px;
   
 }
 
@@ -154,11 +166,12 @@ code {
   margin: 10px 0;
   font-family: 'DIN-Medium', sans-serif ;
   font-weight: bold;
-  padding: 5px;
-  width: 250px;
-  color: #fff;
-  background-color: #dc3545;
-  border: none;
+  padding: 5px 2px;
+  width: 200px;
+  font-size: 12px;
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #000000;
   border-radius: 5px;
   cursor:pointer;
   display: flex;
@@ -169,17 +182,19 @@ code {
   opacity: 0.8;
   transition: all 0.5s;
   color: white;
+  background-color: #151414;
 }
 
 .btnDataBaseCotizacion{
   margin: 10px 0;
   font-family: 'DIN-Medium', sans-serif ;
   font-weight: bold;
-  padding: 5px;
-  width: 250px;
-  color: #fff;
-  background-color: #111;
-  border: none;
+  padding: 5px 2px;
+  width: 200px;
+  font-size: 12px;
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #000000;
   border-radius: 5px;
   cursor:pointer;
   display: flex;
@@ -190,17 +205,68 @@ code {
   opacity: 0.8;
   transition: all 0.5s;
   color: white;
+  background-color: #151414;
+}
+
+.btnDataBaseRazonSocial{
+  margin: 10px 0;
+  font-family: 'DIN-Medium', sans-serif ;
+  font-weight: bold;
+  padding: 5px 2px;
+  width: 200px;
+  font-size: 12px;
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #000000;
+  border-radius: 5px;
+  cursor:pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnDataBaseRazonSocial:hover{
+  opacity: 0.8;
+  transition: all 0.5s;
+  color: white;
+  background-color: #151414;
+}
+
+
+
+.btnDataBaseDescargarXLS{
+  margin: 10px 0;
+  font-family: 'DIN-Medium', sans-serif ;
+  font-weight: bold;
+  padding: 5px 2px;
+  width: 200px;
+  font-size: 12px;
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #000000;
+  border-radius: 5px;
+  cursor:pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btnDataBaseDescargarXLS:hover{
+  opacity: 0.8;
+  transition: all 0.5s;
+  color: white;
+  background-color: #151414;
 }
 
 .btnDataBaseCotizacionRefresh{
   margin: 10px 0;
   font-family: 'DIN-Medium', sans-serif ;
   font-weight: bold;
-  padding: 5px;
-  width: 250px;
-  color: #fff;
-  background-color: #111;
-  border: none;
+  padding: 5px 2px;
+  width: 200px;
+  font-size: 12px;
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #000000;
   border-radius: 5px;
   cursor:pointer;
   display: flex;
@@ -211,10 +277,13 @@ code {
   opacity: 0.8;
   transition: all 0.5s;
   color: white;
+  background-color: #151414;
 }
 
 .btnDataBaseCotizacionRefreshNo{
   display: none;
+  width: 200px;
+  font-size: 12px;
 }
 
 .btnDataBaseDelete{
@@ -222,11 +291,11 @@ code {
   font-family: 'DIN-Medium', sans-serif ;
   font-weight: bold;
   padding: 5px;
-  width: 250px;
-  color: #fff;
-  /* background-color: #111; */
-  background-color: rgb(201, 201, 201);
-  border: none;
+  width: 200px;
+  font-size: 12px;
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #000000;
   border-radius: 5px;
   cursor:pointer;
   display: flex;
@@ -234,18 +303,23 @@ code {
   justify-content: center;
   cursor: not-allowed
 }
-.btnDataBaseDelete:hover{
+/* .btnDataBaseDelete:hover{
   opacity: 0.8;
   transition: all 0.5s;
   color: white;
-}
+  background-color: #151414;
+} */
 
 .btn-no{
+  display: flex;
+  justify-content: center;
+  align-items:center;
   padding: 5px;
-  width: 300px;
-  color: rgb(255, 255, 255);
-  background-color: rgb(201, 201, 201);
-  border: none;
+  width: 200px;
+  font-size: 12px;
+  color: #ffffff;
+  background-color: #c9c9c9;
+  border-color: #f9f9f9;
   cursor: not-allowed;
   pointer-events: none;
   border-radius: 5px;
@@ -304,15 +378,21 @@ code {
 
 /*Mobile*/
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   #input-file{ 
-    width: 500px;
+    width: 700px;
   }
   .btn{
-    width: 200px;
+    font-size: 10px;
+    width: 170px;
   }
   .btn-no{
-    width: 200px;
+    font-size: 10px;
+    width: 170px;
+  }
+  .btnDataBaseDelete{
+    font-size: 10px;
+    width: 170px;
   }
   .excelTableTitle{
     margin: 5px;

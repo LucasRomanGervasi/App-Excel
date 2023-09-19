@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
-import logo from "./images/SOSCONTADOR.PNG";
+import logo from "./images/asystax.png";
 import { BsDatabaseAdd } from "react-icons/bs";
 import {FaHandHoldingUsd } from "react-icons/fa";
 import { FaRegCircleXmark} from "react-icons/fa6";
@@ -13,6 +13,7 @@ import { getCloserDate } from "./utils/getCloserDate";
 import axios from "axios";
 import ReactLoading from "react-loading";
 import View from "./components/View";
+// import Buttons from "./components/Buttons";
 
 function App() {
   const [excelFile, setExcelFile] = useState(null);
@@ -27,6 +28,7 @@ function App() {
   const [archivo, setArchivo] = useState({});
   const [cotizacionUSD, setCotizacionUSD] = useState()
   const [loading, setLoading] = useState(false);
+ 
     //onchange event
   const handleFile = (e) => {
     let fileTypes = [
@@ -287,9 +289,9 @@ function App() {
         <img className="logo" src={logo} alt="logo"></img>
       </div>
 
-      <div className="containerForm">
-        <form className="form" onSubmit={handleFileSubmit}>
-          <div>
+      <div>
+        <form className="form" onSubmit={handleFileSubmit} id="myForm">
+          <div className="containerForm">
             <input
               type="file"
               id="input-file"
@@ -300,31 +302,12 @@ function App() {
                 handleFile(e);
                 valores(excelData);
               }}
-            />
+              />
           </div>
-          {typeError ===
-            "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos" ||
-          typeError === null ? (
-            <button
-              type="submit"
-              onClick={() => valores(excelData)}
-              className="btn"
-            >
-              {" "}
-              EXAMINAR ARCHIVO{" "}
-              {/*<span className="icons"><BsArrowDownCircle/></span>*/}
-            </button>
-          ) : (
-            <button className="btn-no">
-              EXAMINAR ARCHIVO{" "}
-              {/*<span className="icons"><BsArrowDownCircle/></span>*/}
-            </button>
-          )}
-        </form>
         {typeError ===  "Hay una fecha no encontrada en el archivo, intentar nuevamente con otro archivo" || typeError === null ? (
           null
-        ) : (
-          <div className="alert" role="alert">
+          ) : (
+            <div className="alert" role="alert">
             {typeError}
             <div style={{margin: '0px 10px', fontSize:'19px'}}>
             <FaRegCircleXmark/>
@@ -346,53 +329,97 @@ function App() {
               color={"#000000"}
               height={80}
               width={80}
-            />
+              />
             <p style={{ marginTop: "10px" }}>Esto puede tardar unos segundos</p>
           </div>
         ) : null}
-      </div>
-
+      {/* <div><Buttons excelData={excelData} excelCotizacionData={excelDataCotizacion} typeError={typeError} 
+      addDataBase={addDataBase}
+      valoresCotizacion={valoresCotizacion}
+      reiniciarExcel={reiniciarExcel} 
+      deleteDataBase={deleteDataBase}
+    /></div>     */}
       <div className="dataBase">
-        <button
-          className={`btnDataBase ${typeError || excelDataCotizacion? "btn-no" : ""}`}
-          onClick={addDataBase}
-        >
-          ENVIAR A BASE DE DATOS{" "}
-          <span className="icons">
-            <BsDatabaseAdd />
-          </span>
-        </button>
-           <button
-          className={`btnDataBaseCotizacion ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
+        {typeError ===
+          "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos" ||
+        typeError === null ? (
+          <button
+            type="submit"
+            onClick={() => valores(excelData)}
+            className="btn"
+          >
+            {" "}
+            ANALIZAR ARCHIVO{" "}
+            {/*<span className="icons"><BsArrowDownCircle/></span>*/}
+          </button>
+        ) : (
+          <button className="btn-no">
+            ANALIZAR ARCHIVO{" "}
+            {/*<span className="icons"><BsArrowDownCircle/></span>*/}
+          </button>
+        )}
+           <button type="button"
+          className={`btn ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
           onClick={valoresCotizacion}
           >
           AGREGAR COTIZACION USD{" "}
           <span className="icons">
-            <FaHandHoldingUsd />
+            {/* <FaHandHoldingUsd /> */}
           </span>
         </button>
-        <button
-             className={`btnDataBaseCotizacionRefresh ${excelDataCotizacion === null ? "btnDataBaseCotizacionRefreshNo" : ""}`}
-          // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
-          onClick={reiniciarExcel}
-        >
-          RECARGAR TABLA ORIGINAL{" "}
+        <button type="button"
+          className={`btn-no ${excelData === null || excelDataCotizacion?.lenght !== 0? "btn-no" : ""}`}
+          // className={`btnDataBaseRazonSocial ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
+          // onClick={valoresCotizacion}
+          >
+          AGREGAR RAZÓN SOCIAL{" "}
           <span className="icons">
-            <FiRefreshCw />
+            {/* <FaHandHoldingUsd /> */}
           </span>
         </button>
-        <button
-             className={`btnDataBaseDelete`}
-          // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
-          onClick={deleteDataBase}
+        <button type="button"
+          className={`btn-no ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
+          // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
+          // onClick={valoresCotizacion}
+          >
+          DESCARGAR XLS{" "}
+          <span className="icons">
+            {/* <FaHandHoldingUsd /> */}
+          </span>
+        </button>
+        <button type="button"
+             className={`btn ${excelDataCotizacion === null ? "btn-no" : ""}`}
+             // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
+             onClick={reiniciarExcel}
+             >
+          REINICIAR TABLA{" "}
+          <span className="icons">
+            {/* <FiRefreshCw /> */}
+          </span>
+        </button>
+        <button type="button"
+          className={`btn ${typeError || excelDataCotizacion? "btn-no" : ""}`}
+          onClick={addDataBase}
         >
+          ENVIAR A BASE DE DATOS{" "}
+          <span className="icons">
+            {/* <BsDatabaseAdd /> */}
+          </span>
+        </button>
+        <button type="button"
+             className={`btn-no`}
+             // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
+             onClick={deleteDataBase}
+             >
           ELIMINAR BASE DE DATOS{" "}
           <span className="icons">
-            <MdDelete />
+            {/* <MdDelete /> */}
           </span>
         </button>
-      </div>
+          </div>
+      </form>
       <div>
+          </div>
           {excelDataCotizacion?
           <View excelData={excelDataCotizacion} title={title}/>:
           <View excelData={excelData} title={title}/>
