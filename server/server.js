@@ -21,10 +21,10 @@ app.get("/", (req, res) => {
 });
 
 app.post('/', (req, res) => {
-  const estadoRecibido = req.body.estado;
+  const data = req.body.estado;
   // Aquí puedes procesar el estado recibido como desees
-  console.log('Estado recibido en el backend:', estadoRecibido);
-  res.send({ mensaje: 'Estado recibido correctamente en el backend' });
+  console.log('Estado recibido en el backend:', data);
+  return res.status(200).send({ mensaje: 'Estado recibido correctamente en el backend' });
 });
 
 app.post("/data", (req, res) => {
