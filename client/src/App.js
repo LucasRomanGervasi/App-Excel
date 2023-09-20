@@ -28,7 +28,7 @@ function App() {
   const [archivo, setArchivo] = useState({});
   const [cotizacionUSD, setCotizacionUSD] = useState()
   const [loading, setLoading] = useState(false);
-  const [fileName,setFileName] = useState()
+  const [fileName,setFileName] = useState(null)
  
     //onchange event
   const handleFile = (e) => {
@@ -361,7 +361,7 @@ function App() {
           <button
           className={`btn ${typeError ===
             "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos" ||
-            excelData !== null || excelDataCotizacion !==null || typeError || fileName === null || fileName===null? "btn-no" : ""}`}
+            excelData !== null || excelDataCotizacion !==null || typeError || fileName === null ? "btn-no" : ""}`}
             type="submit"
             onClick={() => valores(excelData)}
           >
