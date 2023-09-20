@@ -20,6 +20,13 @@ app.get("/", (req, res) => {
   return res.status(200).send("Backend Conectado");
 });
 
+app.post('/', (req, res) => {
+  const estadoRecibido = req.body.estado;
+  // Aquí puedes procesar el estado recibido como desees
+  console.log('Estado recibido en el backend:', estadoRecibido);
+  res.send({ mensaje: 'Estado recibido correctamente en el backend' });
+});
+
 app.post("/data", (req, res) => {
   const impoCompraVenta = req.body.impoCompraVenta;
   const archivoData = req.body.archivo;
@@ -95,7 +102,7 @@ app.post("/data", (req, res) => {
   app.get("/cotizacion-usd", (req, res) => {
     // Query SQL para obtener datos de la tabla "actualizas"
     const sqlQuery = "SELECT * FROM moneda_cotizacion";
-  
+    console.log(sqlQuery)
     db.query(sqlQuery, (err, result) => {
       if (err) {
         console.error("Error al consultar la tabla moneda_cotizacion:", err);
@@ -103,6 +110,8 @@ app.post("/data", (req, res) => {
       }
       
       // Enviar los datos obtenidos como respuesta
+      console.log(result)
+      res.send(result)
       return res.status(200).json(result);
     });
   });
