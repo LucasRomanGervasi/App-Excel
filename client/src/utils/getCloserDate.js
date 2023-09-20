@@ -1,8 +1,5 @@
 export function getCloserDate(fechas, fechaObjetivo) {
     // Función para convertir fechas en objetos Date
-    
-
-
  const fechasEdit = Object.values(fechas).map(item => item.fecha.replace(/-/g, '/'));
   // Convierte la fecha objetivo en un objeto Date
   const fechaObjetivoDate = new Date(fechaObjetivo);

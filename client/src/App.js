@@ -216,6 +216,8 @@ function App() {
       });
     }
     
+    console.log(cotizacionUSD)
+
     function valoresCotizacion() {
         const fechaCotizacion = [];
     const excelCotizacionData = [
@@ -236,12 +238,11 @@ function App() {
       fechaCotizacion.push(cotizacion);
     }
   }
-    for (let index = 0; index < impoCompraVenta?.length; index++) {
+  for (let index = 0; index < impoCompraVenta?.length; index++) {
       const fechaBuscada = getCloserDate(fechaCotizacion, impoCompraVenta[index]['fecha'].replace(/-/g, '/'))
       const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
       const montoendolares = impoCompraVenta[index]['moneda'] === 'UYU'? impoCompraVenta[index]['montototal'] / resultado.montoventa: impoCompraVenta[index]['montototal'];
-      console.log(montoendolares? montoendolares.toFixed(2) : null)
-        var nuevoImporte = {
+      var nuevoImporte = {
         fecha: impoCompraVenta[index]['fecha'],
         tipoCFE: impoCompraVenta[index]['tipoCFE'],
         serie: impoCompraVenta[index]['serie'],
@@ -257,7 +258,7 @@ function App() {
         montoendolares: montoendolares? montoendolares.toFixed(2) : 0
       };
       excelCotizacionData.push(nuevoImporte);
-    }
+  }
     setTypeSuccess("Se calculó correctamente la cotización del monto en dolares")
     setExcelDataCotizacion(excelCotizacionData)
     const timer = setTimeout(() => {
@@ -271,7 +272,6 @@ function App() {
     setExcelDataCotizacion(null); // Establece el estado a 0
   };
 
-  console.log(excelDataCotizacion)
 
 
   useEffect(() => {
@@ -285,7 +285,6 @@ function App() {
     return () => clearTimeout(timer), valores(excelData);
   }, [excelData]);
   
-  console.log(fileInputRef)
 
   return (
     <div className="wrapper">
