@@ -356,12 +356,12 @@ function App() {
       reiniciarExcel={reiniciarExcel} 
       deleteDataBase={deleteDataBase}
     /></div>     */
-    console.log(excelData == null)}
+    }
       <div className="dataBase">
           <button
           className={`btn ${typeError ===
             "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos" ||
-            excelData !== null || excelDataCotizacion !==null || typeError || fileName === null? "btn-no" : ""}`}
+            excelData !== null || excelDataCotizacion !==null || typeError || fileName === null || fileName===null? "btn-no" : ""}`}
             type="submit"
             onClick={() => valores(excelData)}
           >
