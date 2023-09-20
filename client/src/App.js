@@ -28,6 +28,7 @@ function App() {
   const [archivo, setArchivo] = useState({});
   const [cotizacionUSD, setCotizacionUSD] = useState()
   const [loading, setLoading] = useState(false);
+  const [fileName,setFileName] = useState()
  
     //onchange event
   const handleFile = (e) => {
@@ -77,7 +78,7 @@ function App() {
           "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
         );
         setExcelData(null);
-        setExcelFile(null);
+        setFileName(null);
         fileInputRef.current.value = "";
       }
     }
@@ -110,8 +111,10 @@ function App() {
         } else {
           setExcelData("");
           setTypeError(
-            "Hay una fecha no encontrada en el archivo, intentar nuevamente con otro archivo"
+            "Hay una fecha no encontrada, revisa el archivo"
           );
+          setExcelData(null)
+          setFileName(null)
           fileInputRef.current.value = "";
         }
         let nextIdImpo = 0;
@@ -162,7 +165,7 @@ function App() {
       })
       .then(() => {
         setTypeSuccess("Registrado correctamente");
-        setExcelFile(null);
+        setFileName(null);
         setExcelData(null);
         setArchivo(null);
         setimpoCompraVenta(null);
@@ -184,7 +187,7 @@ function App() {
       .then(() => {
         alert("Base de Datos eliminada")
         setTypeSuccess("Eliminado correctamente");
-        setExcelFile(null);
+        setFileName(null);
         setExcelData(null);
         setArchivo(null);
         setimpoCompraVenta(null);
@@ -236,7 +239,8 @@ function App() {
     for (let index = 0; index < impoCompraVenta?.length; index++) {
       const fechaBuscada = getCloserDate(fechaCotizacion, impoCompraVenta[index]['fecha'].replace(/-/g, '/'))
       const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
-      console.log(resultado)
+      const montoendolares = impoCompraVenta[index]['moneda'] === 'UYU'? impoCompraVenta[index]['montototal'] / resultado.montoventa: impoCompraVenta[index]['montototal'];
+      console.log(montoendolares? montoendolares.toFixed(2) : null)
         var nuevoImporte = {
         fecha: impoCompraVenta[index]['fecha'],
         tipoCFE: impoCompraVenta[index]['tipoCFE'],
@@ -249,8 +253,8 @@ function App() {
         montototal: impoCompraVenta[index]['montototal'],
         montoretper: impoCompraVenta[index]['montoretper'],
         montocredfiscal: impoCompraVenta[index]['montocredfiscal'],
-        tipodecambiodelafecha: resultado.montoventa,
-        montoendolares: impoCompraVenta[index]['moneda'] === 'UYU'? impoCompraVenta[index]['montototal'] / resultado.montoventa : impoCompraVenta[index]['montototal'],
+        tipodecambiodelafecha: resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
+        montoendolares: montoendolares? montoendolares.toFixed(2) : 0
       };
       excelCotizacionData.push(nuevoImporte);
     }
@@ -281,7 +285,8 @@ function App() {
     return () => clearTimeout(timer), valores(excelData);
   }, [excelData]);
   
-  
+  console.log(fileInputRef)
+
   return (
     <div className="wrapper">
       {/*<h3 className="title">SOS</h3>*/}
@@ -292,19 +297,31 @@ function App() {
       <div>
         <form className="form" onSubmit={handleFileSubmit} id="myForm">
           <div className="containerForm">
-            <input
-              type="file"
-              id="input-file"
-              className="form-control"
-              ref={fileInputRef}
-              required
-              onChange={(e, excelData) => {
-                handleFile(e);
-                valores(excelData);
-              }}
-              />
+            <label htmlFor="input-file" className="btnLabel">
+            Selecciona el Archivo CFE Recibos
+          </label>
+          <input
+            type="file"
+            id="input-file"
+            ref={fileInputRef}
+            required
+            onChange={(e, excelData) => {
+              handleFile(e);
+              valores(excelData);
+              const fileName = e.target.files[0].name;
+              setFileName(fileName)
+            }}
+            />
+            <div className="fileName">
+              {
+                fileName?(
+                  <h3 style={{fontSize:'12px'}}>{fileName}</h3>
+                  ):
+                  <h3  style={{color:'grey', fontSize:'12px'}}>Nombre del archivo...</h3>
+              }
+            </div>
           </div>
-        {typeError ===  "Hay una fecha no encontrada en el archivo, intentar nuevamente con otro archivo" || typeError === null ? (
+        {typeError ===  "Hay una fecha no encontrada, revisa el archivo" || typeError === null ? (
           null
           ) : (
             <div className="alert" role="alert">
@@ -338,28 +355,20 @@ function App() {
       valoresCotizacion={valoresCotizacion}
       reiniciarExcel={reiniciarExcel} 
       deleteDataBase={deleteDataBase}
-    /></div>     */}
+    /></div>     */
+    console.log(excelData == null)}
       <div className="dataBase">
-        {typeError ===
-          "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos" ||
-        typeError === null ? (
           <button
+          className={`btn ${typeError ===
+            "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos" ||
+            excelData !== null || excelDataCotizacion !==null || typeError || fileName === null? "btn-no" : ""}`}
             type="submit"
             onClick={() => valores(excelData)}
-            className="btn"
           >
-            {" "}
-            ANALIZAR ARCHIVO{" "}
-            {/*<span className="icons"><BsArrowDownCircle/></span>*/}
+            ANALIZAR ARCHIVO
           </button>
-        ) : (
-          <button className="btn-no">
-            ANALIZAR ARCHIVO{" "}
-            {/*<span className="icons"><BsArrowDownCircle/></span>*/}
-          </button>
-        )}
            <button type="button"
-          className={`btn ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
+          className={`btn ${typeError || excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
           onClick={valoresCotizacion}
           >
           AGREGAR COTIZACION USD{" "}
@@ -398,7 +407,7 @@ function App() {
           </span>
         </button>
         <button type="button"
-          className={`btn ${typeError || excelDataCotizacion? "btn-no" : ""}`}
+          className={`btn ${excelData === null || excelDataCotizacion !==null || typeError? "btn-no" : ""}`}
           onClick={addDataBase}
         >
           ENVIAR A BASE DE DATOS{" "}
@@ -425,9 +434,9 @@ function App() {
           <View excelData={excelData} title={title}/>
           }
       </div>
-      <div style={{margin:'10px 20px'}}>
+      <div style={{margin:'20px 20px'}}>
          {typeError ===
-            "Hay una fecha no encontrada en el archivo, intentar nuevamente con otro archivo" ? (
+            "Hay una fecha no encontrada, revisa el archivo" ? (
               <div className="alert" role="alert">
             {typeError}
           </div>
