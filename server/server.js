@@ -96,19 +96,15 @@ app.post("/data", (req, res) => {
   app.get("/cotizacion-usd", (req, res) => {
     // Query SQL para obtener datos de la tabla "actualizas"
     const sqlQuery = "SELECT * FROM moneda_cotizacion";
-    console.log(sqlQuery)
     db.query(sqlQuery, (err, result) => {
       if (err) {
         console.error("Error al consultar la tabla moneda_cotizacion:", err);
         return res.status(500).send("Error interno del servidor");
       }
-      
-      // Enviar los datos obtenidos como respuesta
-      console.log(result)
-      res.send(result)
+      // Aquí solo envía la respuesta JSON
       return res.status(200).json(result);
     });
-  });
+  });  
   
 
 app.delete("/data", (req, res) => {
