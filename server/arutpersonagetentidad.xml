@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp200409="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsp200607="http://www.w3.org/2006/07/ws-policy" xmlns:ns0="DGI_Modernizacion_Consolidado" targetNamespace="DGI_Modernizacion_Consolidado">
+<wsdl:types xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:schema>
+<xsd:import schemaLocation="arutpersonagetentidad.xsd1.xsd" namespace="DGI_Modernizacion_Consolidado"/></xsd:schema></wsdl:types>
+<wsdl:message name="RUTPersonaGetEntidad.ExecuteSoapIn">
+<wsdl:part name="parameters" element="xsns:RUTPersonaGetEntidad.Execute" xmlns:xsns="DGI_Modernizacion_Consolidado"/></wsdl:message>
+<wsdl:message name="RUTPersonaGetEntidad.ExecuteSoapOut">
+<wsdl:part name="parameters" element="xsns:RUTPersonaGetEntidad.ExecuteResponse" xmlns:xsns="DGI_Modernizacion_Consolidado"/></wsdl:message>
+<wsdl:portType name="RUTPersonaGetEntidadSoapPort">
+<wsdl:operation name="Execute">
+<wsdl:input name="ExecuteRequest" message="ns0:RUTPersonaGetEntidad.ExecuteSoapIn"/>
+<wsdl:output name="ExecuteResponse" message="ns0:RUTPersonaGetEntidad.ExecuteSoapOut"/></wsdl:operation></wsdl:portType>
+<wsdl:binding name="RUTPersonaGetEntidadSoapBinding" type="ns0:RUTPersonaGetEntidadSoapPort">
+<soap11:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<wsdl:operation name="Execute">
+<soap11:operation soapAction="DGI_Modernizacion_Consolidadoaction/ARUTPERSONAGETENTIDAD.Execute" style="document"/>
+<wsdl:input name="ExecuteRequest">
+<soap11:body use="literal"/></wsdl:input>
+<wsdl:output name="ExecuteResponse">
+<soap11:body use="literal"/></wsdl:output></wsdl:operation></wsdl:binding>
+<wsdl:service name="RUTPersonaGetEntidad">
+<wsdl:port name="RUTPersonaGetEntidadSoapPort" binding="ns0:RUTPersonaGetEntidadSoapBinding">
+<soap11:address location="https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad"/></wsdl:port>
+<wsdl:port name="RUTPersonaGetEntidadSoapPort.0" binding="ns0:RUTPersonaGetEntidadSoapBinding">
+<soap11:address location="https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad"/></wsdl:port></wsdl:service></wsdl:definitions>

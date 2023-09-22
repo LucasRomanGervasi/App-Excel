@@ -5,6 +5,9 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json());
+const fs = require('fs');
+const soap = require('soap');
+
 
 const db = mysql.createPool({
   database: "railway",
@@ -84,8 +87,8 @@ app.post("/data", (req, res) => {
             return res
               .status(200)
               .send("Todos los datos insertados correctamente");
+            }
           }
-        }
       });
     });
   });
@@ -106,10 +109,90 @@ app.post("/data", (req, res) => {
     });
   });  
   
+//API RAZON SOCIAL 
+// const crearCliente = (url, options) => {
+//   return new Promise((resolve, reject) => {
+//     soap.createClient(url, options, (err, client) => {
+//       if (err) reject(err)
+//       resolve(client)
+//     })
+//   })
+// }
 
-app.delete("/data", (req, res) => {
-  let operationsCompleted = 0;
+// const guardarResultado = (resultado) =>{
+  
+//   fs.writeFile("resultado.xml", resultado, (err) => {
+//     if (err) {
+//       console.error('Error al escribir el archivo XML:', err);
+//     } else {
+//       console.log('Archivo XML escrito exitosamente.');
+//     }
+//   });
+// }
 
+// const getInfoByRUT = async (ruc) => {
+
+//   const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl'
+
+//   const cliente = await crearCliente(url, {})
+
+//   var privateKey = fs.readFileSync("clave.key");
+//   var publicKey = fs.readFileSync("certificado.pem");
+//   var password = 'nuevacontra'; 
+
+//   var wsSecurity = new soap.WSSecurityCert(privateKey, publicKey, password);
+//   console.log(wsSecurity)
+//   cliente.setSecurity(wsSecurity);
+
+//   console.log(cliente)
+
+//   cliente.Execute({Ruc: ruc}, (err, result) => {
+//     if (err) {
+//       console.error('Error al llamar a la operación del servicio SOAP', err);
+    
+//       guardarResultado(err.body)
+//       return 
+
+//     }
+//     console.log('Respuesta del servicio SOAP:', result);
+//     guardarResultado(result)
+//   });
+    
+// } 
+
+const excelData = []
+app.post('/razonsocial', (req, res) => {
+  const data = req.body;
+  for (let index = 4; index < data?.length; index++) {
+    if(data[index]){
+    excelData.push(data[index])
+      }
+     }
+     console.log(excelData)
+     return res.status(200).send({ mensaje: 'Estado recibido correctamente en el backend' });
+    });
+
+    
+  app.get("/razonsocial", (req, res) => {
+    if (!excelData) {
+      console.error("Error al consultar la tabla moneda_cotizacion:", err);
+      return res.status(500).send("Error interno del servidor");
+    }
+    // Aquí solo envía la respuesta JSON7
+    for(let index = 0; index < excelData?.length; index++){
+      if(excelData[index]['RUTEmisor']){
+        console.log(excelData[index]['RUTEmisor'])
+        getInfoByRUT(excelData[index]['RUTEmisor'])
+      }
+    }
+    return res.status(200).json(excelData);
+  });  
+  
+    
+
+  app.delete("/data", (req, res) => {
+    let operationsCompleted = 0;
+    
   // Eliminar datos de impo_compraventa
   db.query("DELETE FROM impo_compraventa", (err, result) => {
     if (err) {
@@ -140,8 +223,11 @@ app.delete("/data", (req, res) => {
   }
 });
 
+
+
+
 const port = process.env.PORT || 3001;
 
-app.listen(port, "0.0.0.0", function () {
+app.listen(3001, "0.0.0.0", function () {
   console.log(`Servidor escuchando en el puerto ${port}`);
 });
