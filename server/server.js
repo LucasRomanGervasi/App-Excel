@@ -225,6 +225,6 @@ app.post('/razonsocial', (req, res) => {
 
 const port = process.env.PORT || 3001;
 
-app.listen(3001, "0.0.0.0", function () {
+app.listen(port, "0.0.0.0", function () {
   console.log(`Servidor escuchando en el puerto ${port}`);
 });
