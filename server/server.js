@@ -5,21 +5,29 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json());
+const fs = require('fs');
+const soap = require('soap');
+
 
 const db = mysql.createPool({
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  password: process.env.DB_PASSWORD,
+  database: "railway",
+  user: "root",
+  host: "containers-us-west-190.railway.app",
+  port: "7782",
+  password: "fpBGPVooo4V5ad1TxiCs",
 });
+
+//const MYSQL_URL = 'mysql://root:fpBGPVooo4V5ad1TxiCs@containers-us-west-190.railway.app:7782/railway',
 
 app.get("/", (req, res) => {
   return res.status(200).send("Backend Conectado");
 });
 
-// Función para insertar archivo en la base de datos
-const insertArchivo = (archivoData) => {
+
+app.post("/data", (req, res) => {
+  const impoCompraVenta = req.body.impoCompraVenta;
+  const archivoData = req.body.archivo;
+
   const {
     idusuario,
     idempresa,
@@ -29,78 +37,61 @@ const insertArchivo = (archivoData) => {
     fechadesde,
     fechaupload,
   } = archivoData;
-  const sqlArchivo = `INSERT INTO archivo ( idusuario, idempresa, archivo, tipo, fechahasta, fechadesde, fechaupload) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-  const values = [idusuario, idempresa, archivo, tipo, fechahasta, fechadesde, fechaupload];
+  const sqlArchivo = `INSERT INTO archivo ( idusuario, idempresa, archivo, tipo, fechahasta, fechadesde, fechaupload) VALUES ( ${idusuario}, ${idempresa}, '${archivo}', '${tipo}', '${fechahasta}', '${fechadesde}', '${fechaupload}')`;
 
-  return new Promise((resolve, reject) => {
-    db.query(sqlArchivo, values, (err, resultArchivo) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(resultArchivo.insertId);
-      }
-    });
-  });
-};
+  db.query(sqlArchivo, (err, resultArchivo) => {
+    if (err) {
+      console.error("Error al insertar archivo en la base de datos:", err);
+      return res.status(500).send("Error interno del servidor");
+    }
 
-// Función para insertar impoCompraVenta en la base de datos
-const insertImpoCompraVenta = (idarchivo, data1) => {
-  const {
-    fecha,
-    tipoCFE,
-    serie,
-    numero,
-    RUTEmisor,
-    moneda,
-    montoneto,
-    montoiva,
-    montototal,
-    montoretper,
-    montocredFiscal,
-  } = data1;
-  const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  const values = [idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal || 0];
-
-  return new Promise((resolve, reject) => {
-    db.query(sqlImpo, values, (err, resultImpo) => {
-      if (err) {
-        reject(err);
-      } else {
-        console.log("Dato insertado correctamente en la posición");
-        resolve();
-      }
-    });
-  });
-};
-
-app.post("/data", async (req, res) => {
-  try {
-    const impoCompraVenta = req.body.impoCompraVenta;
-    const archivoData = req.body.archivo;
-
-    const idarchivo = await insertArchivo(archivoData);
+    const idarchivo = resultArchivo.insertId;
 
     const insertionErrors = [];
 
-    for (const data1 of impoCompraVenta) {
-      try {
-        await insertImpoCompraVenta(idarchivo, data1);
-      } catch (err) {
-        console.error("Error al insertar impo_compraventa en la base de datos:", err);
-        insertionErrors.push(err);
-      }
-    }
+    impoCompraVenta.forEach((data1, index) => {
+      const {
+        fecha,
+        tipoCFE,
+        serie,
+        numero,
+        RUTEmisor,
+        moneda,
+        montoneto,
+        montoiva,
+        montototal,
+        montoretper,
+        montocredFiscal,
+      } = data1;
+      console.log(fecha, "ACA ESTA LA FECHA");
+      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal) VALUES ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montoneto}, ${montoiva}, ${montototal}, ${montoretper}, ${
+        montocredFiscal || 0
+      })`;
 
-    if (insertionErrors.length > 0) {
-      return res.status(500).send("Error interno del servidor");
-    } else {
-      console.log("Todos los datos insertados correctamente");
-      return res.status(200).send("Todos los datos insertados correctamente");
-    }
-  } catch (error) {
-    console.error("Error en POST /data:", error);
-    return res.status(500).send("Error interno del servidor");
-  }
+      db.query(sqlImpo, (err, resultImpo) => {
+        if (err) {
+          console.error(
+            "Error al insertar impo_compraventa en la base de datos:",
+            err
+          );
+          insertionErrors.push(err);
+        } else {
+          console.log("Dato insertado correctamente en la posición");
+        }
+
+        if (index === impoCompraVenta.length - 1) {
+          if (insertionErrors.length > 0) {
+            return res.status(500).send("Error interno del servidor");
+          } else {
+            console.log("Todos los datos insertados correctamente");
+            return res
+              .status(200)
+              .send("Todos los datos insertados correctamente");
+            }
+          }
+      });
+    });
+  });
 });
 
   // Pedir datos de moneda_cotizacion
@@ -119,55 +110,55 @@ app.post("/data", async (req, res) => {
   });  
   
 //API RAZON SOCIAL 
-// const crearCliente = (url, options) => {
-//   return new Promise((resolve, reject) => {
-//     soap.createClient(url, options, (err, client) => {
-//       if (err) reject(err)
-//       resolve(client)
-//     })
-//   })
-// }
+const crearCliente = (url, options) => {
+  return new Promise((resolve, reject) => {
+    soap.createClient(url, options, (err, client) => {
+      if (err) reject(err)
+      resolve(client)
+    })
+  })
+}
 
-// const guardarResultado = (resultado) =>{
+const guardarResultado = (resultado) =>{
   
-//   fs.writeFile("resultado.xml", resultado, (err) => {
-//     if (err) {
-//       console.error('Error al escribir el archivo XML:', err);
-//     } else {
-//       console.log('Archivo XML escrito exitosamente.');
-//     }
-//   });
-// }
+  fs.writeFile("resultado.xml", resultado, (err) => {
+    if (err) {
+      console.error('Error al escribir el archivo XML:', err);
+    } else {
+      console.log('Archivo XML escrito exitosamente.');
+    }
+  });
+}
 
-// const getInfoByRUT = async (ruc) => {
+const getInfoByRUT = async (ruc) => {
 
-//   const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl'
+  const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl'
 
-//   const cliente = await crearCliente(url, {})
+  const cliente = await crearCliente(url, {})
 
-//   var privateKey = fs.readFileSync("clave.key");
-//   var publicKey = fs.readFileSync("certificado.pem");
-//   var password = 'nuevacontra'; 
+  var privateKey = fs.readFileSync("clave.key");
+  var publicKey = fs.readFileSync("certificado.pem");
+  var password = 'nuevacontra'; 
 
-//   var wsSecurity = new soap.WSSecurityCert(privateKey, publicKey, password);
-//   console.log(wsSecurity)
-//   cliente.setSecurity(wsSecurity);
+  var wsSecurity = new soap.WSSecurityCert(privateKey, publicKey, password);
+  console.log(wsSecurity)
+  cliente.setSecurity(wsSecurity);
 
-//   console.log(cliente)
+  console.log(cliente)
 
-//   cliente.Execute({Ruc: ruc}, (err, result) => {
-//     if (err) {
-//       console.error('Error al llamar a la operación del servicio SOAP', err);
+  cliente.Execute({Ruc: ruc}, (err, result) => {
+    if (err) {
+      console.error('Error al llamar a la operación del servicio SOAP', err);
     
-//       guardarResultado(err.body)
-//       return 
+      guardarResultado(err.body)
+      return 
 
-//     }
-//     console.log('Respuesta del servicio SOAP:', result);
-//     guardarResultado(result)
-//   });
+    }
+    console.log('Respuesta del servicio SOAP:', result);
+    guardarResultado(result)
+  });
     
-// } 
+} 
 
 const excelData = []
 app.post('/razonsocial', (req, res) => {
@@ -190,8 +181,7 @@ app.post('/razonsocial', (req, res) => {
     // Aquí solo envía la respuesta JSON7
     for(let index = 0; index < excelData?.length; index++){
       if(excelData[index]['RUTEmisor']){
-        console.log(excelData[index]['RUTEmisor'])
-        getInfoByRUT(excelData[index]['RUTEmisor'])
+        getInfoByRUT(excelData[index]['RUTEmisor']);
       }
     }
     return res.status(200).json(excelData);
@@ -231,8 +221,6 @@ app.post('/razonsocial', (req, res) => {
     }
   }
 });
-
-
 
 
 const port = process.env.PORT || 3001;
