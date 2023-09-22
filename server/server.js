@@ -190,38 +190,38 @@ app.post('/razonsocial', (req, res) => {
   
     
 
-  app.delete("/data", (req, res) => {
-    let operationsCompleted = 0;
+//   app.delete("/data", (req, res) => {
+//     let operationsCompleted = 0;
     
-  // Eliminar datos de impo_compraventa
-  db.query("DELETE FROM impo_compraventa", (err, result) => {
-    if (err) {
-      console.error("Error al eliminar datos previos:", err);
-      return res.status(500).send("Error interno del servidor");
-    }
-    console.log("Datos de impo_compraventa eliminados correctamente");
-    operationsCompleted++;
-    checkAllOperationsCompleted();
-  });
+//   // Eliminar datos de impo_compraventa
+//   db.query("DELETE FROM impo_compraventa", (err, result) => {
+//     if (err) {
+//       console.error("Error al eliminar datos previos:", err);
+//       return res.status(500).send("Error interno del servidor");
+//     }
+//     console.log("Datos de impo_compraventa eliminados correctamente");
+//     operationsCompleted++;
+//     checkAllOperationsCompleted();
+//   });
 
-  // Eliminar datos de archivo
-  db.query("DELETE FROM archivo", (err, result) => {
-    if (err) {
-      console.error("Error al eliminar datos previos:", err);
-      return res.status(500).send("Error interno del servidor");
-    }
-    console.log("Datos de archivo eliminados correctamente");
-    operationsCompleted++;
-    checkAllOperationsCompleted();
-  });
+//   // Eliminar datos de archivo
+//   db.query("DELETE FROM archivo", (err, result) => {
+//     if (err) {
+//       console.error("Error al eliminar datos previos:", err);
+//       return res.status(500).send("Error interno del servidor");
+//     }
+//     console.log("Datos de archivo eliminados correctamente");
+//     operationsCompleted++;
+//     checkAllOperationsCompleted();
+//   });
 
-  function checkAllOperationsCompleted() {
-    if (operationsCompleted === 3) {
-      // Ajusta el número total de operaciones
-      return res.send("Operaciones completadas correctamente");
-    }
-  }
-});
+//   function checkAllOperationsCompleted() {
+//     if (operationsCompleted === 3) {
+//       // Ajusta el número total de operaciones
+//       return res.send("Operaciones completadas correctamente");
+//     }
+//   }
+// });
 
 
 
