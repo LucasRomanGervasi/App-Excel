@@ -67,12 +67,37 @@ function App() {
       const A0 = Object.values(file0);
       const A10 = Object.values(file10);
       const A11 = Object.values(file11);
+      const dataValues = [{ 'CFE Recibidos': data[0]['CFE Recibidos'], 'cant': data[0]['__EMPTY'] },
+      { 'fechadesde': data[1]['CFE Recibidos'], 'valor':data[1]['__EMPTY'] },
+      { 'fechahasta':  data[2]['CFE Recibidos'], 'valor': data[2]['__EMPTY']},
+      { 'fecha': data[3]['CFE Recibidos'], 'tipoCFE': data[3]['__EMPTY'], 'serie': data[3]['__EMPTY_1'], 'numero' : data[3]['__EMPTY_2'], 'rutemisor' :  data[3]['__EMPTY_3'], 'moneda' :  data[3]['__EMPTY_4'],
+      'montoneto':  data[3]['__EMPTY_5'],'ivaventas':  data[3]['__EMPTY_6'],'montototal':  data[3]['__EMPTY_7'],'montoRet/Per':  data[3]['__EMPTY_8'],'montoCredFiscal':  data[3]['__EMPTY_9']
+      }]
+      for (let index = 4; index < data?.length; index++) {
+        if(data[index]){
+          const  values = { 
+            'fecha': data[index]['CFE Recibidos'],
+            'tipoCFE':  data[index]['__EMPTY'],
+            'serie':  data[index]['__EMPTY_1'],
+            'numero':  data[index]['__EMPTY_2'],
+            'RUTEmisor':  data[index]['__EMPTY_3'],
+            'moneda':  data[index]['__EMPTY_4'],
+            'montoneto':  data[index]['__EMPTY_5'],
+            'montoiva':  data[index]['__EMPTY_6'],
+            'montototal':  data[index]['__EMPTY_7'],
+            'montoretper':  data[index]['__EMPTY_8'],
+            'montocredfiscal':  data[index]['__EMPTY_9'],
+          }
+          dataValues.push(values)
+        }}
       if (A11.length < 11) {
         A11.unshift("");
       }
       setTitle(A0[0]);
       if (A0[0] === "CFE Recibidos" && A10[0] === "Fecha" && A11[0] !== "") {
-        setExcelData(data);
+        setExcelData(
+          dataValues
+        );
       } else {
         setTypeError(
           "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
@@ -83,6 +108,7 @@ function App() {
       }
     }
   };
+
 
   const valores = (excelData) => {
     if (excelData) {
@@ -159,7 +185,8 @@ function App() {
   const addDataBase = () => {
     setLoading(true);
     axios
-      .post("https://app-excel-production.up.railway.app/data", {
+      // .post("https://app-excel-production.up.railway.app/data", {
+        .post("http://localhost:3001/data", {
         impoCompraVenta: impoCompraVenta,
         archivo: archivo,
       })
@@ -183,7 +210,8 @@ function App() {
 
   const deleteDataBase = () => {
     axios
-      .delete("https://app-excel-production.up.railway.app/data")
+      // .delete("https://app-excel-production.up.railway.app/data")
+      .delete("http://localhost:3001/data")
       .then(() => {
         alert("Base de Datos eliminada")
         setTypeSuccess("Eliminado correctamente");
@@ -206,6 +234,7 @@ function App() {
     
     const getCotizacionUSD = () => {
       axios
+      // .get("https://app-excel-production.up.railway.app/cotizacion-usd")
       .get("https://app-excel-production.up.railway.app/cotizacion-usd")
       .then((response) => {
         setCotizacionUSD(response.data)
@@ -216,8 +245,6 @@ function App() {
       });
     }
     
-    console.log(cotizacionUSD)
-
     function valoresCotizacion() {
         const fechaCotizacion = [];
     const excelCotizacionData = [
@@ -268,15 +295,25 @@ function App() {
   };
   
 
+
   const reiniciarExcel = () => {
     setExcelDataCotizacion(null); // Establece el estado a 0
   };
 
-
+  
+  console.log('excelData', excelData, 'excelCotizacion', excelDataCotizacion)
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(excelData)
+};
 
   useEffect(() => {
     if (excelData) {
       valores(excelData);
+      fetch('http://localhost:3001/razonsocial', requestOptions)
+          .then(response => response.json())
+          .then(result => console.log(result) );
     }
     getCotizacionUSD();
     const timer = setTimeout(() => {
@@ -376,9 +413,7 @@ function App() {
           </span>
         </button>
         <button type="button"
-          className={`btn-no ${excelData === null || excelDataCotizacion?.lenght !== 0? "btn-no" : ""}`}
-          // className={`btnDataBaseRazonSocial ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
-          // onClick={valoresCotizacion}
+          className={`btn ${typeError || excelData === null || excelDataCotizacion ===null ? "btn-no" : ""}`}
           >
           AGREGAR RAZÓN SOCIAL{" "}
           <span className="icons">
