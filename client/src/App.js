@@ -14,6 +14,7 @@ function App() {
   const [excelFile, setExcelFile] = useState(null);
   const [excelDataCotizacion, setExcelDataCotizacion] = useState(null)
   const [excelDataRazonSocial, setExcelDataRazonSocial] = useState(null)
+  const [excelFinal, setExcelFinal] = useState(null)
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   const [typeError, setTypeError] = useState(null);
@@ -27,8 +28,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [fileName,setFileName] = useState(null);
   const [dataNew, setDataNew] = useState()
-  const [validateData, setValidateData] = useState()
-    //onchange event
+
+  //----------------------> TRANSFORMAR XLS EN JSON <-------------------------//  
   const handleFile = (e) => {
     setExcelData(null)
     setDataNew(null)
@@ -55,6 +56,7 @@ function App() {
     }
   };
 
+//----------------------> ANALIZAR EXCEL <-------------------------//  
   const handleFileSubmit = (e) => {
     e.preventDefault();
     if (excelFile !== null) {
@@ -110,7 +112,6 @@ function App() {
       }
     }
   };
-
 
   const valores = (excelData) => {
     if (excelData) {
@@ -186,59 +187,8 @@ function App() {
     }
   };
 
-  //BASE DE DATOS 
-  const addDataBase = () => {
-    setLoading(true);
-    axios
-      // .post("https://app-excel-production.up.railway.app/data", {
-        .post("http://localhost:3001/data", {
-        impoCompraVenta: impoCompraVenta,
-        archivo: archivo,
-      })
-      .then(() => {
-        setTypeSuccess("Registrado correctamente");
-        setFileName(null);
-        setExcelData(null);
-        setDataNew(null);
-        setArchivo(null);
-        setimpoCompraVenta(null);
-        setLoading(false);
-        fileInputRef.current.value = "";
-      })
-      .catch((error) => {
-        console.error("Error en la solicitud:", error);
-        setTypeError(
-          "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos"
-          );
-          setLoading(false);
-        });
-  };
 
-  const deleteDataBase = () => {
-    axios
-      // .delete("https://app-excel-production.up.railway.app/data")
-      .delete("http://localhost:3001/data")
-      .then(() => {
-        alert("Base de Datos eliminada")
-        setTypeSuccess("Eliminado correctamente");
-        setFileName(null);
-        setExcelData(null);
-        setArchivo(null);
-        setimpoCompraVenta(null);
-        setDataNew(null);
-        fileInputRef.current.value = "";
-        setLoading(false); 
-      })
-      .catch((error) => {
-        console.error("Error en la solicitud:", error);
-        alert("Hubo un error al procesar la solicitud.");
-        setLoading(false); 
-      });
-    };
-
-
-    
-    
+  //----------------------> BASE DE DATOS COTIZACION USD <-------------------------//  
     const getCotizacionUSD = () => {
       axios
       // .get("https://app-excel-production.up.railway.app/cotizacion-usd")
@@ -252,6 +202,7 @@ function App() {
       });
     }
     
+//----------------------> COTIZACION USD EXCEL <-------------------------//      
     function valoresCotizacion() {
       const fechaCotizacion = [];
     if(excelDataRazonSocial === dataNew){
@@ -261,7 +212,7 @@ function App() {
       { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
       { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'moneda' :  dataNew[3]['moneda'],
       'montoneto':  dataNew[3]['montoneto'],'ivaventas':  dataNew[3]['ivaventas'],'montototal':  dataNew[3]['montototal'],'montoRet/Per':  dataNew[3]['montoRet/Per'],'montoCredFiscal':  dataNew[3]['montoCredFiscal'],
-      'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares', 'razonsocial': 'Razon Social'
+      'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares', 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio'
     }]
     for (let index = 0; index < cotizacionUSD?.length; index++) {
       if(cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD'){
@@ -290,12 +241,14 @@ function App() {
         montocredfiscal: dataNew[index]['montocredfiscal'],
         tipodecambiodelafecha: resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
         montoendolares: montoendolares? montoendolares.toFixed(2) : 0,
-        razonsocial: 'Nombre'
+        razonsocial: 'Nombre',
+        domicilio: 'Domicilio'
       };
       excelCotizacionData.push(nuevoImporte);
   }
   setExcelDataCotizacion(excelCotizacionData)
   setDataNew(excelCotizacionData)
+  setExcelFinal(excelCotizacionData)
 } else{
   const excelCotizacionData = 
       [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
@@ -345,10 +298,8 @@ function App() {
     return () => clearTimeout(timer)
   };
   
-
-
   
-  
+//----------------------> BASE DE DATOS RAZON SOCIAL <-------------------------//  
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -368,8 +319,9 @@ function App() {
   });
 }
 
+   //----------------------> RAZON SOCIAL EXCEL <-------------------------//  
 function valoresRazonSocial() {
-  const excelRazonSocial = []
+  var excelRazonSocial = null
   if(excelDataCotizacion === dataNew){
     const excelRazonSocialValues = 
   [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
@@ -377,7 +329,7 @@ function valoresRazonSocial() {
   { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
   { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'moneda' :  dataNew[3]['moneda'],
   'montoneto':  dataNew[3]['montoneto'],'ivaventas':  dataNew[3]['ivaventas'],'montototal':  dataNew[3]['montototal'],'montoRet/Per':  dataNew[3]['montoRet/Per'],'montoCredFiscal':  dataNew[3]['montoCredFiscal'],
-  'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares', 'razonsocial': 'Razon Social'
+  'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares', 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio'
   }]
   for (let index = 4; index < dataNew?.length; index++) {
     var nuevoImporte = {
@@ -394,11 +346,13 @@ function valoresRazonSocial() {
       montocredfiscal: dataNew[index]['montocredfiscal'],
       tipodecambiodelafecha:dataNew[index]['tipodecambiodelafecha'],
       montoendolares:dataNew[index]['montoendolares'],
-      razonsocial: 'Nombre'
+      razonsocial: 'Nombre',
+      domicilio: 'Domicilio'
     };
     excelRazonSocialValues.push(nuevoImporte);
     }
-    excelRazonSocial.push(excelRazonSocialValues)
+    var excelRazonSocial = excelRazonSocialValues
+    setExcelFinal(excelRazonSocial)
   }else{
     const excelRazonSocialValues = 
     [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
@@ -406,7 +360,7 @@ function valoresRazonSocial() {
     { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
     { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'moneda' :  dataNew[3]['moneda'],
     'montoneto':  dataNew[3]['montoneto'],'ivaventas':  dataNew[3]['ivaventas'],'montototal':  dataNew[3]['montototal'],'montoRet/Per':  dataNew[3]['montoRet/Per'],'montoCredFiscal':  dataNew[3]['montoCredFiscal'],
-    'razonsocial': 'Razon Social'
+    'razonsocial': 'Razon Social', 'domicilio': 'Domicilio'
     }]
     for (let index = 4; index < dataNew?.length; index++) {
       var nuevoImporte = {
@@ -421,14 +375,15 @@ function valoresRazonSocial() {
         montototal: dataNew[index]['montototal'],
         montoretper: dataNew[index]['montoretper'],
         montocredfiscal: dataNew[index]['montocredfiscal'],
-        razonsocial: 'Nombre'
+        razonsocial: 'Nombre',
+        domicilio: 'Domicilio'
       };
       excelRazonSocialValues.push(nuevoImporte);
       }
-      excelRazonSocial.push(excelRazonSocialValues)
+      var excelRazonSocial = excelRazonSocialValues
     }
-    setExcelDataRazonSocial(excelRazonSocial[0])
-    setDataNew(excelRazonSocial[0])
+    setExcelDataRazonSocial(excelRazonSocial)
+    setDataNew(excelRazonSocial)
 setTypeSuccess("Se agregó correctamente la razon social")
 const timer = setTimeout(() => {
   setTypeSuccess(null);
@@ -436,40 +391,131 @@ const timer = setTimeout(() => {
 return () => clearTimeout(timer)
 };
 
-
+   //----------------------> REINICIAR VISTA EXCEL <-------------------------//  
   const reiniciarExcel = () => {
     setDataNew(excelData)
     setExcelDataCotizacion(null)
     setExcelDataRazonSocial(null)
+    setExcelFinal(null)
   };
 
-const validacionData = () => {
-  if(excelDataCotizacion === dataNew && excelDataRazonSocial !== dataNew ){
-    setValidateData('razonsocial')
+   //----------------------> DESCARGAR XLS<-------------------------//  
+  const descargarXLS = () => {
+    if(excelFinal === null){
+      setTypeError("Error al descargar el archivo")
+    }else{
+      setTypeSuccess("Se descargo el archivo correctamente")
+      setExcelFinal("descargado")
+      const timer = setTimeout(() => {
+        setTypeSuccess(null);
+      }, 4000);
+      return () => clearTimeout(timer)
+    };
   }
-  if(excelDataCotizacion !== dataNew && excelDataRazonSocial === dataNew){
-    setValidateData('cotizacion')
-  }
-  if(excelDataCotizacion === dataNew && excelDataRazonSocial === dataNew){
-    setValidateData('excelData')
-  }
-  else{
-    setValidateData('null')
-  }
-}
 
-
+   //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
   
+console.log('excelFinal', excelFinal)
+
+   const addDataBase = () => {
+    if (excelFinal) {
+      setLoading(true);
+      const restOfArray = excelFinal.slice(4);
+      const parsedData = restOfArray.map((data) => {
+        const values = Object.values(data);
+        //ISO impoCompraVenta
+        let isoDate = null;
+        if (validateDate(values[0])) {
+          const dateParts = values[0].split("/");
+          const [day, month, year] = dateParts;
+          const dateObject = new Date(`${year}-${month}-${day}`);
+          isoDate = dateObject.toISOString().substring(0, 10);
+          
+          let nextIdImpo = 0;
+          //REVICION
+        return {
+          id: nextIdImpo + 1,
+          idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
+          fecha: isoDate, //formato ISO
+          tipoCFE: values[1],
+          serie: values[2],
+          numero: values[3],
+          RUTEmisor: values[4],
+          moneda: values[5],
+          montoneto: values[6], //formato money
+          montoiva: values[7], //formato money
+          montototal: values[8], //formato money
+          montoretper: values[9], //formato money
+          montocredfiscal: values[10], //formato money
+          tipodecambiodelafecha:values[11],
+          montoendolares: values[12],
+          razonsocial:values[13],
+          domicilio:values[14],
+
+        };
+      } 
+      });
+      if (typeError) {
+        console.log("error");
+      }
+      axios
+        // .post("https://app-excel-production.up.railway.app/data", {
+          .post("http://localhost:3001/data", {
+          impoCompraVenta: [...parsedData],
+          archivo: archivo,
+        })
+      .then(() => {
+        setTypeSuccess("Registrado correctamente");
+        setFileName(null);
+        setExcelData(null);
+        setDataNew(null);
+        setArchivo(null);
+        setimpoCompraVenta(null);
+        setLoading(false);
+        fileInputRef.current.value = "";
+      })
+      .catch((error) => {
+        console.error("Error en la solicitud:", error);
+        setTypeError(
+          "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos"
+          );
+          setLoading(false);
+        });
+  };
+   }
+  //----------------------> ELIMINAR BASE DE DATOS <-------------------------//  
+  const deleteDataBase = () => {
+    axios
+      // .delete("https://app-excel-production.up.railway.app/data")
+      .delete("http://localhost:3001/data")
+      .then(() => {
+        alert("Base de Datos eliminada")
+        setTypeSuccess("Eliminado correctamente");
+        setFileName(null);
+        setExcelData(null);
+        setArchivo(null);
+        setimpoCompraVenta(null);
+        setDataNew(null);
+        fileInputRef.current.value = "";
+        setLoading(false); 
+      })
+      .catch((error) => {
+        console.error("Error en la solicitud:", error);
+        alert("Hubo un error al procesar la solicitud.");
+        setLoading(false); 
+      });
+    };
+
+
+
 useEffect(() => {
   if (excelData) {
-    validacionData();
     valores(excelData);
     fetch('http://localhost:3001/razonsocial', requestOptions)
     .then(response => response.json())
     .then(result => console.log(result) );
     getRazonSocial();
   }
-    validacionData();
     getRazonSocial();
     getCotizacionUSD();
     const timer = setTimeout(() => {
@@ -551,7 +597,7 @@ useEffect(() => {
           <button
           className={`btn ${typeError ===
             "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos" ||
-            excelData !== null || excelDataCotizacion !==null || typeError || fileName === null ? "btn-no" : ""}`}
+            typeError || fileName === null || dataNew !== null ? "btn-no" : ""}`}
             type="submit"
             onClick={() => valores(excelData)}
           >
@@ -576,9 +622,9 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn-no ${dataNew === null || razonSocial !== null ? "btn-no" : ""}`}
+          className={`btn ${dataNew === null || excelFinal === null || excelFinal === "descargado" ? "btn-no" : ""}`}
           // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
-          onClick={valoresRazonSocial}
+            onClick={descargarXLS}
           >
           DESCARGAR XLS{" "}
           <span className="icons">
@@ -596,7 +642,7 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${excelData === null || excelDataCotizacion !==null || excelDataRazonSocial !==null || typeError? "btn-no" : ""}`}
+          className={`btn ${excelFinal === null || excelData === null || typeError? "btn-no" : ""}`}
           onClick={addDataBase}
         >
           ENVIAR A BASE DE DATOS{" "}
