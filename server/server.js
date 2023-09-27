@@ -8,7 +8,6 @@ app.use(express.json());
 const fs = require('fs');
 const soap = require('soap');
 
-
 const db = mysql.createPool({
   database: "railway",
   user: "root",
@@ -25,9 +24,9 @@ app.get("/", (req, res) => {
 
 
 app.post("/data", (req, res) => {
+  console.log(req.body)
   const impoCompraVenta = req.body.impoCompraVenta;
   const archivoData = req.body.archivo;
-
   const {
     idusuario,
     idempresa,
@@ -48,7 +47,6 @@ app.post("/data", (req, res) => {
     const idarchivo = resultArchivo.insertId;
 
     const insertionErrors = [];
-
     impoCompraVenta.forEach((data1, index) => {
       const {
         fecha,
@@ -62,11 +60,14 @@ app.post("/data", (req, res) => {
         montototal,
         montoretper,
         montocredFiscal,
+        tipodecambiodelafecha,
+        montoendolares,
+        razonsocial,
+        domicilio
       } = data1;
-      console.log(fecha, "ACA ESTA LA FECHA");
-      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal) VALUES ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montoneto}, ${montoiva}, ${montototal}, ${montoretper}, ${
-        montocredFiscal || 0
-      })`;
+      console.log(data1['fecha'], "ACA ESTA LA FECHA");
+      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal, tipocambiodelafecha, montoendolares, razonsocial, domicilio) VALUES ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montoneto}, ${montoiva}, ${montototal}, ${montoretper}, ${
+        montocredFiscal || 0}, ${tipodecambiodelafecha}, ${montoendolares}, '${razonsocial}', '${domicilio}')`;
 
       db.query(sqlImpo, (err, resultImpo) => {
         if (err) {
@@ -110,13 +111,13 @@ app.post("/data", (req, res) => {
   });  
   
 //API RAZON SOCIAL 
-// const crearCliente = (url, options) => {
-//   return new Promise((resolve, reject) => {
-//     soap.createClient(url, options, (err, client) => {
-//       if (err) reject(err)
-//       resolve(client)
-//     })
-//   })
+//  const crearCliente = (url, options) => {
+//    return new Promise((resolve, reject) => {
+//      soap.createClient(url, options, (err, client) => {
+//        if (err) reject(err)
+//        resolve(client)
+//      })
+//    })
 // }
 
 
@@ -145,15 +146,40 @@ return res.status(200).send({ mensaje: 'Estado recibido correctamente en el back
 });
 
 
+// const llamarApiSoap = async () => {
+//   const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl';
+//   try {
+//     const client = await soap.createClientAsync(url);
+
+//     // Configura la operación que deseas llamar
+//     const operation = client['WS_RUTPersonaGetEntidad.Execute'];
+
+//     // Parámetros de la operación (si es necesario)
+//     const args = {
+//       RUT: '215070970018', // Cambia esto por el valor correcto
+//     };
+
+//     // Realiza la llamada SOAP
+//     operation(args, (err, result, envelope, soapHeader) => {
+//       if (err) {
+//         console.error('Error en la llamada SOAP:', err);
+//       } else {
+//         // Maneja la respuesta aquí
+//         console.log('Respuesta SOAP:', result);
+//       }
+//     });
+//   } catch (error) {
+//     console.error('Error al crear el cliente SOAP:', error);
+//   }
+// };
+
+// // Llama a la función para realizar la llamada SOAP
+// llamarApiSoap();
+
 app.get("/razonsocial", (req, res) => {
-  if (!excelData) {
-    console.error("Error al consultar la tabla moneda_cotizacion:", err);
-      return res.status(500).send("Error interno del servidor");
-    }
     for(let index = 0; index < excelData?.length; index++){
       if(excelData[index]['RUTEmisor']){
         console.log(excelData[index]['RUTEmisor'])
-        // getInfoByRUT(excelData[index]['RUTEmisor'])
       }
     }
     return res.status(200).json(excelData);
@@ -171,18 +197,12 @@ app.get("/razonsocial", (req, res) => {
   
   //   var wsSecurity = new soap.WSSecurityCert(privateKey, publicKey, password);
   //   cliente.setSecurity(wsSecurity);
-
-  
+    
   //   cliente.Execute({Ruc: ruc}, (err, result) => {
   //     if (err) {
   //       console.error('Error al llamar a la operación del servicio SOAP', err);
-      
-  //       guardarResultado(err.body)
-  //       return 
-  
   //     }
-  //     console.log('Respuesta del servicio SOAP:', result.config.body);
-  //     guardarResultado(result.config.body)
+  //     console.log('Respuesta del servicio SOAP:', result);
   //   });
       
   // } 
@@ -224,6 +244,6 @@ app.get("/razonsocial", (req, res) => {
 
 const port = process.env.PORT || 3001;
 
-app.listen(3001, "0.0.0.0", function () {
+app.listen(3001, function () {
   console.log(`Servidor escuchando en el puerto ${port}`);
 });

@@ -1,16 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<SOAP-ENV:Body>
-		<WS_RUTPersonaGetEntidad.ExecuteResponse xmlns="DGI_Modernizacion_Consolidado">
-			<Data/>
-			<Mensajes>&lt;?xml version="1.0" encoding="ISO-8859-1"?>&lt;Messages xmlns="Genexus">
-	&lt;Messages.Message>
-		&lt;Id>2&lt;/Id>
-		&lt;Type>1&lt;/Type>
-		&lt;Description>USUARIO NO AUTORIZADO.&lt;/Description>
-	&lt;/Messages.Message>
-&lt;/Messages>
-</Mensajes>
-		</WS_RUTPersonaGetEntidad.ExecuteResponse>
-	</SOAP-ENV:Body>
-</SOAP-ENV:Envelope>
+<?xml version='1.0' ?>
+<env:Envelope xmlns:env='http://schemas.xmlsoap.org/soap/envelope/'>
+<env:Body>
+<env:Fault>
+<faultcode>env:Client</faultcode>
+<faultstring>Internal Error</faultstring>
+</env:Fault>
+</env:Body>
+</env:Envelope>
