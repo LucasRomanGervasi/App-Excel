@@ -15,6 +15,7 @@ function App() {
   const [excelDataCotizacion, setExcelDataCotizacion] = useState(null)
   const [excelDataRazonSocial, setExcelDataRazonSocial] = useState(null)
   const [excelFinal, setExcelFinal] = useState(null)
+  const [excelFinalDowload, setExcelFinalDowload] = useState(null)
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   const [typeError, setTypeError] = useState(null);
@@ -397,6 +398,7 @@ return () => clearTimeout(timer)
     setExcelDataCotizacion(null)
     setExcelDataRazonSocial(null)
     setExcelFinal(null)
+    setExcelFinalDowload(null)
   };
 
    //----------------------> DESCARGAR XLS<-------------------------//  
@@ -417,16 +419,24 @@ return () => clearTimeout(timer)
       // Agregar la hoja al libro
       XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
 
-      setTypeSuccess("Se descargo el archivo correctamente")
-      setExcelFinal("descargado")
       const timer = setTimeout(() => {
-        XLSX.writeFile(libro, "CFE Recibidos.xlsx")
+        XLSX.writeFile(libro, "CFE Recibidos.xlsx");
+        setLoading(false);
+        setTypeSuccess("Se descargó el archivo correctamente");
+        setExcelFinalDowload("descargado");
+  
+        // Agregar otro setTimeout aquí
+        setTimeout(() => {
+          // Tu código aquí para el segundo setTimeout
         setTypeSuccess(null);
-        setLoading(false)
+        }, 4000); // Por ejemplo, 2 segundos después del primer setTimeout
       }, 4000);
-      return () => clearTimeout(timer)
-    };
-  }
+  
+      setTypeSuccess(null);
+  
+      return () => clearTimeout(timer);
+    }
+  };
 
    //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
   
@@ -487,6 +497,7 @@ console.log('excelFinal', excelFinal)
         setArchivo(null);
         setimpoCompraVenta(null);
         setLoading(false);
+        setExcelFinalDowload(null)
         fileInputRef.current.value = "";
       })
       .catch((error) => {
@@ -637,7 +648,7 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${dataNew === null || excelFinal === null || excelFinal === "descargado" ? "btn-no" : ""}`}
+          className={`btn ${dataNew === null || excelFinal === null || excelFinalDowload === "descargado" ? "btn-no" : ""}`}
           // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
             onClick={descargarXLS}
           >
