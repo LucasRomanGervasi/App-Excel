@@ -401,13 +401,28 @@ return () => clearTimeout(timer)
 
    //----------------------> DESCARGAR XLS<-------------------------//  
   const descargarXLS = () => {
+    setLoading(true);
     if(excelFinal === null){
       setTypeError("Error al descargar el archivo")
     }else{
+      // Crear un libro de Excel
+      const libro = XLSX.utils.book_new();
+      console.log(excelFinal.slice(4))
+      // Crear una hoja de Excel
+      const hoja = XLSX.utils.aoa_to_sheet([
+        ["CFE Recibidos"],
+        ...excelFinal.map(obj => Object.values(obj)) // Datos de objetos JSON
+      ]);
+
+      // Agregar la hoja al libro
+      XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
+
       setTypeSuccess("Se descargo el archivo correctamente")
       setExcelFinal("descargado")
       const timer = setTimeout(() => {
+        XLSX.writeFile(libro, "CFE Recibidos.xlsx")
         setTypeSuccess(null);
+        setLoading(false)
       }, 4000);
       return () => clearTimeout(timer)
     };
