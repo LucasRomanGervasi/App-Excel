@@ -401,7 +401,7 @@ const timer = setTimeout(() => {
 return () => clearTimeout(timer)
   }
   else{
-    setTypeError('Intente nuevamente, quizás aun no cargo la informacion, suele tardar más de lo esperado')
+    setTypeError('Intente nuevamente, aun no cargo la informacion, suele tardar más de lo esperado')
   }
 };
 
@@ -639,7 +639,7 @@ useEffect(() => {
             ANALIZAR ARCHIVO
           </button>
            <button type="button"
-          className={`btn ${typeError && typeError !== 'Intente nuevamente, quizás aun no cargo la informacion, suele tardar más de lo esperado' || excelData==null || dataNew === null || excelDataCotizacion === dataNew || excelDataCotizacion !== null  ? "btn-no" : ""}`}
+          className={`btn ${typeError && typeError !== 'Intente nuevamente, aun no cargo la informacion, suele tardar más de lo esperado' || excelData==null || dataNew === null || excelDataCotizacion === dataNew || excelDataCotizacion !== null  ? "btn-no" : ""}`}
           onClick={valoresCotizacion}
           >
           AGREGAR COTIZACION USD{" "}
@@ -648,7 +648,7 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${typeError && typeError !== 'Intente nuevamente, quizás aun no cargo la informacion, suele tardar más de lo esperado' || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial !== null  ? "btn-no" : ""}`}
+          className={`btn ${typeError && typeError !== 'Intente nuevamente, aun no cargo la informacion, suele tardar más de lo esperado' || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial !== null  ? "btn-no" : ""}`}
           onClick={valoresRazonSocial}
           >
           AGREGAR RAZÓN SOCIAL{" "}
@@ -667,7 +667,7 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-             className={`btn ${typeError || dataNew === excelData || fileName === null ? "btn-no" : ""}`}
+             className={`btn ${typeError && typeError !== 'Intente nuevamente, aun no cargo la informacion, suele tardar más de lo esperado' || dataNew === excelData || fileName === null ? "btn-no" : ""}`}
              // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
              onClick={reiniciarExcel}
              >
