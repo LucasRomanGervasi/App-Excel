@@ -131,7 +131,7 @@ const crearCliente = (url, options) => {
       if (err) reject(err)
       resolve(client)
     })
-  })
+  });
 }
 
 
