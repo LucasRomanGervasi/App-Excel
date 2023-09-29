@@ -639,7 +639,7 @@ useEffect(() => {
             ANALIZAR ARCHIVO
           </button>
            <button type="button"
-          className={`btn ${typeError || excelData==null || dataNew === null || excelDataCotizacion === dataNew || excelDataCotizacion !== null  ? "btn-no" : ""}`}
+          className={`btn ${typeError && typeError !== 'Intente nuevamente, quizás aun no cargo la informacion, suele tardar más de lo esperado' || excelData==null || dataNew === null || excelDataCotizacion === dataNew || excelDataCotizacion !== null  ? "btn-no" : ""}`}
           onClick={valoresCotizacion}
           >
           AGREGAR COTIZACION USD{" "}
