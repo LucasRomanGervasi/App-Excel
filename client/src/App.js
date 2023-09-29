@@ -25,7 +25,7 @@ function App() {
   const [impoCompraVenta, setimpoCompraVenta] = useState();
   const [archivo, setArchivo] = useState({});
   const [cotizacionUSD, setCotizacionUSD] = useState()
-  const [razonSocial, setRazonSocial] = useState()
+  const [razonSocial, setRazonSocial] = useState(null)
   const [loading, setLoading] = useState(false);
   const [fileName,setFileName] = useState(null);
   const [dataNew, setDataNew] = useState()
@@ -192,8 +192,8 @@ function App() {
   //----------------------> BASE DE DATOS COTIZACION USD <-------------------------//  
     const getCotizacionUSD = () => {
       axios
-      // .get("https://app-excel-production.up.railway.app/cotizacion-usd")
-      .get("http://localhost:3001/cotizacion-usd")
+       .get("https://app-excel-production.up.railway.app/cotizacion-usd")
+      //.get("http://localhost:3001/cotizacion-usd")
       .then((response) => {
         setCotizacionUSD(response.data)
       })
@@ -206,9 +206,9 @@ function App() {
 //----------------------> COTIZACION USD EXCEL <-------------------------//      
     function valoresCotizacion() {
       const fechaCotizacion = [];
-    if(excelDataRazonSocial === dataNew){
-      const excelCotizacionData = 
-      [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
+      if(excelDataRazonSocial === dataNew){
+        const excelCotizacionData = 
+        [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
       { 'fechadesde': dataNew[1]['fechadesde'], 'valor':dataNew[1]['valor'] },
       { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
       { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'moneda' :  dataNew[3]['moneda'],
@@ -242,21 +242,21 @@ function App() {
         montocredfiscal: dataNew[index]['montocredfiscal'],
         tipodecambiodelafecha: resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
         montoendolares: montoendolares? montoendolares.toFixed(2) : 0,
-        razonsocial: 'Nombre',
-        domicilio: 'Domicilio'
+        razonsocial: dataNew[index]['razonsocial'],
+        domicilio: dataNew[index]['domicilio']
       };
       excelCotizacionData.push(nuevoImporte);
-  }
+    }
   setExcelDataCotizacion(excelCotizacionData)
   setDataNew(excelCotizacionData)
   setExcelFinal(excelCotizacionData)
 } else{
   const excelCotizacionData = 
-      [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
-      { 'fechadesde': dataNew[1]['fechadesde'], 'valor':dataNew[1]['valor'] },
-      { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
-      { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'moneda' :  dataNew[3]['moneda'],
-      'montoneto':  dataNew[3]['montoneto'],'ivaventas':  dataNew[3]['ivaventas'],'montototal':  dataNew[3]['montototal'],'montoRet/Per':  dataNew[3]['montoRet/Per'],'montoCredFiscal':  dataNew[3]['montoCredFiscal'],
+  [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
+  { 'fechadesde': dataNew[1]['fechadesde'], 'valor':dataNew[1]['valor'] },
+  { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
+  { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'moneda' :  dataNew[3]['moneda'],
+  'montoneto':  dataNew[3]['montoneto'],'ivaventas':  dataNew[3]['ivaventas'],'montototal':  dataNew[3]['montototal'],'montoRet/Per':  dataNew[3]['montoRet/Per'],'montoCredFiscal':  dataNew[3]['montoCredFiscal'],
       'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares'
     }]
     for (let index = 0; index < cotizacionUSD?.length; index++) {
@@ -269,12 +269,12 @@ function App() {
     }
   }
   for (let index = 4; index < dataNew?.length; index++) {
-      const fechaBuscada = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'))
-      const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
-      const montoendolares = dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montototal'] / resultado.montoventa: dataNew[index]['montototal'];
-      var nuevoImporte = {
-        fecha: dataNew[index]['fecha'],
-        tipoCFE: dataNew[index]['tipoCFE'],
+    const fechaBuscada = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'))
+    const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
+    const montoendolares = dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montototal'] / resultado.montoventa: dataNew[index]['montototal'];
+    var nuevoImporte = {
+      fecha: dataNew[index]['fecha'],
+      tipoCFE: dataNew[index]['tipoCFE'],
         serie: dataNew[index]['serie'],
         numero: dataNew[index]['numero'],
         RUTEmisor: dataNew[index]['RUTEmisor'],
@@ -292,15 +292,14 @@ function App() {
   setExcelDataCotizacion(excelCotizacionData)
   setDataNew(excelCotizacionData)
 }
-  setTypeSuccess("Se calculó correctamente la cotización del monto en dolares")
+setTypeSuccess("Se calculó correctamente la cotización del monto en dolares")
     const timer = setTimeout(() => {
       setTypeSuccess(null);
     }, 4000);
     return () => clearTimeout(timer)
-  };
+  }
   
-  
-//----------------------> BASE DE DATOS RAZON SOCIAL <-------------------------//  
+  //----------------------> BASE DE DATOS RAZON SOCIAL <-------------------------//  
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -309,8 +308,8 @@ function App() {
   
   const getRazonSocial = () => {
   axios
-  // .get("https://app-excel-production.up.railway.app/cotizacion-usd")
-  .get("http://localhost:3001/razonsocial")
+   .get("https://app-excel-production.up.railway.app/razonsocial")
+  //.get("http://localhost:3001/razonsocial")
   .then((response) => {
     setRazonSocial(response.data)
   })
@@ -319,11 +318,11 @@ function App() {
     setLoading(false)
   });
 }
-
    //----------------------> RAZON SOCIAL EXCEL <-------------------------//  
 function valoresRazonSocial() {
-  var excelRazonSocial = null
-  if(excelDataCotizacion === dataNew){
+  if(razonSocial!==null){
+    setTypeError(null)
+  if(excelDataCotizacion === dataNew ){
     const excelRazonSocialValues = 
   [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
   { 'fechadesde': dataNew[1]['fechadesde'], 'valor':dataNew[1]['valor'] },
@@ -333,7 +332,12 @@ function valoresRazonSocial() {
   'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares', 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio'
   }]
   for (let index = 4; index < dataNew?.length; index++) {
-    var nuevoImporte = {
+      if (dataNew[index]['RUTEmisor'] === razonSocial[index-4]['rut']) {
+        const razonSocialData = {
+          nombre: razonSocial[index-4]['razonsocial'],
+          domicilio: razonSocial[index-4]['domicilio']
+        };    
+        var nuevoImporte = {
       fecha: dataNew[index]['fecha'],
       tipoCFE: dataNew[index]['tipoCFE'],
       serie: dataNew[index]['serie'],
@@ -347,11 +351,11 @@ function valoresRazonSocial() {
       montocredfiscal: dataNew[index]['montocredfiscal'],
       tipodecambiodelafecha:dataNew[index]['tipodecambiodelafecha'],
       montoendolares:dataNew[index]['montoendolares'],
-      razonsocial: 'Nombre',
-      domicilio: 'Domicilio'
+      razonsocial: razonSocialData.nombre,
+      domicilio: razonSocialData.domicilio
     };
     excelRazonSocialValues.push(nuevoImporte);
-    }
+  }}
     var excelRazonSocial = excelRazonSocialValues
     setExcelFinal(excelRazonSocial)
   }else{
@@ -364,23 +368,28 @@ function valoresRazonSocial() {
     'razonsocial': 'Razon Social', 'domicilio': 'Domicilio'
     }]
     for (let index = 4; index < dataNew?.length; index++) {
-      var nuevoImporte = {
-        fecha: dataNew[index]['fecha'],
-        tipoCFE: dataNew[index]['tipoCFE'],
-        serie: dataNew[index]['serie'],
-        numero: dataNew[index]['numero'],
-        RUTEmisor: dataNew[index]['RUTEmisor'],
-        moneda: dataNew[index]['moneda'],
-        montoneto: dataNew[index]['montoneto'],
-        montoiva: dataNew[index]['montoiva'],
-        montototal: dataNew[index]['montototal'],
-        montoretper: dataNew[index]['montoretper'],
-        montocredfiscal: dataNew[index]['montocredfiscal'],
-        razonsocial: 'Nombre',
-        domicilio: 'Domicilio'
-      };
-      excelRazonSocialValues.push(nuevoImporte);
-      }
+      if (dataNew[index]['RUTEmisor'] === razonSocial[index-4]['rut']) {
+        const razonSocialData = {
+          nombre: razonSocial[index-4]['razonsocial'],
+          domicilio: razonSocial[index-4]['domicilio']
+        };    
+        var nuevoImporte = {
+      fecha: dataNew[index]['fecha'],
+      tipoCFE: dataNew[index]['tipoCFE'],
+      serie: dataNew[index]['serie'],
+      numero: dataNew[index]['numero'],
+      RUTEmisor: dataNew[index]['RUTEmisor'],
+      moneda: dataNew[index]['moneda'],
+      montoneto: dataNew[index]['montoneto'],
+      montoiva: dataNew[index]['montoiva'],
+      montototal: dataNew[index]['montototal'],
+      montoretper: dataNew[index]['montoretper'],
+      montocredfiscal: dataNew[index]['montocredfiscal'],
+      razonsocial: razonSocialData.nombre,
+      domicilio: razonSocialData.domicilio
+    };
+    excelRazonSocialValues.push(nuevoImporte);
+  }}
       var excelRazonSocial = excelRazonSocialValues
     }
     setExcelDataRazonSocial(excelRazonSocial)
@@ -390,6 +399,10 @@ const timer = setTimeout(() => {
   setTypeSuccess(null);
 }, 4000);
 return () => clearTimeout(timer)
+  }
+  else{
+    setTypeError('Intente nuevamente, quizás aun no cargo la informacion, suele tardar más de lo esperado')
+  }
 };
 
    //----------------------> REINICIAR VISTA EXCEL <-------------------------//  
@@ -409,7 +422,6 @@ return () => clearTimeout(timer)
     }else{
       // Crear un libro de Excel
       const libro = XLSX.utils.book_new();
-      console.log(excelFinal.slice(4))
       // Crear una hoja de Excel
       const hoja = XLSX.utils.aoa_to_sheet([
         ["CFE Recibidos"],
@@ -439,8 +451,6 @@ return () => clearTimeout(timer)
   };
 
    //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
-  
-console.log('excelFinal', excelFinal)
 
    const addDataBase = () => {
     if (excelFinal) {
@@ -484,8 +494,8 @@ console.log('excelFinal', excelFinal)
         console.log("error");
       }
       axios
-        // .post("https://app-excel-production.up.railway.app/data", {
-          .post("http://localhost:3001/data", {
+         .post("https://app-excel-production.up.railway.app/data", {
+        //  .post("http://localhost:3001/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })
@@ -512,8 +522,8 @@ console.log('excelFinal', excelFinal)
   //----------------------> ELIMINAR BASE DE DATOS <-------------------------//  
   const deleteDataBase = () => {
     axios
-      // .delete("https://app-excel-production.up.railway.app/data")
-      .delete("http://localhost:3001/data")
+       .delete("https://app-excel-production.up.railway.app/data")
+      //.delete("http://localhost:3001/data")
       .then(() => {
         alert("Base de Datos eliminada")
         setTypeSuccess("Eliminado correctamente");
@@ -537,12 +547,11 @@ console.log('excelFinal', excelFinal)
 useEffect(() => {
   if (excelData) {
     valores(excelData);
-    fetch('http://localhost:3001/razonsocial', requestOptions)
+    fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
     .then(response => response.json())
     .then(result => console.log(result) );
     getRazonSocial();
   }
-    getRazonSocial();
     getCotizacionUSD();
     const timer = setTimeout(() => {
       setTypeSuccess(null);
@@ -639,7 +648,7 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${typeError || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial !== null  ? "btn-no" : ""}`}
+          className={`btn ${typeError && typeError !== 'Intente nuevamente, quizás aun no cargo la informacion, suele tardar más de lo esperado' || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial !== null  ? "btn-no" : ""}`}
           onClick={valoresRazonSocial}
           >
           AGREGAR RAZÓN SOCIAL{" "}
