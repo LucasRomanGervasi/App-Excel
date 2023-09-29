@@ -7,6 +7,8 @@ app.use(cors());
 app.use(express.json());
 const fs = require('fs');
 const soap = require('soap');
+const xml2js = require('xml2js');
+const { createClient, WSSecurityCert } = soap;
 
 const db = mysql.createPool({
   database: "railway",
@@ -24,7 +26,6 @@ app.get("/", (req, res) => {
 
 
 app.post("/data", (req, res) => {
-  console.log(req.body)
   const impoCompraVenta = req.body.impoCompraVenta;
   const archivoData = req.body.archivo;
   const {
@@ -110,34 +111,11 @@ app.post("/data", (req, res) => {
     });
   });  
   
-//API RAZON SOCIAL 
-//  const crearCliente = (url, options) => {
-//    return new Promise((resolve, reject) => {
-//      soap.createClient(url, options, (err, client) => {
-//        if (err) reject(err)
-//        resolve(client)
-//      })
-//    })
-// }
-
-
-// const guardarResultado = (resultado) =>{
-  
-//   fs.writeFile("resultado.xml", resultado, (err) => {
-//     if (err) {
-//       console.error('Error al escribir el archivo XML:', err);
-//     } else {
-//       console.log('Archivo XML escrito exitosamente.');
-//     }
-//   });
-// }
-
-
-let excelData = []
-app.post('/razonsocial', (req, res) => {
-  const data = req.body;
-  excelData = [];
-  for (let index = 0; index < data?.length; index++) {
+  let excelData = []
+  app.post('/razonsocial', (req, res) => {
+    const data = req.body;
+    excelData = [];
+    for (let index = 0; index < data?.length; index++) {
     if(data[index]){
     excelData.push(data[index])
   }
@@ -146,67 +124,102 @@ return res.status(200).send({ mensaje: 'Estado recibido correctamente en el back
 });
 
 
-// const llamarApiSoap = async () => {
-//   const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl';
-//   try {
-//     const client = await soap.createClientAsync(url);
+//API RAZON SOCIAL 
+const crearCliente = (url, options) => {
+  return new Promise((resolve, reject) => {
+    createClient(url, options, (err, client) => {
+      if (err) reject(err)
+      resolve(client)
+    })
+  })
+}
 
-//     // Configura la operación que deseas llamar
-//     const operation = client['WS_RUTPersonaGetEntidad.Execute'];
 
-//     // Parámetros de la operación (si es necesario)
-//     const args = {
-//       RUT: '215070970018', // Cambia esto por el valor correcto
-//     };
 
-//     // Realiza la llamada SOAP
-//     operation(args, (err, result, envelope, soapHeader) => {
-//       if (err) {
-//         console.error('Error en la llamada SOAP:', err);
-//       } else {
-//         // Maneja la respuesta aquí
-//         console.log('Respuesta SOAP:', result);
-//       }
-//     });
-//   } catch (error) {
-//     console.error('Error al crear el cliente SOAP:', error);
-//   }
-// };
-
-// // Llama a la función para realizar la llamada SOAP
-// llamarApiSoap();
-
-app.get("/razonsocial", (req, res) => {
-    for(let index = 0; index < excelData?.length; index++){
-      if(excelData[index]['RUTEmisor']){
-        console.log(excelData[index]['RUTEmisor'])
-      }
-    }
-    return res.status(200).json(excelData);
-  });  
-  
-  // const getInfoByRUT = async (ruc) => {
-  
-  //   const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl'
-  
-  //   const cliente = await crearCliente(url, {})
-  
-  //   var privateKey = fs.readFileSync("clave.key");
-  //   var publicKey = fs.readFileSync("certificado.pem");
-  //   var password = 'nuevacontra'; 
-  
-  //   var wsSecurity = new soap.WSSecurityCert(privateKey, publicKey, password);
-  //   cliente.setSecurity(wsSecurity);
-    
-  //   cliente.Execute({Ruc: ruc}, (err, result) => {
-  //     if (err) {
-  //       console.error('Error al llamar a la operación del servicio SOAP', err);
-  //     }
-  //     console.log('Respuesta del servicio SOAP:', result);
-  //   });
+app.get("/razonsocial", async (req, res) => {
+  let razonsocial = []
+  async function getInfoByRUT(index) {
+    return new Promise(async (resolve, reject) => {
+      if (excelData[index]['RUTEmisor']) {
       
-  // } 
-    
+        // Agregar cada llamada getInfoByRUT como una Promesa a un arreglo
+        const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl'
+        //const url = 'arutpersonagetentidad.xml'
+        
+       const xsd = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad.xsd1.xsd' 
+       //const xsd = 'arutpersonagetentidad.xsd1.xsd'
+      
+       const soapOptions = {
+         envelopeKey: 'SOAP', // Prefijo del espacio de nombres del sobre SOAP
+         forceSoap12Headers: false, // Establece esto como false para usar SOAP 1.0
+       };
+      
+       const cliente = await crearCliente(url, soapOptions)
+       
+       var privateKey = fs.readFileSync("clave.key");
+       var publicKey = fs.readFileSync("certificado.pem");
+       var password = 'hola123'; 
+       
+       var securityOptions = {
+         hasTimeStamp: false,
+         signatureAlgorithm: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+         digestAlgorithm: 'http://www.w3.org/2001/04/xmlenc#sha256',
+         canonicalizationAlgorithm: 'http://www.w3.org/2001/10/xml-exc-c14n#',
+         signerOptions: {
+           prefix: 'ds',
+           attrs: { Id: 'SIG-C7F2874F2B188481A9169565362166845' },
+           existingPrefixes: {
+               wsse: 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
+           }
+       }}
+       
+       var wsSecurity = new WSSecurityCert(privateKey, publicKey, password, securityOptions);
+       cliente.setSecurity(wsSecurity);
+       
+       cliente.ExecuteAsync({Ruc:excelData[index]['RUTEmisor']}, (err, result) => {
+         const data = result.data
+         xml2js.parseString(data, function(err, result) {
+            if (result === undefined) {
+              console.error('Error al llamar a la operación del servicio SOAP', err);
+              return;
+            }
+            if(result['SOAP-ENV:Envelope']){
+              const SOAPENV = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0]['WS_RUTPersonaGetEntidad.ExecuteResponse'][0]['Data'][0]
+              xml2js.parseString(SOAPENV, function(err, result) {
+                const datas = {
+                  rut: result['WS_Entidad']['RUC'][0],
+                  razonsocial: result['WS_Entidad']['RazonSocial'][0],
+                  domicilio: `${result['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Calle_Nom']} ${result['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Dom_Pta_Nro']}` 
+                 }
+                 resolve(datas)
+                });
+                
+                      }else{
+                        console.log('Error', err)
+                      }
+                    });
+                  })
+                }else{
+                  resolve(null)
+                }
+              })
+            }
+            for (let index = 0; index < excelData?.length; index++) {
+              const data = await getInfoByRUT(index); // Esperar a que se complete la llamada SOAP
+              if (data) {
+                razonsocial.push(data);
+              }
+            }
+  // Esperar a que todas las Promesas se resuelvan
+  try {
+    const razonsocialResults = await Promise.all(razonsocial);
+    return res.status(200).json(razonsocialResults);
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Error al obtener la información de razón social' });
+  }
+});
+
 
   app.delete("/data", (req, res) => {
     let operationsCompleted = 0;

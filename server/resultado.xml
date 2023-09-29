@@ -1,9 +1,60 @@
-<?xml version='1.0' ?>
-<env:Envelope xmlns:env='http://schemas.xmlsoap.org/soap/envelope/'>
-<env:Body>
-<env:Fault>
-<faultcode>env:Client</faultcode>
-<faultstring>Internal Error</faultstring>
-</env:Fault>
-</env:Body>
-</env:Envelope>
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<SOAP-ENV:Body>
+		<WS_RUTPersonaGetEntidad.ExecuteResponse xmlns="DGI_Modernizacion_Consolidado">
+			<Data>&lt;?xml version="1.0" encoding="ISO-8859-1"?>&lt;WS_Entidad xmlns="DGI_Modernizacion_Consolidado">
+	&lt;RUC>216639270017&lt;/RUC>
+	&lt;RazonSocial>DELIVERY HERO URUGUAY MARKETPLACE S.A.&lt;/RazonSocial>
+	&lt;WS_DomicilioFiscalPrincipal>
+		&lt;Local_Sec_Nro>8&lt;/Local_Sec_Nro>
+		&lt;Local_Nom_Fnt/>
+		&lt;TipoLocal_Id>1&lt;/TipoLocal_Id>
+		&lt;TipoLocal_Dsc>PRINCIPAL&lt;/TipoLocal_Dsc>
+		&lt;Local_Fec_Canc>0000-00-00&lt;/Local_Fec_Canc>
+		&lt;Local_Fec_Ini>2020-11-12&lt;/Local_Fec_Ini>
+		&lt;TipoDom_Id>2&lt;/TipoDom_Id>
+		&lt;TipoDom_Des>FISCAL&lt;/TipoDom_Des>
+		&lt;CalOcup_id>6&lt;/CalOcup_id>
+		&lt;Calocup_Des>OTROS&lt;/Calocup_Des>
+		&lt;TerCod_Id>0&lt;/TerCod_Id>
+		&lt;Tercod_Des/>
+		&lt;Calle_id>1201102&lt;/Calle_id>
+		&lt;Calle_Nom>LA CUMPARSITA&lt;/Calle_Nom>
+		&lt;Dom_Pta_Nro>1475&lt;/Dom_Pta_Nro>
+		&lt;Dom_Bis_Flg/>
+		&lt;Dom_Ap_Nro/>
+		&lt;Loc_Id>2100000&lt;/Loc_Id>
+		&lt;Loc_Nom>MONTEVIDEO&lt;/Loc_Nom>
+		&lt;Dpto_Id>10&lt;/Dpto_Id>
+		&lt;Dpto_Nom>MONTEVIDEO&lt;/Dpto_Nom>
+		&lt;Dom_Pst_Cod>0&lt;/Dom_Pst_Cod>
+		&lt;Dom_Coment/>
+		&lt;Dom_Err_Cod>N&lt;/Dom_Err_Cod>
+		&lt;Contactos>
+			&lt;WS_Entidad.WS_DomicilioFiscalPrincipal.Contacto>
+				&lt;TipoCtt_Id>6&lt;/TipoCtt_Id>
+				&lt;TipoCtt_Des>TELEFONO MOVIL&lt;/TipoCtt_Des>
+				&lt;DomCtt_Val>094141348&lt;/DomCtt_Val>
+			&lt;/WS_Entidad.WS_DomicilioFiscalPrincipal.Contacto>
+			&lt;WS_Entidad.WS_DomicilioFiscalPrincipal.Contacto>
+				&lt;TipoCtt_Id>1&lt;/TipoCtt_Id>
+				&lt;TipoCtt_Des>CORREO ELECTRONICO&lt;/TipoCtt_Des>
+				&lt;DomCtt_Val>TAX@PEDIDOSYA.COM&lt;/DomCtt_Val>
+			&lt;/WS_Entidad.WS_DomicilioFiscalPrincipal.Contacto>
+		&lt;/Contactos>
+		&lt;Complementos>
+			&lt;WS_Entidad.WS_DomicilioFiscalPrincipal.Complemento>
+				&lt;Cmpl_Id>8&lt;/Cmpl_Id>
+				&lt;Cmpl_Dsc>NOMBRE DE EDIFICIO&lt;/Cmpl_Dsc>
+				&lt;DomCmpl_Vlr>PLAZA ALEMANIA&lt;/DomCmpl_Vlr>
+			&lt;/WS_Entidad.WS_DomicilioFiscalPrincipal.Complemento>
+		&lt;/Complementos>
+	&lt;/WS_DomicilioFiscalPrincipal>
+&lt;/WS_Entidad>
+</Data>
+			<Mensajes>&lt;?xml version="1.0" encoding="ISO-8859-1"?>&lt;Messages xmlns="Genexus">
+&lt;/Messages>
+</Mensajes>
+		</WS_RUTPersonaGetEntidad.ExecuteResponse>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
