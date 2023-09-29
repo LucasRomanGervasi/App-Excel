@@ -131,7 +131,7 @@ const crearCliente = (url, options) => {
       if (err) reject(err)
       resolve(client)
     })
-  });
+  })
 }
 
 
@@ -257,6 +257,6 @@ app.get("/razonsocial", async (req, res) => {
 
 const port = process.env.PORT || 3001;
 
-app.listen(3001, function () {
+app.listen(port , function () {
   console.log(`Servidor escuchando en el puerto ${port}`);
 });
