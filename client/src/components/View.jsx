@@ -26,7 +26,10 @@ function View({ excelData, title }) {
                           </td>
                         ) : (
                           <td className="excelTableValores" key={key}>
-                            {individualExcelData[key]}
+                            { typeof individualExcelData[key] !== "number" ?
+                            <p style={{textAlign: "center"}}> {individualExcelData[key]}</p>:
+                            <p style={{textAlign: "right"}}> {individualExcelData[key]}</p>
+                      }
                           </td>
                         )
                       )}
