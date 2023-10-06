@@ -53,6 +53,11 @@ function App() {
         };
       } else {
         setTypeError("Seleccione solo tipos de archivos de XLS y XLSX");
+        setExcelData(null);
+       setDataNew(null);
+       setFileName(null);
+       setExcelDataCotizacion(null);
+       setExcelDataRazonSocial(null);
       }
     } else {
       console.log("Please select yout file");
@@ -87,11 +92,11 @@ function App() {
             'numero':  data[index]['__EMPTY_2'],
             'RUTEmisor':  data[index]['__EMPTY_3'],
             'moneda':  data[index]['__EMPTY_4'],
-            'montoneto':  data[index]['__EMPTY_5'],
-            'montoiva':  data[index]['__EMPTY_6'],
-            'montototal':  data[index]['__EMPTY_7'],
-            'montoretper':  data[index]['__EMPTY_8'],
-            'montocredfiscal':  data[index]['__EMPTY_9'],
+            'montoneto':  data[index]['__EMPTY_5'].toFixed(2),
+            'montoiva':  data[index]['__EMPTY_6'].toFixed(2),
+            'montototal':  data[index]['__EMPTY_7'].toFixed(2),
+            'montoretper':  data[index]['__EMPTY_8'].toFixed(2),
+            'montocredfiscal':  data[index]['__EMPTY_9'].toFixed(2),
           }
           dataValues.push(values)
         }}
@@ -109,8 +114,10 @@ function App() {
           "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
         );
         setExcelData(null);
-        setDataNew(null)
+        setDataNew(null);
         setFileName(null);
+        setExcelDataCotizacion(null);
+        setExcelDataRazonSocial(null);
         fileInputRef.current.value = "";
       }
     }
@@ -162,9 +169,9 @@ function App() {
           numero: values[3],
           RUTEmisor: values[4],
           moneda: values[5],
-          montoneto: values[6], //formato money
+          montoneto:  values[6], //formato money
           montoiva: values[7], //formato money
-          montototal: values[8], //formato money
+          montototal:  values[8], //formato money
           montoretper: values[9], //formato money
           montocredfiscal: values[10], //formato money
         };
@@ -194,8 +201,8 @@ function App() {
   //----------------------> BASE DE DATOS COTIZACION USD <-------------------------//  
     const getCotizacionUSD = () => {
       axios
-      //.get("https://app-excel-production.up.railway.app/cotizacion-usd")
-      .get("http://localhost:3001/cotizacion-usd")
+      .get("https://app-excel-production.up.railway.app/cotizacion-usd")
+      //.get("http://localhost:3001/cotizacion-usd")
       .then((response) => {
         setCotizacionUSD(response.data)
       })
@@ -231,10 +238,10 @@ for (let index = 4; index < dataNew?.length; index++) {
   const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
   const montoendolares = dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montototal'] : dataNew[index]['montototal'] / resultado.montoventa;
   const montoneto=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montoneto']:dataNew[index]['montoneto'] * resultado.montoventa;
-const montoiva=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montoiva']: dataNew[index]['montoiva'] * resultado.montoventa;
-const montototal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montototal']: dataNew[index]['montototal'] * resultado.montoventa;
-const montoretper=  dataNew[index]['moneda'] === 'UYU'?dataNew[index]['montoretper']: dataNew[index]['montoretper'] * resultado.montoventa;
-const montocredfiscal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montocredfiscal']:  dataNew[index]['montocredfiscal']* resultado.montoventa;
+  const montoiva=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montoiva']: dataNew[index]['montoiva'] * resultado.montoventa;
+  const montototal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montototal']: dataNew[index]['montototal'] * resultado.montoventa;
+  const montoretper=  dataNew[index]['moneda'] === 'UYU'?dataNew[index]['montoretper']: dataNew[index]['montoretper'] * resultado.montoventa;
+  const montocredfiscal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montocredfiscal']:  dataNew[index]['montocredfiscal']* resultado.montoventa;
   var nuevoImporte = {
     fecha: dataNew[index]['fecha'],
     tipoCFE: dataNew[index]['tipoCFE'],
@@ -244,13 +251,13 @@ const montocredfiscal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['mont
     razonsocial: dataNew[index]['razonsocial'],
     domicilio: dataNew[index]['domicilio'],
     moneda: dataNew[index]['moneda'],
-    montoneto: montoneto !== 0 ? Number(montoneto.toFixed(2)) : 0.00,
-    montoiva: montoiva !== 0 ? Number(montoiva.toFixed(2)) :0.00,
-    montototal: montototal !== 0 ? Number(montototal.toFixed(2)) : 0.00,
-    montoretper: montoretper !== 0? Number(montoretper.toFixed(2)) : 0.00,
-    montocredfiscal: montocredfiscal !== 0 ? Number(montocredfiscal.toFixed(2)) : 0.00,
-    tipodecambiodelafecha:  dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === ""?  '1' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
-    montoendolares: montoendolares? Math.floor(montoendolares.toFixed(2)) : 0.00
+    montoneto: Number(montoneto).toFixed(2),
+    montoiva:  Number(montoiva).toFixed(2),
+    montototal: Number(montototal).toFixed(2),
+    montoretper: Number(montoretper).toFixed(2),
+    montocredfiscal:  Number(montocredfiscal).toFixed(2),
+    tipodecambiodelafecha:  dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === ""?  '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
+    montoendolares:  Math.floor(montoendolares).toFixed(2), 
   };
   excelCotizacionData.push(nuevoImporte);
 }
@@ -292,13 +299,13 @@ var nuevoImporte = {
     numero: dataNew[index]['numero'],
     RUTEmisor: dataNew[index]['RUTEmisor'],
     moneda: dataNew[index]['moneda'],
-    montoneto: montoneto !== 0 ? Number(montoneto.toFixed(2)) : 0.00,
-    montoiva: montoiva !== 0 ? Number(montoiva.toFixed(2)) :0.00,
-    montototal: montototal !== 0 ? Number(montototal.toFixed(2)) : 0.00,
-    montoretper: montoretper !== 0? Number(montoretper.toFixed(2)) : 0.00,
-    montocredfiscal: montocredfiscal !== 0 ? Number(montocredfiscal.toFixed(2)) : 0.00,
-    tipodecambiodelafecha:  dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === ""?  '1' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
-    montoendolares: montoendolares? Math.floor(montoendolares.toFixed(2)) : 0.00
+    montoneto: Number(montoneto).toFixed(2) ,
+    montoiva: Number(montoiva).toFixed(2),
+    montototal: Number(montototal).toFixed(2) ,
+    montoretper: Number(montoretper).toFixed(2) ,
+    montocredfiscal: Number(montocredfiscal).toFixed(2),
+    tipodecambiodelafecha:  dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === ""?   '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
+    montoendolares: Math.floor(montoendolares).toFixed(2),
   };
   excelCotizacionData.push(nuevoImporte);
 }
@@ -322,8 +329,8 @@ body: JSON.stringify(dataNew)
 
 const getRazonSocial = () => {
 axios
-//.get("https://app-excel-production.up.railway.app/razonsocial")
-.get("http://localhost:3001/razonsocial")
+.get("https://app-excel-production.up.railway.app/razonsocial")
+//.get("http://localhost:3001/razonsocial")
 .then((response) => {
 setRazonSocial(response.data)
 })
@@ -335,7 +342,12 @@ setLoading(false)
 //----------------------> RAZON SOCIAL EXCEL <-------------------------//  
 function valoresRazonSocial() {
   console.log(razonSocial)
-if(razonSocial !== null){
+if(razonSocial === null || razonSocial.length === 0 ){
+    setTypeInfo(
+      "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
+      );
+  }
+  else{
 setTypeInfo(null)
 if(excelDataCotizacion === dataNew ){
 const excelRazonSocialValues = 
@@ -413,11 +425,6 @@ const timer = setTimeout(() => {
 setTypeSuccess(null);
 }, 4000);
 return () => clearTimeout(timer)
-}
-else{
-  setTypeInfo(
-    "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
-    );
 }
 };
 
@@ -509,8 +516,8 @@ else{
         console.log("error");
       }
       axios
-        // .post("https://app-excel-production.up.railway.app/data", {
-          .post("http://localhost:3001/data", {
+        .post("https://app-excel-production.up.railway.app/data", {
+        //.post("http://localhost:3001/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })
@@ -537,8 +544,8 @@ else{
   //----------------------> ELIMINAR BASE DE DATOS <-------------------------//  
   const deleteDataBase = () => {
     axios
-      // .delete("https://app-excel-production.up.railway.app/data")
-      .delete("http://localhost:3001/data")
+      .delete("https://app-excel-production.up.railway.app/data")
+      //.delete("http://localhost:3001/data")
       .then(() => {
         alert("Base de Datos eliminada")
         setTypeSuccess("Eliminado correctamente");
@@ -558,10 +565,10 @@ else{
     };
 
 
-
 useEffect(() => {
   if (excelData) {
-      fetch("http://localhost:3001/razonsocial", requestOptions)
+      valores(excelData)
+      fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
       .then(response => response.json())
       .then(result => console.log(result));
     }
@@ -658,19 +665,19 @@ useEffect(() => {
             type="submit"
             onClick={() => valores(excelData)}
           >
-            ANALIZAR ARCHIVO
+          ANALIZAR ARCHIVO
           </button>
            <button type="button"
-          className={`btn ${typeError && typeError !==  "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"  || excelData==null || dataNew === null || excelDataCotizacion === dataNew || excelDataCotizacion !== null  ? "btn-no" : ""}`}
+          className={`btn ${typeError && typeError !==  "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"  || excelData==null || dataNew === null || excelDataCotizacion === dataNew || excelDataCotizacion !== null || cotizacionUSD === null  ? "btn-no" : ""}`}
           onClick={valoresCotizacion}
           >
-          AGREGAR COTIZACION USD{" "}
+          CONVERTIR MONEDA{" "}
           <span className="icons">
             {/* <FaHandHoldingUsd /> */}
           </span>
         </button>
         <button type="button"
-          className={`btn ${typeError && typeError !==  "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial !== null  ? "btn-no" : ""}`}
+          className={`btn ${typeError && typeError !==  "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial!== null  ? "btn-no" : ""}`}
           onClick={valoresRazonSocial}
           >
           AGREGAR NOMBRE Y DIRECCIÓN{" "}
@@ -679,9 +686,9 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${dataNew === null || excelFinal === null || excelFinalDowload === "descargado" ? "btn-no" : ""}`}
+          className={`btn ${dataNew === null || excelFinal === null || excelFinalDowload === "descargado" && excelDataCotizacion !== dataNew || excelDataRazonSocial === dataNew ? "btn-no" : ""}`}
           // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
-            onClick={descargarXLS}
+          onClick={descargarXLS}
           >
           DESCARGAR XLS{" "}
           <span className="icons">
@@ -716,7 +723,7 @@ useEffect(() => {
              >
           ELIMINAR BASE DE DATOS{" "}
           <span className="icons">
-            {/* <MdDelete /> */}
+          {/* <MdDelete /> */}
           </span>
         </button>
           </div>

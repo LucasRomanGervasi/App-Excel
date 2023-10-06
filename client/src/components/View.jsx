@@ -26,10 +26,10 @@ function View({ excelData, title }) {
                           </td>
                         ) : (
                           <td className="excelTableValores" key={key}>
-                            { typeof individualExcelData[key] !== "number" ?
-                            <p style={{textAlign: "center"}}> {individualExcelData[key]}</p>:
-                            <p style={{textAlign: "right"}}> {individualExcelData[key]}</p>
-                      }
+                            { individualExcelData[key].includes(".") ?
+                            <p style={{textAlign: "right"}}> {individualExcelData[key]}</p>:
+                            <p style={{textAlign: "center"}}> {individualExcelData[key]}</p>
+                        }
                           </td>
                         )
                       )}
