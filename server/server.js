@@ -139,6 +139,7 @@ const crearCliente = (url, options) => {
 app.get("/razonsocial", async (req, res) => {
   let razonsocial = []
   async function getInfoByRUT(index) {
+    console.log('Arranco')
     return new Promise(async (resolve, reject) => {
       if (excelData[index]['RUTEmisor']) {
       
@@ -183,16 +184,18 @@ app.get("/razonsocial", async (req, res) => {
               console.error('Error al llamar a la operación del servicio SOAP', err);
               return;
             }
-            if(result['SOAP-ENV:Envelope']){
-              const SOAPENV = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0]['WS_RUTPersonaGetEntidad.ExecuteResponse'][0]['Data'][0]
-              xml2js.parseString(SOAPENV, function(err, result) {
-                const datas = {
+            if(result){
+              if(result['SOAP-ENV:Envelope']){
+                const SOAPENV = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0]['WS_RUTPersonaGetEntidad.ExecuteResponse'][0]['Data'][0]
+                xml2js.parseString(SOAPENV, function(err, result) {
+                  const datas = {
                   rut: result['WS_Entidad']['RUC'][0],
                   razonsocial: result['WS_Entidad']['RazonSocial'][0],
                   domicilio: `${result['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Calle_Nom']} ${result['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Dom_Pta_Nro']}` 
-                 }
-                 resolve(datas)
-                });
+                }
+                resolve(datas)
+              });
+            }
                 
                       }else{
                         console.log('Error', err)
