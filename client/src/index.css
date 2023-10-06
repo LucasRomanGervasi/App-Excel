@@ -113,7 +113,19 @@ code {
 }
 
 .alertSuccess{
-  background-color: rgba(94, 222, 71, 0.64);
+  background-color: #28a745;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px 10px 0px 10px;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: 'DIN-Medium', sans-serif ;
+}
+
+.alertInfo{
+  background-color: #17a2b8;
   color: white;
   display: flex;
   justify-content: center;

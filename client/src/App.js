@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import logo from "./images/asystax.png";
 import { FaRegCircleXmark} from "react-icons/fa6";
 import {AiOutlineCheckCircle} from "react-icons/ai";
+import {BsFillInfoCircleFill} from "react-icons/bs";
 import { getDate } from "./utils/getDate";
 import { validateDate } from "./utils/validateDate";
 import { getCloserDate } from "./utils/getCloserDate";
@@ -20,6 +21,7 @@ function App() {
   const fileInputRef = useRef(null);
   const [typeError, setTypeError] = useState(null);
   const [typeSuccess, setTypeSuccess] = useState(null);
+  const [typeInfo, setTypeInfo] = useState(null);
   const [title, setTitle] = useState(null);
   const [excelData, setExcelData] = useState(null);
   const [impoCompraVenta, setimpoCompraVenta] = useState();
@@ -242,16 +244,17 @@ const montocredfiscal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['mont
     razonsocial: dataNew[index]['razonsocial'],
     domicilio: dataNew[index]['domicilio'],
     moneda: dataNew[index]['moneda'],
-    montoneto: montoneto.toFixed(2),
-    montoiva: montoiva.toFixed(2),
-    montototal:montototal.toFixed(2),
-    montoretper: montoretper.toFixed(2),
-    montocredfiscal: montocredfiscal.toFixed(2),
+    montoneto: montoneto !== 0 ? Number(montoneto.toFixed(2)) : 0.00,
+    montoiva: montoiva !== 0 ? Number(montoiva.toFixed(2)) :0.00,
+    montototal: montototal !== 0 ? Number(montototal.toFixed(2)) : 0.00,
+    montoretper: montoretper !== 0? Number(montoretper.toFixed(2)) : 0.00,
+    montocredfiscal: montocredfiscal !== 0 ? Number(montocredfiscal.toFixed(2)) : 0.00,
     tipodecambiodelafecha:  dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === ""?  '1' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
     montoendolares: montoendolares? Math.floor(montoendolares.toFixed(2)) : 0.00
   };
   excelCotizacionData.push(nuevoImporte);
 }
+console.log(excelCotizacionData)
 setExcelDataCotizacion(excelCotizacionData)
 setDataNew(excelCotizacionData)
 setExcelFinal(excelCotizacionData)
@@ -289,16 +292,17 @@ var nuevoImporte = {
     numero: dataNew[index]['numero'],
     RUTEmisor: dataNew[index]['RUTEmisor'],
     moneda: dataNew[index]['moneda'],
-    montoneto: montoneto.toFixed(2),
-    montoiva: montoiva.toFixed(2),
-    montototal:montototal.toFixed(2),
-    montoretper: montoretper.toFixed(2),
-    montocredfiscal: montocredfiscal.toFixed(2),
+    montoneto: montoneto !== 0 ? Number(montoneto.toFixed(2)) : 0.00,
+    montoiva: montoiva !== 0 ? Number(montoiva.toFixed(2)) :0.00,
+    montototal: montototal !== 0 ? Number(montototal.toFixed(2)) : 0.00,
+    montoretper: montoretper !== 0? Number(montoretper.toFixed(2)) : 0.00,
+    montocredfiscal: montocredfiscal !== 0 ? Number(montocredfiscal.toFixed(2)) : 0.00,
     tipodecambiodelafecha:  dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === ""?  '1' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
     montoendolares: montoendolares? Math.floor(montoendolares.toFixed(2)) : 0.00
   };
   excelCotizacionData.push(nuevoImporte);
 }
+console.log(excelCotizacionData)
 setExcelDataCotizacion(excelCotizacionData)
 setDataNew(excelCotizacionData)
 }
@@ -332,7 +336,7 @@ setLoading(false)
 function valoresRazonSocial() {
   console.log(razonSocial)
 if(razonSocial !== null){
-setTypeError(null)
+setTypeInfo(null)
 if(excelDataCotizacion === dataNew ){
 const excelRazonSocialValues = 
 [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
@@ -411,7 +415,9 @@ setTypeSuccess(null);
 return () => clearTimeout(timer)
 }
 else{
-setTypeError("Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente")
+  setTypeInfo(
+    "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
+    );
 }
 };
 
@@ -521,8 +527,8 @@ setTypeError("Cargando datos desde los servicios web de DGI, aguarde unos segund
       })
       .catch((error) => {
         console.error("Error en la solicitud:", error);
-        setTypeError(
-          "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos"
+        setTypeInfo(
+          "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
           );
           setLoading(false);
         });
@@ -555,7 +561,6 @@ setTypeError("Cargando datos desde los servicios web de DGI, aguarde unos segund
 
 useEffect(() => {
   if (excelData) {
-    valores(excelData);
       fetch("http://localhost:3001/razonsocial", requestOptions)
       .then(response => response.json())
       .then(result => console.log(result));
@@ -565,7 +570,7 @@ useEffect(() => {
     const timer = setTimeout(() => {
       setTypeSuccess(null);
     }, 3000);
-    return () => clearTimeout(timer), valores(excelData);
+    return () => clearTimeout(timer);
   }, [excelData]);
   
 
@@ -618,7 +623,15 @@ useEffect(() => {
             <AiOutlineCheckCircle/>
             </div>
           </div>
-        )}
+        )} 
+         {typeInfo && (
+          <div className="alertInfo" role="alert">
+            {typeInfo}
+            <div style={{margin: '0px 10px', fontSize:'19px'}}>
+            <BsFillInfoCircleFill/>
+            </div>
+          </div>
+        )} 
         {loading === true ? (
           <div className="loading">
             <ReactLoading
@@ -648,7 +661,7 @@ useEffect(() => {
             ANALIZAR ARCHIVO
           </button>
            <button type="button"
-          className={`btn ${typeError && typeError !== "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || excelData==null || dataNew === null || excelDataCotizacion === dataNew || excelDataCotizacion !== null  ? "btn-no" : ""}`}
+          className={`btn ${typeError && typeError !==  "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"  || excelData==null || dataNew === null || excelDataCotizacion === dataNew || excelDataCotizacion !== null  ? "btn-no" : ""}`}
           onClick={valoresCotizacion}
           >
           AGREGAR COTIZACION USD{" "}
@@ -657,7 +670,7 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${typeError && typeError !== "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial !== null  ? "btn-no" : ""}`}
+          className={`btn ${typeError && typeError !==  "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial !== null  ? "btn-no" : ""}`}
           onClick={valoresRazonSocial}
           >
           AGREGAR NOMBRE Y DIRECCIÓN{" "}
@@ -686,7 +699,8 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${excelFinal === null || excelData === null || typeError? "btn-no" : ""}`}
+        //  className={`btn ${excelFinal === null || excelData === null || typeError? "btn-no" : ""}`}
+        style={{'display':'none'}}
           onClick={addDataBase}
         >
           ENVIAR A BASE DE DATOS{" "}
@@ -695,7 +709,8 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-             className={`btn-no`}
+            // className={`btn-no`}
+             style={{'display':'none'}}
              // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
              onClick={deleteDataBase}
              >
