@@ -58,6 +58,7 @@ function App() {
        setFileName(null);
        setExcelDataCotizacion(null);
        setExcelDataRazonSocial(null);
+       setExcelFinal(null);
       }
     } else {
       console.log("Please select yout file");
@@ -118,6 +119,7 @@ function App() {
         setFileName(null);
         setExcelDataCotizacion(null);
         setExcelDataRazonSocial(null);
+        setExcelFinal(null)
         fileInputRef.current.value = "";
       }
     }
@@ -631,14 +633,16 @@ useEffect(() => {
             </div>
           </div>
         )} 
-         {typeInfo && (
-          <div className="alertInfo" role="alert">
-            {typeInfo}
+        {   typeInfo && typeError === null? (
+              <div className="alertInfo" role="alert">
+              {typeInfo}
             <div style={{margin: '0px 10px', fontSize:'19px'}}>
             <BsFillInfoCircleFill/>
             </div>
-          </div>
-        )} 
+            </div>
+            )
+            : null
+          }
         {loading === true ? (
           <div className="loading">
             <ReactLoading
@@ -686,7 +690,7 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${dataNew === null || excelFinal === null || excelFinalDowload === "descargado" && excelDataCotizacion !== dataNew || excelDataRazonSocial === dataNew ? "btn-no" : ""}`}
+          className={`btn ${dataNew === null || excelFinal === null || excelFinalDowload === "descargado" ? "btn-no" : ""}`}
           // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
           onClick={descargarXLS}
           >
