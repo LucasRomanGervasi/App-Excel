@@ -134,6 +134,13 @@ function App() {
         setTypeError(
           "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
         );
+        setExcelData(null);
+        setDataNew(null);
+        setFileName(null);
+        setExcelDataCotizacion(null);
+        setExcelDataRazonSocial(null);
+        setExcelFinal(null)
+        setExcelFinalDowload(null)
       }
     }
   }
