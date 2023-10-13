@@ -642,6 +642,7 @@ function App() {
     return () => clearTimeout(timer);
   }, [excelData]);
 
+  console.log('dataNew', dataNew , 'excelFinal', excelFinal, 'ExcelFInalDOwload', excelFinalDowload)
 
   return (
     <div className="wrapper">
