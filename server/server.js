@@ -185,7 +185,7 @@ app.get("/razonsocial", async (req, res) => {
               return;
             }
             if(result){
-              if(result['SOAP-ENV:Envelope']){
+              if(result['SOAP-ENV:Envelope']['SOAP-ENV:Body']){
                 const SOAPENV = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0]['WS_RUTPersonaGetEntidad.ExecuteResponse'][0]['Data'][0]
                 xml2js.parseString(SOAPENV, function(err, result) {
                   const datas = {
@@ -263,3 +263,7 @@ const port = process.env.PORT || 3001;
 app.listen(port , function () {
   console.log(`Servidor escuchando en el puerto ${port}`);
 });
+
+// app.listen(3001 , function () {
+//   console.log(`Servidor escuchando en el puerto ${port}`);
+// });

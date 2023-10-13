@@ -10,6 +10,7 @@ import { getCloserDate } from "./utils/getCloserDate";
 import axios from "axios";
 import ReactLoading from "react-loading";
 import View from "./components/View";
+import { getOrderDataNew } from "./utils/getOrderDataNew";
 
 function App() {
   const [excelFile, setExcelFile] = useState(null);
@@ -59,6 +60,8 @@ function App() {
        setExcelDataCotizacion(null);
        setExcelDataRazonSocial(null);
        setExcelFinal(null);
+       setRazonSocial(null);
+       setTypeInfo(null)
       }
     } else {
       console.log("Please select yout file");
@@ -127,7 +130,11 @@ function App() {
 
   const valores = (excelData) => {
     if (excelData) {
+      setExcelDataRazonSocial(null)
+      setExcelDataCotizacion(null)
+      setRazonSocial(null)
       setTypeError(null);
+      setTypeInfo(null)
       const firstFourElements = excelData.slice(0, 4);
       const restOfArray = excelData.slice(4);
       //ISO ARCHIVO
@@ -217,15 +224,16 @@ function App() {
 //----------------------> COTIZACION USD EXCEL <-------------------------//      
 function valoresCotizacion() {
   const fechaCotizacion = [];
+  const dataNewOrdenado = getOrderDataNew(dataNew)
   if(excelDataRazonSocial === dataNew){
     const excelCotizacionData = 
     [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
-  { 'fechadesde': dataNew[1]['fechadesde'], 'valor':dataNew[1]['valor'] },
-  { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
-  { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio','moneda' :  dataNew[3]['moneda'],
-  'montoneto':  'Monto Neto UYU','ivaventas':  'IVA Ventas UYU','montototal': 'Monto Total UYU','montoRet/Per':  'Monto Ret/Per UYU','montoCredFiscal':  'Monto Cred. Fiscal UYU',
-  'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares'
-}]
+    { 'fechadesde': dataNew[1]['fechadesde'], 'valor':dataNew[1]['valor'] },
+    { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
+    { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio','moneda' :  dataNew[3]['moneda'],
+    'montoneto':  'Monto Neto UYU','ivaventas':  'IVA Ventas UYU','montototal': 'Monto Total UYU','montoRet/Per':  'Monto Ret/Per UYU','montoCredFiscal':  'Monto Cred. Fiscal UYU',
+    'tipoCambio': "Tipo de Cambio de la Fecha", 'montototalorginal': 'Monto Total Original'
+  }]
 for (let index = 0; index < cotizacionUSD?.length; index++) {
   if(cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD'){
   var cotizacion = {
@@ -235,31 +243,31 @@ for (let index = 0; index < cotizacionUSD?.length; index++) {
   fechaCotizacion.push(cotizacion);
 }
 }
-for (let index = 4; index < dataNew?.length; index++) {
-  const fechaBuscada = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'))
-  const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
-  const montoendolares = dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montototal'] : dataNew[index]['montototal'] / resultado.montoventa;
-  const montoneto=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montoneto']:dataNew[index]['montoneto'] * resultado.montoventa;
-  const montoiva=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montoiva']: dataNew[index]['montoiva'] * resultado.montoventa;
-  const montototal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montototal']: dataNew[index]['montototal'] * resultado.montoventa;
-  const montoretper=  dataNew[index]['moneda'] === 'UYU'?dataNew[index]['montoretper']: dataNew[index]['montoretper'] * resultado.montoventa;
-  const montocredfiscal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montocredfiscal']:  dataNew[index]['montocredfiscal']* resultado.montoventa;
-  var nuevoImporte = {
-    fecha: dataNew[index]['fecha'],
-    tipoCFE: dataNew[index]['tipoCFE'],
-    serie: dataNew[index]['serie'],
-    numero: dataNew[index]['numero'],
-    RUTEmisor: dataNew[index]['RUTEmisor'],
-    razonsocial: dataNew[index]['razonsocial'],
-    domicilio: dataNew[index]['domicilio'],
-    moneda: dataNew[index]['moneda'],
+    for (let index = 0; index < dataNewOrdenado?.length; index++) {
+    const fechaBuscada = getCloserDate(fechaCotizacion, dataNewOrdenado[index]['fecha'].replace(/-/g, '/'))
+    const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
+    const montoendolares = dataNewOrdenado[index]['moneda'] === 'UYU'? dataNewOrdenado[index]['montototal'] : dataNewOrdenado[index]['montototal'] / resultado.montoventa;
+    const montoneto=  dataNewOrdenado[index]['moneda'] === 'UYU'? dataNewOrdenado[index]['montoneto']:dataNewOrdenado[index]['montoneto'] * resultado.montoventa;
+    const montoiva=  dataNewOrdenado[index]['moneda'] === 'UYU'? dataNewOrdenado[index]['montoiva']: dataNewOrdenado[index]['montoiva'] * resultado.montoventa;
+    const montototalUYU=  dataNewOrdenado[index]['moneda'] === 'UYU'? dataNewOrdenado[index]['montototal']: dataNewOrdenado[index]['montototal'] * resultado.montoventa;
+    const montoretper=  dataNewOrdenado[index]['moneda'] === 'UYU'?dataNewOrdenado[index]['montoretper']: dataNewOrdenado[index]['montoretper'] * resultado.montoventa;
+    const montocredfiscal=  dataNewOrdenado[index]['moneda'] === 'UYU'? dataNewOrdenado[index]['montocredfiscal']:  dataNewOrdenado[index]['montocredfiscal']* resultado.montoventa;
+    var nuevoImporte = {
+      fecha: dataNewOrdenado[index]['fecha'],
+    tipoCFE: dataNewOrdenado[index]['tipoCFE'],
+    serie: dataNewOrdenado[index]['serie'],
+    numero: dataNewOrdenado[index]['numero'],
+    RUTEmisor: dataNewOrdenado[index]['RUTEmisor'],
+    razonsocial: dataNewOrdenado[index]['razonsocial'],
+    domicilio: dataNewOrdenado[index]['domicilio'],
+    moneda: dataNewOrdenado[index]['moneda'],
     montoneto: Number(montoneto).toFixed(2),
     montoiva:  Number(montoiva).toFixed(2),
-    montototal: Number(montototal).toFixed(2),
+    montototal: Number(montototalUYU).toFixed(2),
     montoretper: Number(montoretper).toFixed(2),
-    montocredfiscal:  Number(montocredfiscal).toFixed(2),
-    tipodecambiodelafecha:  dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === ""?  '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
-    montoendolares:  Math.floor(montoendolares).toFixed(2), 
+    montocredfiscal: Number(montocredfiscal).toFixed(2),
+    tipodecambiodelafecha:  dataNewOrdenado[index]['moneda'] === 'UYU' || dataNewOrdenado[index]['moneda'] === ""?  '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
+    montototaloriginal:  dataNewOrdenado[index]['montototal'],
   };
   excelCotizacionData.push(nuevoImporte);
 }
@@ -268,13 +276,13 @@ setExcelDataCotizacion(excelCotizacionData)
 setDataNew(excelCotizacionData)
 setExcelFinal(excelCotizacionData)
 } else{
-const excelCotizacionData = 
-[{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
-{ 'fechadesde': dataNew[1]['fechadesde'], 'valor':dataNew[1]['valor'] },
-{ 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
-{ 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'moneda' :  dataNew[3]['moneda'],
+  const excelCotizacionData = 
+  [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
+  { 'fechadesde': dataNew[1]['fechadesde'], 'valor':dataNew[1]['valor'] },
+  { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
+  { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'moneda' :  dataNew[3]['moneda'],
 'montoneto':  'Monto Neto UYU','ivaventas':  'IVA Ventas UYU','montototal': 'Monto Total UYU','montoRet/Per':  'Monto Ret/Per UYU','montoCredFiscal':  'Monto Cred. Fiscal UYU',
-  'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares'
+  'tipoCambio': "Tipo de Cambio de la Fecha", 'montototalorginal': 'Monto Total Original'
 }]
 for (let index = 0; index < cotizacionUSD?.length; index++) {
   if(cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD'){
@@ -285,33 +293,32 @@ for (let index = 0; index < cotizacionUSD?.length; index++) {
   fechaCotizacion.push(cotizacion);
 }
 }
-for (let index = 4; index < dataNew?.length; index++) {
-const fechaBuscada = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'))
+for (let index = 0; index < dataNewOrdenado?.length; index++) {
+const fechaBuscada = getCloserDate(fechaCotizacion, dataNewOrdenado[index]['fecha'].replace(/-/g, '/'))
 const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
-const montoendolares = dataNew[index]['moneda'] === 'UYU'?  dataNew[index]['montototal'] : dataNew[index]['montototal'] / resultado.montoventa;
-const montoneto=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montoneto']:dataNew[index]['montoneto'] * resultado.montoventa;
-const montoiva=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montoiva']: dataNew[index]['montoiva'] * resultado.montoventa;
-const montototal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montototal']: dataNew[index]['montototal'] * resultado.montoventa;
-const montoretper=  dataNew[index]['moneda'] === 'UYU'?dataNew[index]['montoretper']: dataNew[index]['montoretper'] * resultado.montoventa;
-const montocredfiscal=  dataNew[index]['moneda'] === 'UYU'? dataNew[index]['montocredfiscal']:  dataNew[index]['montocredfiscal']* resultado.montoventa;
+// const montoendolares = dataNewOrdenado[index]['moneda'] === 'UYU'?  dataNewOrdenado[index]['montototal'] : dataNewOrdenado[index]['montototal'] / resultado.montoventa;
+const montoneto=  dataNewOrdenado[index]['moneda'] === 'UYU'? dataNewOrdenado[index]['montoneto']:dataNewOrdenado[index]['montoneto'] * resultado.montoventa;
+const montoiva=  dataNewOrdenado[index]['moneda'] === 'UYU'? dataNewOrdenado[index]['montoiva']: dataNewOrdenado[index]['montoiva'] * resultado.montoventa;
+const montototalUYU=  dataNewOrdenado[index]['moneda'] === 'UYU'? dataNewOrdenado[index]['montototal']: dataNewOrdenado[index]['montototal'] * resultado.montoventa;
+const montoretper=  dataNewOrdenado[index]['moneda'] === 'UYU'?dataNewOrdenado[index]['montoretper']: dataNewOrdenado[index]['montoretper'] * resultado.montoventa;
+const montocredfiscal=  dataNewOrdenado[index]['moneda'] === 'UYU'? dataNewOrdenado[index]['montocredfiscal']:  dataNewOrdenado[index]['montocredfiscal']* resultado.montoventa;
 var nuevoImporte = {
-  fecha: dataNew[index]['fecha'],
-  tipoCFE: dataNew[index]['tipoCFE'],
-    serie: dataNew[index]['serie'],
-    numero: dataNew[index]['numero'],
-    RUTEmisor: dataNew[index]['RUTEmisor'],
-    moneda: dataNew[index]['moneda'],
-    montoneto: Number(montoneto).toFixed(2) ,
-    montoiva: Number(montoiva).toFixed(2),
-    montototal: Number(montototal).toFixed(2) ,
-    montoretper: Number(montoretper).toFixed(2) ,
+  fecha: dataNewOrdenado[index]['fecha'],
+  tipoCFE: dataNewOrdenado[index]['tipoCFE'],
+    serie: dataNewOrdenado[index]['serie'],
+    numero: dataNewOrdenado[index]['numero'],
+    RUTEmisor: dataNewOrdenado[index]['RUTEmisor'],
+    moneda: dataNewOrdenado[index]['moneda'],
+    montoneto: Number(montoneto).toFixed(2),
+    montoiva:  Number(montoiva).toFixed(2),
+    montototalUYU: Number(montototalUYU).toFixed(2),
+    montoretper: Number(montoretper).toFixed(2),
     montocredfiscal: Number(montocredfiscal).toFixed(2),
-    tipodecambiodelafecha:  dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === ""?   '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
-    montoendolares: Math.floor(montoendolares).toFixed(2),
+    tipodecambiodelafecha:  dataNewOrdenado[index]['moneda'] === 'UYU' || dataNewOrdenado[index]['moneda'] === ""?   '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
+    montototaloriginal: dataNewOrdenado[index]['montototal'],
   };
   excelCotizacionData.push(nuevoImporte);
 }
-console.log(excelCotizacionData)
 setExcelDataCotizacion(excelCotizacionData)
 setDataNew(excelCotizacionData)
 }
@@ -342,14 +349,15 @@ setLoading(false)
 });
 }
 //----------------------> RAZON SOCIAL EXCEL <-------------------------//  
+console.log(razonSocial)  
 function valoresRazonSocial() {
-  console.log(razonSocial)
 if(razonSocial === null || razonSocial.length === 0 ){
     setTypeInfo(
       "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
       );
   }
   else{
+  const dataNewOrdenado = getOrderDataNew(dataNew)
 setTypeInfo(null)
 if(excelDataCotizacion === dataNew ){
 const excelRazonSocialValues = 
@@ -357,33 +365,38 @@ const excelRazonSocialValues =
 { 'fechadesde': dataNew[1]['fechadesde'], 'valor':dataNew[1]['valor'] },
 { 'fechahasta':  dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor']},
 { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda' :  dataNew[3]['moneda'],
-'montoneto':  'Monto Neto UYU','ivaventas':  'IVA Ventas UYU','montototal': 'Monto Total UYU','montoRet/Per':  'Monto Ret/Per UYU','montoCredFiscal':  'Monto Cred. Fiscal UYU',
-'tipoCambio': "Tipo de Cambio de la Fecha", 'montoendolares': 'Monto en dolares'
+'montoneto':  'Monto Neto UYU','ivaventas':  'IVA Ventas UYU', 'montototal': 'Monto Total UYU','montoRet/Per':  'Monto Ret/Per UYU','montoCredFiscal':  'Monto Cred. Fiscal UYU',
+'tipoCambio': "Tipo de Cambio de la Fecha",'montototalorginal': 'Monto Total Original'
 }]
-for (let index = 4; index < dataNew?.length; index++) {
-  if (dataNew[index]['RUTEmisor'] === razonSocial[index-4]['rut']) {
+for (let index = 0; index < dataNewOrdenado?.length; index++) {
+  if (dataNewOrdenado[index]['RUTEmisor'] === razonSocial[index]['rut']) { 
     const razonSocialData = {
-      nombre: razonSocial[index-4]['razonsocial'],
-      domicilio: razonSocial[index-4]['domicilio']
+      nombre: razonSocial[index]['razonsocial'],
+      domicilio: razonSocial[index]['domicilio']
     };    
     var nuevoImporte = {
-  fecha: dataNew[index]['fecha'],
-  tipoCFE: dataNew[index]['tipoCFE'],
-  serie: dataNew[index]['serie'],
-  numero: dataNew[index]['numero'],
-  RUTEmisor: dataNew[index]['RUTEmisor'],
+  fecha: dataNewOrdenado[index]['fecha'],
+  tipoCFE: dataNewOrdenado[index]['tipoCFE'],
+  serie: dataNewOrdenado[index]['serie'],
+  numero: dataNewOrdenado[index]['numero'],
+  RUTEmisor: dataNewOrdenado[index]['RUTEmisor'],
   razonsocial: razonSocialData.nombre,
   domicilio: razonSocialData.domicilio,
-  moneda: dataNew[index]['moneda'],
-  montoneto: dataNew[index]['montoneto'],
-  montoiva: dataNew[index]['montoiva'],
-  montototal: dataNew[index]['montototal'],
-  montoretper: dataNew[index]['montoretper'],
-  montocredfiscal: dataNew[index]['montocredfiscal'],
-  tipodecambiodelafecha:dataNew[index]['tipodecambiodelafecha'],
-  montoendolares: dataNew[index]['montoendolares'],
+  moneda: dataNewOrdenado[index]['moneda'],
+  montoneto: dataNewOrdenado[index]['montoneto'],
+  montoiva: dataNewOrdenado[index]['montoiva'],
+  montototal: dataNewOrdenado[index]['montototalUYU'],
+  montoretper: dataNewOrdenado[index]['montoretper'],
+  montocredfiscal: dataNewOrdenado[index]['montocredfiscal'],
+  tipodecambiodelafecha:dataNewOrdenado[index]['tipodecambiodelafecha'],
+  montototalorginal: dataNewOrdenado[index]['montototaloriginal'],
+
 };
 excelRazonSocialValues.push(nuevoImporte);
+}else{
+  setTypeInfo(
+    "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
+    );
 }}
 var excelRazonSocial = excelRazonSocialValues
 setExcelFinal(excelRazonSocial)
@@ -401,7 +414,7 @@ for (let index = 4; index < dataNew?.length; index++) {
       nombre: razonSocial[index-4]['razonsocial'],
       domicilio: razonSocial[index-4]['domicilio']
     };    
-    var nuevoImporte = {
+  var nuevoImporte = {
   fecha: dataNew[index]['fecha'],
   tipoCFE: dataNew[index]['tipoCFE'],
   serie: dataNew[index]['serie'],
@@ -429,7 +442,6 @@ setTypeSuccess(null);
 return () => clearTimeout(timer)
 }
 };
-
    //----------------------> REINICIAR VISTA EXCEL <-------------------------//  
   const reiniciarExcel = () => {
     setDataNew(excelData)
@@ -445,17 +457,27 @@ return () => clearTimeout(timer)
     if(excelFinal === null){
       setTypeError("Error al descargar el archivo")
     }else{
-      // Crear un libro de Excel
+        // Crear un libro de Excel
       const libro = XLSX.utils.book_new();
       // Crear una hoja de Excel
       const hoja = XLSX.utils.aoa_to_sheet([
         ["CFE Recibidos"],
-        ...excelFinal.map(obj => Object.values(obj)) // Datos de objetos JSON
+        [],
+        ...excelFinal.map((individualExcelData, index) => {
+          if (index <= 3) {
+            return Object.values(individualExcelData);
+          } else {
+            const valoresTransformados = Object.values(individualExcelData).map((valor, i) => {
+              return i >= 8 ? Number(valor) : valor;
+            });
+            return valoresTransformados;
+          }
+        }),
+        [],
+        ["Total", "", "", "", "", "", "", "", { t : "n" , f : `=SUM(I7+I${excelFinal.length+2})` }, { t : "n" , f : `=SUM(J7+J${excelFinal.length+2})` } ]
       ]);
-
       // Agregar la hoja al libro
       XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
-
       const timer = setTimeout(() => {
         XLSX.writeFile(libro, "CFE Recibidos.xlsx");
         setLoading(false);
@@ -565,12 +587,12 @@ return () => clearTimeout(timer)
         setLoading(false); 
       });
     };
-
-
+console.log('excelData', dataNew, 'excelRazon',excelDataRazonSocial)
 useEffect(() => {
   if (excelData) {
       valores(excelData)
       fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
+      //fetch("http://localhost:3001/razonsocial", requestOptions)
       .then(response => response.json())
       .then(result => console.log(result));
     }
@@ -595,14 +617,15 @@ useEffect(() => {
             Selecciona el Archivo CFE Recibos
           </label>
           <input
-            type="file"
-            id="input-file"
-            ref={fileInputRef}
+            type="file" 
+            id="input-file" 
+            name="fileInput" 
             required
+            ref={fileInputRef}
             onChange={(e, excelData) => {
               handleFile(e);
               valores(excelData);
-              const fileName = e.target?.files[0].name;
+              const fileName = e.target.files[0]?.name;
               setFileName(fileName)
             }}
             />
@@ -654,13 +677,6 @@ useEffect(() => {
             <p style={{ marginTop: "10px" }}>Esto puede tardar unos segundos</p>
           </div>
         ) : null}
-      {/* <div><Buttons excelData={excelData} excelCotizacionData={excelDataCotizacion} typeError={typeError} 
-      addDataBase={addDataBase}
-      valoresCotizacion={valoresCotizacion}
-      reiniciarExcel={reiniciarExcel} 
-      deleteDataBase={deleteDataBase}
-    /></div>     */
-    }
       <div className="dataBase">
           <button
           className={`btn ${typeError ===
@@ -681,7 +697,7 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${typeError && typeError !==  "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial!== null  ? "btn-no" : ""}`}
+          className={`btn ${typeError && typeError !==  "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || excelData==null || dataNew === null || excelDataRazonSocial === dataNew || excelDataRazonSocial !== null  ? "btn-no" : ""}`}
           onClick={valoresRazonSocial}
           >
           AGREGAR NOMBRE Y DIRECCIÓN{" "}
@@ -690,7 +706,7 @@ useEffect(() => {
           </span>
         </button>
         <button type="button"
-          className={`btn ${dataNew === null || excelFinal === null || excelFinalDowload === "descargado" ? "btn-no" : ""}`}
+          className={`btn ${dataNew === null || excelFinal === null || excelFinalDowload === "descargado"? "btn-no" : ""}`}
           // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
           onClick={descargarXLS}
           >

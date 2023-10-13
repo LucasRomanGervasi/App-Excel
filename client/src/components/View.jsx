@@ -26,8 +26,8 @@ function View({ excelData, title }) {
                           </td>
                         ) : (
                           <td className="excelTableValores" key={key}>
-                            { individualExcelData[key].includes(".") ?
-                            <p style={{textAlign: "right"}}> {individualExcelData[key]}</p>:
+                            { individualExcelData[key].includes(".") && !isNaN(parseFloat(individualExcelData[key]))  ?
+                            <p style={{textAlign: "right"}}> {individualExcelData[key]}</p> :
                             <p style={{textAlign: "center"}}> {individualExcelData[key]}</p>
                         }
                           </td>
