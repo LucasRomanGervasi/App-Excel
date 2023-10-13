@@ -139,7 +139,6 @@ const crearCliente = (url, options) => {
 app.get("/razonsocial", async (req, res) => {
   let razonsocial = []
   async function getInfoByRUT(index) {
-    console.log('Arranco')
     return new Promise(async (resolve, reject) => {
       if (excelData[index]['RUTEmisor']) {
       
@@ -188,12 +187,14 @@ app.get("/razonsocial", async (req, res) => {
               if(result['SOAP-ENV:Envelope']['SOAP-ENV:Body']){
                 const SOAPENV = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0]['WS_RUTPersonaGetEntidad.ExecuteResponse'][0]['Data'][0]
                 xml2js.parseString(SOAPENV, function(err, result) {
+                  if(result['WS_Entidad']['RUC'][0]){
                   const datas = {
                   rut: result['WS_Entidad']['RUC'][0],
                   razonsocial: result['WS_Entidad']['RazonSocial'][0],
                   domicilio: `${result['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Calle_Nom']} ${result['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Dom_Pta_Nro']}` 
                 }
-                resolve(datas)
+                resolve(datas)}
+                else{console.log('Aun no hay datos')}
               });
             }
                 
