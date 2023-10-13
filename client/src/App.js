@@ -511,7 +511,7 @@ function App() {
         [],
         ...excelFinal.map((individualExcelData, index) => {
           if (index <= 3) {
-            return Object.values(individualExcelData);
+            return Object.values(individualExcelData), [];
           } else {
             const valoresTransformados = Object.values(individualExcelData).map((valor, i) => {
               return i >= 8 ? Number(valor) : valor;
@@ -520,6 +520,7 @@ function App() {
           }
         }),
         [],
+        ["", "", "", "", "", "", "", "", "Monto Neto UYU","IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"]
         ["Total", "", "", "", "", "", "", "", { t: "n", f: `=SUM(I7:I${excelFinal.length + 2})` }, { t: "n", f: `=SUM(J7:J${excelFinal.length + 2})` }, { t: "n", f: `=SUM(K7:K${excelFinal.length + 2})` }, { t: "n", f: `=SUM(L7:L${excelFinal.length + 2})` }]
       ]);
       // Agregar la hoja al libro
