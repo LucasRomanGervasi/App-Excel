@@ -62,6 +62,7 @@ function App() {
        setExcelFinal(null);
        setRazonSocial(null);
        setTypeInfo(null)
+       setExcelFinalDowload(null)
       }
     } else {
       console.log("Please select yout file");
@@ -71,6 +72,7 @@ function App() {
 //----------------------> ANALIZAR EXCEL <-------------------------//  
   const handleFileSubmit = (e) => {
     e.preventDefault();
+    console.log(excelFile)
     if (excelFile !== null) {
       const workbook = XLSX.read(excelFile, { type: "buffer" });
       const worksheetName = workbook.SheetNames[0];
@@ -81,6 +83,8 @@ function App() {
       const A0 = Object.values(file0);
       const A10 = Object.values(file10);
       const A11 = Object.values(file11);
+      console.log(data[3]['__EMPTY_5'])
+      if(data[3]['__EMPTY_5'] === 'Monto Neto' ) {
       const dataValues = [{ 'CFE Recibidos': data[0]['CFE Recibidos'], 'cant': data[0]['__EMPTY'] },
       { 'fechadesde': data[1]['CFE Recibidos'], 'valor':data[1]['__EMPTY'] },
       { 'fechahasta':  data[2]['CFE Recibidos'], 'valor': data[2]['__EMPTY']},
@@ -123,10 +127,15 @@ function App() {
         setExcelDataCotizacion(null);
         setExcelDataRazonSocial(null);
         setExcelFinal(null)
+        setExcelFinalDowload(null)
         fileInputRef.current.value = "";
       }
+    }else{ 
+      setTypeError(
+        "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
+      );
     }
-  };
+  }}
 
   const valores = (excelData) => {
     if (excelData) {
@@ -271,7 +280,6 @@ for (let index = 0; index < cotizacionUSD?.length; index++) {
   };
   excelCotizacionData.push(nuevoImporte);
 }
-console.log(excelCotizacionData)
 setExcelDataCotizacion(excelCotizacionData)
 setDataNew(excelCotizacionData)
 setExcelFinal(excelCotizacionData)
@@ -338,8 +346,8 @@ body: JSON.stringify(dataNew)
 
 const getRazonSocial = () => {
 axios
-.get("https://app-excel-production.up.railway.app/razonsocial")
-//.get("http://localhost:3001/razonsocial")
+//.get("https://app-excel-production.up.railway.app/razonsocial")
+.get("http://localhost:3001/razonsocial")
 .then((response) => {
 setRazonSocial(response.data)
 })
@@ -349,7 +357,6 @@ setLoading(false)
 });
 }
 //----------------------> RAZON SOCIAL EXCEL <-------------------------//  
-console.log(razonSocial)  
 function valoresRazonSocial() {
 if(razonSocial === null || razonSocial.length === 0 ){
     setTypeInfo(
@@ -369,35 +376,45 @@ const excelRazonSocialValues =
 'tipoCambio': "Tipo de Cambio de la Fecha",'montototalorginal': 'Monto Total Original'
 }]
 for (let index = 0; index < dataNewOrdenado?.length; index++) {
-  if (dataNewOrdenado[index]['RUTEmisor'] === razonSocial[index]['rut']) { 
-    const razonSocialData = {
-      nombre: razonSocial[index]['razonsocial'],
-      domicilio: razonSocial[index]['domicilio']
-    };    
-    var nuevoImporte = {
-  fecha: dataNewOrdenado[index]['fecha'],
-  tipoCFE: dataNewOrdenado[index]['tipoCFE'],
-  serie: dataNewOrdenado[index]['serie'],
-  numero: dataNewOrdenado[index]['numero'],
-  RUTEmisor: dataNewOrdenado[index]['RUTEmisor'],
-  razonsocial: razonSocialData.nombre,
-  domicilio: razonSocialData.domicilio,
-  moneda: dataNewOrdenado[index]['moneda'],
-  montoneto: dataNewOrdenado[index]['montoneto'],
-  montoiva: dataNewOrdenado[index]['montoiva'],
-  montototal: dataNewOrdenado[index]['montototalUYU'],
-  montoretper: dataNewOrdenado[index]['montoretper'],
-  montocredfiscal: dataNewOrdenado[index]['montocredfiscal'],
-  tipodecambiodelafecha:dataNewOrdenado[index]['tipodecambiodelafecha'],
-  montototalorginal: dataNewOrdenado[index]['montototaloriginal'],
+  if (dataNewOrdenado[index]['RUTEmisor']) {
+    const matchingRutIndex = razonSocial.findIndex(item => item['rut'] === dataNewOrdenado[index]['RUTEmisor']);
 
-};
-excelRazonSocialValues.push(nuevoImporte);
-}else{
-  setTypeInfo(
-    "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
+    if (matchingRutIndex !== -1) {
+      const razonSocialData = {
+        nombre: razonSocial[matchingRutIndex]['razonsocial'],
+        domicilio: razonSocial[matchingRutIndex]['domicilio']
+      };
+
+      var nuevoImporte = {
+        fecha: dataNewOrdenado[index]['fecha'],
+        tipoCFE: dataNewOrdenado[index]['tipoCFE'],
+        serie: dataNewOrdenado[index]['serie'],
+        numero: dataNewOrdenado[index]['numero'],
+        RUTEmisor: dataNewOrdenado[index]['RUTEmisor'],
+        razonsocial: razonSocialData.nombre,
+        domicilio: razonSocialData.domicilio,
+        moneda: dataNewOrdenado[index]['moneda'],
+        montoneto: dataNewOrdenado[index]['montoneto'],
+        montoiva: dataNewOrdenado[index]['montoiva'],
+        montototal: dataNewOrdenado[index]['montototalUYU'],
+        montoretper: dataNewOrdenado[index]['montoretper'],
+        montocredfiscal: dataNewOrdenado[index]['montocredfiscal'],
+        tipodecambiodelafecha: dataNewOrdenado[index]['tipodecambiodelafecha'],
+        montototalorginal: dataNewOrdenado[index]['montototaloriginal'],
+      };
+      
+      excelRazonSocialValues.push(nuevoImporte);
+    } else {
+      // Manejar casos en los que no se encontró una coincidencia
+      console.log('No se encontró una coincidencia para RUTEmisor:', dataNewOrdenado[index]['RUTEmisor']);
+    }
+  } else {
+    setTypeInfo(
+      "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
     );
-}}
+  }
+}
+
 var excelRazonSocial = excelRazonSocialValues
 setExcelFinal(excelRazonSocial)
 }else{
@@ -408,34 +425,51 @@ const excelRazonSocialValues =
 { 'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'serie': dataNew[3]['serie'], 'numero' : dataNew[3]['numero'], 'rutemisor' :  dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda' :  dataNew[3]['moneda'],
 'montoneto':  dataNew[3]['montoneto'],'ivaventas':  dataNew[3]['ivaventas'],'montototal':  dataNew[3]['montototal'],'montoRet/Per':  dataNew[3]['montoRet/Per'],'montoCredFiscal':  dataNew[3]['montoCredFiscal']
 }]
-for (let index = 4; index < dataNew?.length; index++) {
-  if (dataNew[index]['RUTEmisor'] === razonSocial[index-4]['rut']) {
-    const razonSocialData = {
-      nombre: razonSocial[index-4]['razonsocial'],
-      domicilio: razonSocial[index-4]['domicilio']
-    };    
-  var nuevoImporte = {
-  fecha: dataNew[index]['fecha'],
-  tipoCFE: dataNew[index]['tipoCFE'],
-  serie: dataNew[index]['serie'],
-  numero: dataNew[index]['numero'],
-  RUTEmisor: dataNew[index]['RUTEmisor'],
-  razonsocial: razonSocialData.nombre,
-  domicilio: razonSocialData.domicilio,
-  moneda: dataNew[index]['moneda'],
-  montoneto: dataNew[index]['montoneto'],
-  montoiva: dataNew[index]['montoiva'],
-  montototal: dataNew[index]['montototal'],
-  montoretper: dataNew[index]['montoretper'],
-  montocredfiscal: dataNew[index]['montocredfiscal'],
-};
-excelRazonSocialValues.push(nuevoImporte);
-}}
+for (let index = 0; index < dataNewOrdenado?.length; index++) {
+
+  let found = false;  // Variable para rastrear si se encontró una coincidencia
+
+  for (let razonIndex = 0; razonIndex < razonSocial.length; razonIndex++) {
+    if (dataNewOrdenado[index]['RUTEmisor'] === razonSocial[razonIndex]['rut']) {
+      const razonSocialData = {
+        nombre: razonSocial[razonIndex]['razonsocial'],
+        domicilio: razonSocial[razonIndex]['domicilio']
+      };
+
+      var nuevoImporte = {
+        fecha: dataNewOrdenado[index]['fecha'],
+        tipoCFE: dataNewOrdenado[index]['tipoCFE'],
+        serie: dataNewOrdenado[index]['serie'],
+        numero: dataNewOrdenado[index]['numero'],
+        RUTEmisor: dataNewOrdenado[index]['RUTEmisor'],
+        razonsocial: razonSocialData.nombre,
+        domicilio: razonSocialData.domicilio,
+        moneda: dataNewOrdenado[index]['moneda'],
+        montoneto: dataNewOrdenado[index]['montoneto'],
+        montoiva: dataNewOrdenado[index]['montoiva'],
+        montototal: dataNewOrdenado[index]['montototal'],
+        montoretper: dataNewOrdenado[index]['montoretper'],
+        montocredfiscal: dataNewOrdenado[index]['montocredfiscal'],
+      };
+      
+      excelRazonSocialValues.push(nuevoImporte);
+      found = true;  // Se encontró una coincidencia
+      break;  // Salir del bucle interno
+    }
+  }
+
+  if (!found) {
+    // Manejar casos en los que no se encontró una coincidencia
+    console.log('No se encontró una coincidencia para RUTEmisor:', dataNewOrdenado[index]['RUTEmisor']);
+    // Puedes tomar alguna acción aquí si es necesario
+  }
+}
   var excelRazonSocial = excelRazonSocialValues
 }
 setExcelDataRazonSocial(excelRazonSocial)
 setDataNew(excelRazonSocial)
 setTypeSuccess("Se agregó correctamente la razon social")
+setTypeInfo(null)
 const timer = setTimeout(() => {
 setTypeSuccess(null);
 }, 4000);
@@ -474,7 +508,7 @@ return () => clearTimeout(timer)
           }
         }),
         [],
-        ["Total", "", "", "", "", "", "", "", { t : "n" , f : `=SUM(I7+I${excelFinal.length+2})` }, { t : "n" , f : `=SUM(J7+J${excelFinal.length+2})` } ]
+        ["Total", "", "", "", "", "", "", "", { t : "n" , f : `=SUM(I7:I${excelFinal.length+2})` }, { t : "n" , f : `=SUM(J7:J${excelFinal.length+2})` }, { t : "n" , f : `=SUM(K7:K${excelFinal.length+2})` },{ t : "n" , f : `=SUM(L7:L${excelFinal.length+2})` } ]
       ]);
       // Agregar la hoja al libro
       XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
@@ -540,8 +574,8 @@ return () => clearTimeout(timer)
         console.log("error");
       }
       axios
-        .post("https://app-excel-production.up.railway.app/data", {
-        //.post("http://localhost:3001/data", {
+        //.post("https://app-excel-production.up.railway.app/data", {
+        .post("http://localhost:3001/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })
@@ -568,8 +602,8 @@ return () => clearTimeout(timer)
   //----------------------> ELIMINAR BASE DE DATOS <-------------------------//  
   const deleteDataBase = () => {
     axios
-      .delete("https://app-excel-production.up.railway.app/data")
-      //.delete("http://localhost:3001/data")
+      //.delete("https://app-excel-production.up.railway.app/data")
+      .delete("http://localhost:3001/data")
       .then(() => {
         alert("Base de Datos eliminada")
         setTypeSuccess("Eliminado correctamente");
@@ -587,12 +621,11 @@ return () => clearTimeout(timer)
         setLoading(false); 
       });
     };
-console.log('excelData', dataNew, 'excelRazon',excelDataRazonSocial)
 useEffect(() => {
   if (excelData) {
       valores(excelData)
-      fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
-      //fetch("http://localhost:3001/razonsocial", requestOptions)
+      //fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
+      fetch("http://localhost:3001/razonsocial", requestOptions)
       .then(response => response.json())
       .then(result => console.log(result));
     }

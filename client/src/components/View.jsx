@@ -40,7 +40,7 @@ function View({ excelData, title }) {
             </table>
           </div>
         ) : (
-          <div>¡Aún no se ha subido ningún archivo!</div>
+          null
         )}
       </div>
     )
