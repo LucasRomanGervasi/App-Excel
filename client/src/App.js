@@ -67,6 +67,7 @@ function App() {
     } else {
       console.log("Please select yout file");
       setExcelData(null);
+      setExcelFile(null)
         setDataNew(null);
         setFileName(null);
         setExcelDataCotizacion(null);
