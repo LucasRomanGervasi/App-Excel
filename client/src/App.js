@@ -66,6 +66,15 @@ function App() {
       }
     } else {
       console.log("Please select yout file");
+      setExcelData(null);
+        setDataNew(null);
+        setFileName(null);
+        setExcelDataCotizacion(null);
+        setExcelDataRazonSocial(null);
+        setExcelFinal(null);
+        setRazonSocial(null);
+        setTypeInfo(null)
+        setExcelFinalDowload(null)
     }
   };
 
