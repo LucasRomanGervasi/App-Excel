@@ -4,7 +4,6 @@ const eresguardo = [];
 const eremito = [];
 let dataNewOrdenado = [];
 for (let index = 0; index < dataNew?.length; index++) {
-  console.log(dataNew[index]['tipoCFE'])
     if (dataNew[index]['tipoCFE'] === "e-Factura" || dataNew[index]['tipoCFE'] === "Nota de Crédito de e-Factura") {
       efactura.push(dataNew[index]);
     } else if (dataNew[index]['tipoCFE'] === "e-Resguardo") {
@@ -15,6 +14,5 @@ for (let index = 0; index < dataNew?.length; index++) {
     }
   }
   dataNewOrdenado = dataNewOrdenado.concat(efactura, eresguardo,eremito);
-  console.log(dataNewOrdenado)
   return dataNewOrdenado
 }

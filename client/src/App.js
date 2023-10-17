@@ -503,26 +503,49 @@ function App() {
     if (excelFinal === null) {
       setTypeError("Error al descargar el archivo")
     } else {
+      const separatedData = [];
+      let previousTipoCFE = null;
+      excelFinal.forEach(item => {
+        const tipoCFE = item.tipoCFE;
+        if (["Tipo CFE", "e-Factura", "Nota de Crédito de e-Factura"].includes(tipoCFE)) {
+          // Agrupa "e-Factura" y "Nota de Crédito de e-Factura" en un solo grupo
+          if (tipoCFE !== previousTipoCFE && !["Tipo CFE", "e-Factura", "Nota de Crédito de e-Factura"].includes(previousTipoCFE)) {
+            separatedData.push({});
+          }
+        } else if (tipoCFE !== previousTipoCFE) {
+          separatedData.push({});
+        }
+      
+        separatedData.push(item);
+        previousTipoCFE = tipoCFE;
+      });
       // Crear un libro de Excel
       const libro = XLSX.utils.book_new();
       // Crear una hoja de Excel
       const hoja = XLSX.utils.aoa_to_sheet([
         ["CFE Recibidos"],
-        [],
-        ...excelFinal.map((individualExcelData, index) => {
-          if (index <= 3) {
-            return Object.values(individualExcelData), [];
+        ...separatedData.map((individualExcelData, index) => {
+          if (index <= 5) {
+            return Object.values(individualExcelData);
           } else {
             const valoresTransformados = Object.values(individualExcelData).map((valor, i) => {
-              return i >= 8 ? Number(valor) : valor;
+                return i >= 8 ? Number(valor) : valor;
             });
             return valoresTransformados;
           }
         }),
         [],
-        ["", "", "", "", "", "", "", "", "Monto Neto UYU","IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"]
+        ["", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
         ["Total", "", "", "", "", "", "", "", { t: "n", f: `=SUM(I7:I${excelFinal.length + 2})` }, { t: "n", f: `=SUM(J7:J${excelFinal.length + 2})` }, { t: "n", f: `=SUM(K7:K${excelFinal.length + 2})` }, { t: "n", f: `=SUM(L7:L${excelFinal.length + 2})` }]
       ]);
+          // if (dataNew[index]['tipoCFE'] === "e-Factura" || dataNew[index]['tipoCFE'] === "Nota de Crédito de e-Factura") {
+          //   efactura.push(dataNew[index]);
+          // } else if (dataNew[index]['tipoCFE'] === "e-Resguardo") {
+          //   eresguardo.push(dataNew[index]);
+          // }
+          // else if (dataNew[index]['tipoCFE'] === "e-Remito") {
+          //   eremito.push(dataNew[index]);
+          // }
       // Agregar la hoja al libro
       XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
       const timer = setTimeout(() => {
@@ -588,7 +611,7 @@ function App() {
       }
       axios
         .post("https://app-excel-production.up.railway.app/data", {
-          //.post("http://localhost:3001/data", {
+        //.post("http://localhost:3001/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })
@@ -638,9 +661,8 @@ function App() {
     if (excelData) {
       valores(excelData)
       fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
-        //fetch("http://localhost:3001/razonsocial", requestOptions)
+      //fetch("http://localhost:3001/razonsocial", requestOptions)
         .then(response => response.json())
-        .then(result => console.log(result));
     }
     getRazonSocial();
     getCotizacionUSD();
@@ -650,7 +672,6 @@ function App() {
     return () => clearTimeout(timer);
   }, [excelData]);
 
-  console.log('dataNew', dataNew , 'excelFinal', excelFinal, 'ExcelFInalDOwload', excelFinalDowload)
 
   return (
     <div className="wrapper">
