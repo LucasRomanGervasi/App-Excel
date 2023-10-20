@@ -24,6 +24,12 @@ app.get("/", (req, res) => {
   return res.status(200).send("Backend Conectado");
 });
 
+app.use((req, res, next) => {
+  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log(`La dirección IP del cliente es: ${clientIp}`);
+  next();
+});
+
 
 app.post("/data", (req, res) => {
   const impoCompraVenta = req.body.impoCompraVenta;
@@ -55,20 +61,22 @@ app.post("/data", (req, res) => {
         serie,
         numero,
         RUTEmisor,
+        razonsocial,
+        domicilio,
         moneda,
+        montonetoUYU,
+        montoivaUYU,
+        montototal,
+        montoretperUYU,
+        montocredfiscalUYU,
         montoneto,
         montoiva,
-        montototal,
         montoretper,
-        montocredFiscal,
-        tipodecambiodelafecha,
-        montoendolares,
-        razonsocial,
-        domicilio
+        montocredfiscal,
       } = data1;
       console.log(data1['fecha'], "ACA ESTA LA FECHA");
-      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoneto, montoiva, montototal, montoretper, montocredFiscal, tipocambiodelafecha, montoendolares, razonsocial, domicilio) VALUES ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montoneto}, ${montoiva}, ${montototal}, ${montoretper}, ${
-        montocredFiscal || 0}, ${tipodecambiodelafecha}, ${montoendolares}, '${razonsocial}', '${domicilio}')`;
+      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoNetoUYU, montoneto,monoIvaUYU, montoiva, montototal, montoRetPerUYU, montoretper, montoCredFiscalUYU, montocredFiscal, razonsocial, domicilio) VALUES ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montonetoUYU}, ${montoneto}, ${montoivaUYU}, ${montoiva}, ${montototal}, ${montoretperUYU}, ${montoretper},  
+       ${montocredfiscalUYU || 0} ${montocredfiscal || 0}, '${razonsocial}', '${domicilio}')`;
 
       db.query(sqlImpo, (err, resultImpo) => {
         if (err) {
@@ -135,45 +143,37 @@ const crearCliente = (url, options) => {
 }
 
 
+const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl'
+const soapOptions = {
+  envelopeKey: 'SOAP', // Prefijo del espacio de nombres del sobre SOAP
+  forceSoap12Headers: false, // Establece esto como false para usar SOAP 1.0
+};
+const xsd = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad.xsd1.xsd' 
+
+var securityOptions = {
+  hasTimeStamp: false,
+  signatureAlgorithm: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+  digestAlgorithm: 'http://www.w3.org/2001/04/xmlenc#sha256',
+  canonicalizationAlgorithm: 'http://www.w3.org/2001/10/xml-exc-c14n#',
+  signerOptions: {
+    prefix: 'ds',
+    attrs: { Id: 'SIG-C7F2874F2B188481A9169565362166845' },
+    existingPrefixes: {
+        wsse: 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
+    }
+}}
+var privateKey = fs.readFileSync("clave.key");
+var publicKey = fs.readFileSync("certificado.pem");
+var password = 'hola123'; 
 
 app.get("/razonsocial", async (req, res) => {
   let razonsocial = []
   async function getInfoByRUT(index) {
     return new Promise(async (resolve, reject) => {
       if (excelData[index]['RUTEmisor']) {
-      
-        // Agregar cada llamada getInfoByRUT como una Promesa a un arreglo
-        const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl'
-        //const url = 'arutpersonagetentidad.xml'
         
-       const xsd = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad.xsd1.xsd' 
-       //const xsd = 'arutpersonagetentidad.xsd1.xsd'
-      
-       const soapOptions = {
-         envelopeKey: 'SOAP', // Prefijo del espacio de nombres del sobre SOAP
-         forceSoap12Headers: false, // Establece esto como false para usar SOAP 1.0
-       };
-      
-       const cliente = await crearCliente(url, soapOptions)
-       
-       var privateKey = fs.readFileSync("clave.key");
-       var publicKey = fs.readFileSync("certificado.pem");
-       var password = 'hola123'; 
-       
-       var securityOptions = {
-         hasTimeStamp: false,
-         signatureAlgorithm: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
-         digestAlgorithm: 'http://www.w3.org/2001/04/xmlenc#sha256',
-         canonicalizationAlgorithm: 'http://www.w3.org/2001/10/xml-exc-c14n#',
-         signerOptions: {
-           prefix: 'ds',
-           attrs: { Id: 'SIG-C7F2874F2B188481A9169565362166845' },
-           existingPrefixes: {
-               wsse: 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
-           }
-       }}
-       
-       var wsSecurity = new WSSecurityCert(privateKey, publicKey, password, securityOptions);
+        const cliente = await crearCliente(url, soapOptions)
+        var wsSecurity = new WSSecurityCert(privateKey, publicKey, password, securityOptions);
        cliente.setSecurity(wsSecurity);
        
        cliente.ExecuteAsync({Ruc:excelData[index]['RUTEmisor']}, (err, result) => {
