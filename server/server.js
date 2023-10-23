@@ -24,16 +24,10 @@ app.get("/", (req, res) => {
   return res.status(200).send("Backend Conectado");
 });
 
-const ip = app.use((req, res, next) => {
-  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  console.log(`La dirección IP del cliente es: ${clientIp}`);
-  next();
-});
-
-
 app.post("/data", (req, res) => {
   const impoCompraVenta = req.body.impoCompraVenta;
   const archivoData = req.body.archivo;
+  const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const {
     idusuario,
     idempresa,
@@ -43,7 +37,7 @@ app.post("/data", (req, res) => {
     fechadesde,
     fechaupload,
   } = archivoData;
-  const sqlArchivo = `INSERT INTO archivo ( idusuario, idempresa, archivo, tipo, fechahasta, fechadesde, fechaupload, clientIp) VALUES ( ${idusuario}, ${idempresa}, '${archivo}', '${tipo}', '${fechahasta}', '${fechadesde}', '${fechaupload}', ${ip})`;
+  const sqlArchivo = `INSERT INTO archivo ( idusuario, idempresa, archivo, tipo, fechahasta, fechadesde, fechaupload, clientIp) VALUES ( ${idusuario}, ${idempresa}, '${archivo}', '${tipo}', '${fechahasta}', '${fechadesde}', '${fechaupload}', ${clientIp})`;
 
   db.query(sqlArchivo, (err, resultArchivo) => {
     if (err) {
