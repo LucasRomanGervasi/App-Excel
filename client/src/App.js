@@ -511,8 +511,11 @@ function App() {
           }
           
           if (!found) {
+            setTypeInfo(
+              "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
+            );
             // Manejar casos en los que no se encontró una coincidencia
-            console.log('No se encontró una coincidencia para RUTEmisor:', dataNewOrdenado[index]['RUTEmisor']);
+            console.log('No se encontró una coincidencia para RUTEmisor::::', dataNewOrdenado[index]['RUTEmisor']);
             // Puedes tomar alguna acción aquí si es necesario
           }
         }
@@ -537,7 +540,7 @@ function App() {
     setExcelFinalDowload(null)
   };
 
-  //----------------------> DESCARGAR XLS<-------------------------//  
+    //----------------------> DESCARGAR XLS<-------------------------//  
   const descargarXLS = () => {
     setLoading(true);
     if (excelFinal === null) {
@@ -545,21 +548,22 @@ function App() {
     } else {
       const separatedData = [];
       let previousTipoCFE = null;
+      let excelFinalLength = 6
       excelFinal.forEach(item => {
         const tipoCFE = item.tipoCFE;
         if (["Tipo CFE", "e-Factura", "Nota de Crédito de e-Factura"].includes(tipoCFE)) {
           // Agrupa "e-Factura" y "Nota de Crédito de e-Factura" en un solo grupo
           if (tipoCFE !== previousTipoCFE && !["Tipo CFE", "e-Factura", "Nota de Crédito de e-Factura"].includes(previousTipoCFE)) {
+            excelFinalLength = 8 + excelFinal.length 
             separatedData.push({});
           }
         } else if (tipoCFE !== previousTipoCFE) {
           separatedData.push({});
         }
-
+        
         separatedData.push(item);
         previousTipoCFE = tipoCFE;
       });
-
       // Crear un libro de Excel
       const libro = XLSX.utils.book_new();
       // Crear una hoja de Excel
@@ -580,22 +584,22 @@ function App() {
         [],
         ["", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
         ["Total", "", "", "", "", "", "", "", { t: "n", f: `=SUM(I7:I${excelFinal.length + 2})` }, { t: "n", f: `=SUM(J7:J${excelFinal.length + 2})` }, { t: "n", f: `=SUM(K7:K${excelFinal.length + 2})` }, { t: "n", f: `=SUM(L7:L${excelFinal.length + 2})` }]
-      ]);
-      const hoja2 = XLSX.utils.aoa_to_sheet([
-        ["", "", "ENERO_2023"],
-        ["RESUMEN DE IMPUESTOS"],
-        [],
-        [],
-        ["IVA", "", "", "IRAE", "", "", "ICOSA"],
-        ["VENTAS", "$", "", "IRAE MINIMO", "9940", "", "IMPORTE A PAGAR", "$"],
-        ["IVA VENTAS", "$", "", "IRAE DEL MES"],
-        ["IVA COMPRAS", { t: "n", f: `='CFE Recibidos'!I${excelFinal.length + 8}` }], //Le sumo 6 por los espacios que ingrese en la hoja1 
-        ["NETO", "$", "", "", "", "", "IP"],
-        ["IVA DEL MES", "$", "", "RESGUARDOS DE IRAE", "", "IP POR PAGAR", "0"],
-        ["IVA MES ANTERIOR", "", "", "", "", "", "IP DEL MES", "$"],
-        ["IVA A PAGAR", "$"],
-        ["TOTAL A PAGAR", "$", "", "TOTAL IMPUESTOS A PAGAR", "$"]
-      ])
+      ]); 
+        const hoja2 = XLSX.utils.aoa_to_sheet([
+          ["", "", "ENERO_2023"],
+          ["RESUMEN DE IMPUESTOS"],
+          [],
+          [],
+          ["IVA", "", "", "IRAE", "", "", "ICOSA"],
+          ["VENTAS", "$", "", "IRAE MINIMO", "9940", "", "IMPORTE A PAGAR", "$"],
+          ["IVA VENTAS", "$", "", "IRAE DEL MES"],
+          ["IVA COMPRAS", { t: "n", f: `='CFE Recibidos'!I${excelFinalLength}` }], //Le sumo 6 por los espacios que ingrese en la hoja1 
+          ["NETO", "$", "", "", "", "", "IP"],
+          ["IVA DEL MES", "$", "", "RESGUARDOS DE IRAE", "", "IP POR PAGAR", "0"],
+          ["IVA MES ANTERIOR", "", "", "", "", "", "IP DEL MES", "$"],
+          ["IVA A PAGAR", "$"],
+          ["TOTAL A PAGAR", "$", "", "TOTAL IMPUESTOS A PAGAR", "$"]
+        ])
       // Agregar la hoja al libro
       XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
       XLSX.utils.book_append_sheet(libro, hoja2, "Posicion IVA");
