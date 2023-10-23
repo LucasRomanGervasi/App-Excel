@@ -75,8 +75,7 @@ app.post("/data", (req, res) => {
         montocredfiscal,
       } = data1;
       console.log(data1['fecha'], "ACA ESTA LA FECHA");
-      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoNetoUYU, montoneto,monoIvaUYU, montoiva, montototal, montoRetPerUYU, montoretper, montoCredFiscalUYU, montocredFiscal, razonsocial, domicilio) VALUES ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montonetoUYU}, ${montoneto}, ${montoivaUYU}, ${montoiva}, ${montototal}, ${montoretperUYU}, ${montoretper},  
-       ${montocredfiscalUYU || 0}, ${montocredfiscal || 0}, '${razonsocial}', '${domicilio}')`;
+      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoNetoUYU, montoneto,montoIvaUYU, montoiva, montototal, montoRetPerUYU, montoretper, montoCredFiscalUYU, montocredFiscal, razonsocial, domicilio) VALUES ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montonetoUYU}, ${montoneto}, ${montoivaUYU}, ${montoiva}, ${montototal}, ${montoretperUYU}, ${montoretper}, ${montocredfiscalUYU || 0}, ${montocredfiscal || 0}, '${razonsocial}', '${domicilio}')`;
 
       db.query(sqlImpo, (err, resultImpo) => {
         if (err) {
