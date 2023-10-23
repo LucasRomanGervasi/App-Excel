@@ -37,7 +37,7 @@ app.post("/data", (req, res) => {
     fechadesde,
     fechaupload,
   } = archivoData;
-  const sqlArchivo = `INSERT INTO archivo ( idusuario, idempresa, archivo, tipo, fechahasta, fechadesde, fechaupload, clientIp) VALUES ( ${idusuario}, ${idempresa}, '${archivo}', '${tipo}', '${fechahasta}', '${fechadesde}', '${fechaupload}', '${clientIp}')`;
+  const sqlArchivo = `INSERT INTO archivo ( idusuario, idempresa, archivo, tipo, fechahasta, fechadesde, fechaupload, ipupload) VALUES ( ${idusuario}, ${idempresa}, '${archivo}', '${tipo}', '${fechahasta}', '${fechadesde}', '${fechaupload}', '${clientIp}')`;
 
   db.query(sqlArchivo, (err, resultArchivo) => {
     if (err) {
