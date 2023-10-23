@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
   return res.status(200).send("Backend Conectado");
 });
 
-app.use((req, res, next) => {
+const ip = app.use((req, res, next) => {
   const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   console.log(`La dirección IP del cliente es: ${clientIp}`);
   next();
@@ -43,7 +43,7 @@ app.post("/data", (req, res) => {
     fechadesde,
     fechaupload,
   } = archivoData;
-  const sqlArchivo = `INSERT INTO archivo ( idusuario, idempresa, archivo, tipo, fechahasta, fechadesde, fechaupload) VALUES ( ${idusuario}, ${idempresa}, '${archivo}', '${tipo}', '${fechahasta}', '${fechadesde}', '${fechaupload}')`;
+  const sqlArchivo = `INSERT INTO archivo ( idusuario, idempresa, archivo, tipo, fechahasta, fechadesde, fechaupload, clientIp) VALUES ( ${idusuario}, ${idempresa}, '${archivo}', '${tipo}', '${fechahasta}', '${fechadesde}', '${fechaupload}', ${ip})`;
 
   db.query(sqlArchivo, (err, resultArchivo) => {
     if (err) {
@@ -74,8 +74,8 @@ app.post("/data", (req, res) => {
         montoretper,
         montocredfiscal,
       } = data1;
-      console.log(data1['fecha'], "ACA ESTA LA FECHA");
-      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoNetoUYU, montoneto,montoIvaUYU, montoiva, montototal, montoRetPerUYU, montoretper, montoCredFiscalUYU, montocredFiscal, razonsocial, domicilio) VALUES ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montonetoUYU}, ${montoneto}, ${montoivaUYU}, ${montoiva}, ${montototal}, ${montoretperUYU}, ${montoretper}, ${montocredfiscalUYU || 0}, ${montocredfiscal || 0}, '${razonsocial}', '${domicilio}')`;
+      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, serie, numero, RUTEmisor, moneda, montoNetoUYU, montoneto,montoIvaUYU, montoiva, montototal, montoRetPerUYU, montoretper, montoCredFiscalUYU, montocredFiscal, razonsocial, domicilio) VALUES 
+      ( ${idarchivo}, '${fecha}', '${tipoCFE}', '${serie}', ${numero}, '${RUTEmisor}', '${moneda}', ${montonetoUYU}, ${montoneto}, ${montoivaUYU}, ${montoiva}, ${montototal}, ${montoretperUYU}, ${montoretper}, ${montocredfiscalUYU || 0}, ${montocredfiscal || 0}, '${razonsocial}', '${domicilio}')`;
 
       db.query(sqlImpo, (err, resultImpo) => {
         if (err) {
