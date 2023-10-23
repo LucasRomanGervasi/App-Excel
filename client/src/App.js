@@ -17,6 +17,7 @@ function App() {
   const [excelDataCotizacion, setExcelDataCotizacion] = useState(null)
   const [excelDataRazonSocial, setExcelDataRazonSocial] = useState(null)
   const [excelFinal, setExcelFinal] = useState(null)
+  const [excelFinalDataBase, setExcelFinalDataBase] = useState(null)
   const [excelFinalDowload, setExcelFinalDowload] = useState(null)
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
@@ -51,6 +52,7 @@ function App() {
         reader.readAsArrayBuffer(selectedFile);
         reader.onload = (e) => {
           setExcelFile(e.target.result);
+          setTypeInfo(null);
         };
       } else {
         setTypeError("Seleccione solo tipos de archivos de XLS y XLSX");
@@ -68,14 +70,14 @@ function App() {
       console.log("Please select yout file");
       setExcelData(null);
       setFileName(null)
-        setDataNew(null);
-        setFileName(null);
-        setExcelDataCotizacion(null);
-        setExcelDataRazonSocial(null);
-        setExcelFinal(null);
-        setRazonSocial(null);
-        setTypeInfo(null)
-        setExcelFinalDowload(null)
+      setDataNew(null);
+      setFileName(null);
+      setExcelDataCotizacion(null);
+      setExcelDataRazonSocial(null);
+      setExcelFinal(null);
+      setRazonSocial(null);
+      setTypeInfo(null)
+      setExcelFinalDowload(null)
     }
   };
 
@@ -127,6 +129,11 @@ function App() {
             dataValues
           );
           setDataNew(dataValues)
+          setExcelFinalDowload(null)
+          setExcelDataCotizacion(null);
+          setExcelDataRazonSocial(null);
+          setExcelFinal(null)
+          setExcelFinalDowload(null)
         } else {
           setTypeError(
             "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
@@ -274,34 +281,40 @@ function App() {
       for (let index = 0; index < dataNewOrdenado?.length; index++) {
         const fechaBuscada = getCloserDate(fechaCotizacion, dataNewOrdenado[index]['fecha'].replace(/-/g, '/'))
         const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
-        const montoendolares = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montototal'] : dataNewOrdenado[index]['montototal'] / resultado.montoventa;
-        const montoneto = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoneto'] : dataNewOrdenado[index]['montoneto'] * resultado.montoventa;
-        const montoiva = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoiva'] : dataNewOrdenado[index]['montoiva'] * resultado.montoventa;
+        const montoendolaresUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montototal'] : dataNewOrdenado[index]['montototal'] / resultado.montoventa;
+        const montonetoUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoneto'] : dataNewOrdenado[index]['montoneto'] * resultado.montoventa;
+        const montoivaUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoiva'] : dataNewOrdenado[index]['montoiva'] * resultado.montoventa;
         const montototalUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montototal'] : dataNewOrdenado[index]['montototal'] * resultado.montoventa;
-        const montoretper = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoretper'] : dataNewOrdenado[index]['montoretper'] * resultado.montoventa;
-        const montocredfiscal = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montocredfiscal'] : dataNewOrdenado[index]['montocredfiscal'] * resultado.montoventa;
+        const montoretperUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoretper'] : dataNewOrdenado[index]['montoretper'] * resultado.montoventa;
+        const montocredfiscalUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montocredfiscal'] : dataNewOrdenado[index]['montocredfiscal'] * resultado.montoventa;
         var nuevoImporte = {
-          fecha: dataNewOrdenado[index]['fecha'],
-          tipoCFE: dataNewOrdenado[index]['tipoCFE'],
-          serie: dataNewOrdenado[index]['serie'],
-          numero: dataNewOrdenado[index]['numero'],
-          RUTEmisor: dataNewOrdenado[index]['RUTEmisor'],
-          razonsocial: dataNewOrdenado[index]['razonsocial'],
-          domicilio: dataNewOrdenado[index]['domicilio'],
+            fecha: dataNewOrdenado[index]['fecha'],
+            tipoCFE: dataNewOrdenado[index]['tipoCFE'],
+            serie: dataNewOrdenado[index]['serie'],
+            numero: dataNewOrdenado[index]['numero'],
+            RUTEmisor: dataNewOrdenado[index]['RUTEmisor'],
+            razonsocial: dataNewOrdenado[index]['razonsocial'],
+            domicilio: dataNewOrdenado[index]['domicilio'],
           moneda: dataNewOrdenado[index]['moneda'],
-          montoneto: Number(montoneto).toFixed(2),
-          montoiva: Number(montoiva).toFixed(2),
-          montototal: Number(montototalUYU).toFixed(2),
-          montoretper: Number(montoretper).toFixed(2),
-          montocredfiscal: Number(montocredfiscal).toFixed(2),
+          montonetoUYU: Number(montonetoUYU).toFixed(2),
+          montoivaUYU: Number(montoivaUYU).toFixed(2),
+          montototalUYU: Number(montototalUYU).toFixed(2),
+          montoretperUYU: Number(montoretperUYU).toFixed(2),
+          montocredfiscalUYU: Number(montocredfiscalUYU).toFixed(2),
           tipodecambiodelafecha: dataNewOrdenado[index]['moneda'] === 'UYU' || dataNewOrdenado[index]['moneda'] === "" ? '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
           montototaloriginal: dataNewOrdenado[index]['montototal'],
-        };
+          valuesLast :{
+            montoneto:  dataNewOrdenado[index]['montoneto'] ,
+            montoiva:  dataNewOrdenado[index]['montoiva'],
+            montoretper:  dataNewOrdenado[index]['montoretper'],
+            montocredfiscal: dataNewOrdenado[index]['montocredfiscal'] 
+          }};
         excelCotizacionData.push(nuevoImporte);
       }
       setExcelDataCotizacion(excelCotizacionData)
       setDataNew(excelCotizacionData)
       setExcelFinal(excelCotizacionData)
+      addDataBase(excelCotizacionData)
     } else {
       const excelCotizacionData =
         [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
@@ -325,11 +338,11 @@ function App() {
         const fechaBuscada = getCloserDate(fechaCotizacion, dataNewOrdenado[index]['fecha'].replace(/-/g, '/'))
         const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
         // const montoendolares = dataNewOrdenado[index]['moneda'] === 'UYU'?  dataNewOrdenado[index]['montototal'] : dataNewOrdenado[index]['montototal'] / resultado.montoventa;
-        const montoneto = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoneto'] : dataNewOrdenado[index]['montoneto'] * resultado.montoventa;
-        const montoiva = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoiva'] : dataNewOrdenado[index]['montoiva'] * resultado.montoventa;
+        const montonetoUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoneto'] : dataNewOrdenado[index]['montoneto'] * resultado.montoventa;
+        const montoivaUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoiva'] : dataNewOrdenado[index]['montoiva'] * resultado.montoventa;
         const montototalUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montototal'] : dataNewOrdenado[index]['montototal'] * resultado.montoventa;
-        const montoretper = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoretper'] : dataNewOrdenado[index]['montoretper'] * resultado.montoventa;
-        const montocredfiscal = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montocredfiscal'] : dataNewOrdenado[index]['montocredfiscal'] * resultado.montoventa;
+        const montoretperUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montoretper'] : dataNewOrdenado[index]['montoretper'] * resultado.montoventa;
+        const montocredfiscalUYU = dataNewOrdenado[index]['moneda'] === 'UYU' ? dataNewOrdenado[index]['montocredfiscal'] : dataNewOrdenado[index]['montocredfiscal'] * resultado.montoventa;
         var nuevoImporte = {
           fecha: dataNewOrdenado[index]['fecha'],
           tipoCFE: dataNewOrdenado[index]['tipoCFE'],
@@ -337,14 +350,19 @@ function App() {
           numero: dataNewOrdenado[index]['numero'],
           RUTEmisor: dataNewOrdenado[index]['RUTEmisor'],
           moneda: dataNewOrdenado[index]['moneda'],
-          montoneto: Number(montoneto).toFixed(2),
-          montoiva: Number(montoiva).toFixed(2),
+          montonetoUYU: Number(montonetoUYU).toFixed(2),
+          montoivaUYU: Number(montoivaUYU).toFixed(2),
           montototalUYU: Number(montototalUYU).toFixed(2),
-          montoretper: Number(montoretper).toFixed(2),
-          montocredfiscal: Number(montocredfiscal).toFixed(2),
+          montoretperUYU: Number(montoretperUYU).toFixed(2),
+          montocredfiscalUYU: Number(montocredfiscalUYU).toFixed(2),
           tipodecambiodelafecha: dataNewOrdenado[index]['moneda'] === 'UYU' || dataNewOrdenado[index]['moneda'] === "" ? '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
           montototaloriginal: dataNewOrdenado[index]['montototal'],
-        };
+          valuesLast :{
+            montoneto:  dataNewOrdenado[index]['montoneto'] ,
+            montoiva:  dataNewOrdenado[index]['montoiva'],
+            montoretper:  dataNewOrdenado[index]['montoretper'],
+            montocredfiscal: dataNewOrdenado[index]['montocredfiscal'] 
+          }};
         excelCotizacionData.push(nuevoImporte);
       }
       setExcelDataCotizacion(excelCotizacionData)
@@ -396,8 +414,9 @@ function App() {
             'montoneto': 'Monto Neto UYU', 'ivaventas': 'IVA Ventas UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
             'tipoCambio': "Tipo de Cambio de la Fecha", 'montototalorginal': 'Monto Total Original'
           }]
+        if (dataNewOrdenado) {
         for (let index = 0; index < dataNewOrdenado?.length; index++) {
-          if (dataNewOrdenado[index]['RUTEmisor']) {
+          if (dataNewOrdenado[index] && dataNewOrdenado[index]['RUTEmisor']) {
             const matchingRutIndex = razonSocial.findIndex(item => item['rut'] === dataNewOrdenado[index]['RUTEmisor']);
 
             if (matchingRutIndex !== -1) {
@@ -405,7 +424,6 @@ function App() {
                 nombre: razonSocial[matchingRutIndex]['razonsocial'],
                 domicilio: razonSocial[matchingRutIndex]['domicilio']
               };
-
               var nuevoImporte = {
                 fecha: dataNewOrdenado[index]['fecha'],
                 tipoCFE: dataNewOrdenado[index]['tipoCFE'],
@@ -415,18 +433,27 @@ function App() {
                 razonsocial: razonSocialData.nombre,
                 domicilio: razonSocialData.domicilio,
                 moneda: dataNewOrdenado[index]['moneda'],
-                montoneto: dataNewOrdenado[index]['montoneto'],
-                montoiva: dataNewOrdenado[index]['montoiva'],
-                montototal: dataNewOrdenado[index]['montototalUYU'],
-                montoretper: dataNewOrdenado[index]['montoretper'],
-                montocredfiscal: dataNewOrdenado[index]['montocredfiscal'],
+                montonetoUYU: dataNewOrdenado[index]['montonetoUYU'],
+                montoivaUYU: dataNewOrdenado[index]['montoivaUYU'],
+                montototalUYU: dataNewOrdenado[index]['montototalUYU'],
+                montoretperUYU: dataNewOrdenado[index]['montoretperUYU'],
+                montocredfiscalUYU: dataNewOrdenado[index]['montocredfiscalUYU'],
                 tipodecambiodelafecha: dataNewOrdenado[index]['tipodecambiodelafecha'],
                 montototalorginal: dataNewOrdenado[index]['montototaloriginal'],
+                valuesLast :{
+                  montoneto: dataNewOrdenado[index]['valuesLast']['montoneto'],
+                  montoiva:   dataNewOrdenado[index]['valuesLast']['montoiva'],
+                  montoretper: dataNewOrdenado[index]['valuesLast']['montoretper'],
+                  montocredfiscal:dataNewOrdenado[index]['valuesLast']['montocredfiscal']
+                }
               };
-
+                
               excelRazonSocialValues.push(nuevoImporte);
             } else {
               // Manejar casos en los que no se encontró una coincidencia
+              setTypeInfo(
+                "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
+              );
               console.log('No se encontró una coincidencia para RUTEmisor:', dataNewOrdenado[index]['RUTEmisor']);
             }
           } else {
@@ -434,10 +461,13 @@ function App() {
               "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
             );
           }
-        }
-
+        } 
+      }else {
+        console.error('dataNewOrdenado es undefined o nulo');
+      }
         var excelRazonSocial = excelRazonSocialValues
         setExcelFinal(excelRazonSocial)
+        addDataBase(excelRazonSocial)
       } else {
         const excelRazonSocialValues =
           [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
@@ -479,7 +509,7 @@ function App() {
               break;  // Salir del bucle interno
             }
           }
-
+          
           if (!found) {
             // Manejar casos en los que no se encontró una coincidencia
             console.log('No se encontró una coincidencia para RUTEmisor:', dataNewOrdenado[index]['RUTEmisor']);
@@ -525,10 +555,11 @@ function App() {
         } else if (tipoCFE !== previousTipoCFE) {
           separatedData.push({});
         }
-      
+
         separatedData.push(item);
         previousTipoCFE = tipoCFE;
       });
+
       // Crear un libro de Excel
       const libro = XLSX.utils.book_new();
       // Crear una hoja de Excel
@@ -539,7 +570,9 @@ function App() {
             return Object.values(individualExcelData);
           } else {
             const valoresTransformados = Object.values(individualExcelData).map((valor, i) => {
+              if(i <= 14){
                 return i >= 8 ? Number(valor) : valor;
+              }
             });
             return valoresTransformados;
           }
@@ -548,16 +581,24 @@ function App() {
         ["", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
         ["Total", "", "", "", "", "", "", "", { t: "n", f: `=SUM(I7:I${excelFinal.length + 2})` }, { t: "n", f: `=SUM(J7:J${excelFinal.length + 2})` }, { t: "n", f: `=SUM(K7:K${excelFinal.length + 2})` }, { t: "n", f: `=SUM(L7:L${excelFinal.length + 2})` }]
       ]);
-          // if (dataNew[index]['tipoCFE'] === "e-Factura" || dataNew[index]['tipoCFE'] === "Nota de Crédito de e-Factura") {
-          //   efactura.push(dataNew[index]);
-          // } else if (dataNew[index]['tipoCFE'] === "e-Resguardo") {
-          //   eresguardo.push(dataNew[index]);
-          // }
-          // else if (dataNew[index]['tipoCFE'] === "e-Remito") {
-          //   eremito.push(dataNew[index]);
-          // }
+      const hoja2 = XLSX.utils.aoa_to_sheet([
+        ["", "", "ENERO_2023"],
+        ["RESUMEN DE IMPUESTOS"],
+        [],
+        [],
+        ["IVA", "", "", "IRAE", "", "", "ICOSA"],
+        ["VENTAS", "$", "", "IRAE MINIMO", "9940", "", "IMPORTE A PAGAR", "$"],
+        ["IVA VENTAS", "$", "", "IRAE DEL MES"],
+        ["IVA COMPRAS", { t: "n", f: `='CFE Recibidos'!I${excelFinal.length + 8}` }], //Le sumo 6 por los espacios que ingrese en la hoja1 
+        ["NETO", "$", "", "", "", "", "IP"],
+        ["IVA DEL MES", "$", "", "RESGUARDOS DE IRAE", "", "IP POR PAGAR", "0"],
+        ["IVA MES ANTERIOR", "", "", "", "", "", "IP DEL MES", "$"],
+        ["IVA A PAGAR", "$"],
+        ["TOTAL A PAGAR", "$", "", "TOTAL IMPUESTOS A PAGAR", "$"]
+      ])
       // Agregar la hoja al libro
       XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
+      XLSX.utils.book_append_sheet(libro, hoja2, "Posicion IVA");
       const timer = setTimeout(() => {
         XLSX.writeFile(libro, "CFE Recibidos.xlsx");
         setLoading(false);
@@ -578,21 +619,18 @@ function App() {
   };
 
   //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
-
-  const addDataBase = () => {
-    if (excelFinal) {
-      setLoading(true);
-      const restOfArray = excelFinal.slice(4);
+  const addDataBase = (excelDataBase) => {
+    if (excelDataBase) {
+      const restOfArray = excelDataBase.slice(4);
       const parsedData = restOfArray.map((data) => {
         const values = Object.values(data);
-        //ISO impoCompraVenta
+        //ISO impoCompraVentaadd
         let isoDate = null;
         if (validateDate(values[0])) {
           const dateParts = values[0].split("/");
           const [day, month, year] = dateParts;
           const dateObject = new Date(`${year}-${month}-${day}`);
           isoDate = dateObject.toISOString().substring(0, 10);
-
           let nextIdImpo = 0;
           //REVICION
           return {
@@ -605,14 +643,18 @@ function App() {
             RUTEmisor: values[4],
             razonsocial: values[5],
             domicilio: values[6],
-            moneda: values[7],
-            montoneto: values[8], //formato money
-            montoiva: values[9], //formato money
+            moneda: values[7]? values[7]: "-",
+            montonetoUYU: values[8], //formato money
+            montoivaUYU: values[9], //formato money
             montototal: values[10], //formato money
-            montoretper: values[11], //formato money
-            montocredfiscal: values[12], //formato money
+            montoretperUYU: values[11], //formato money
+            montocredfiscalUYU: values[12], //formato money
             tipodecambiodelafecha: values[13],
-            montoendolares: values[14]
+            montoendolares: values[14],
+            montoneto: values[15]['montoneto'], //formato money
+            montoiva: values[15]['montoiva'], //formato money
+            montoretper: values[15]['montoretper'], //formato money
+            montocredfiscal: values[15]['montocredfiscal'], //formato money
           };
         }
       });
@@ -626,47 +668,36 @@ function App() {
           archivo: archivo,
         })
         .then(() => {
-          setTypeSuccess("Registrado correctamente");
-          setFileName(null);
-          setExcelData(null);
-          setDataNew(null);
-          setArchivo(null);
-          setimpoCompraVenta(null);
-          setLoading(false);
-          setExcelFinalDowload(null)
-          fileInputRef.current.value = "";
+          // console.log('se guardo en base de datos')
         })
         .catch((error) => {
           console.error("Error en la solicitud:", error);
-          setTypeInfo(
-            "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente"
-          );
-          setLoading(false);
         });
     };
   }
   //----------------------> ELIMINAR BASE DE DATOS <-------------------------//  
-  const deleteDataBase = () => {
-    axios
-      .delete("https://app-excel-production.up.railway.app/data")
-      //.delete("http://localhost:3001/data")
-      .then(() => {
-        alert("Base de Datos eliminada")
-        setTypeSuccess("Eliminado correctamente");
-        setFileName(null);
-        setExcelData(null);
-        setArchivo(null);
-        setimpoCompraVenta(null);
-        setDataNew(null);
-        fileInputRef.current.value = "";
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error en la solicitud:", error);
-        alert("Hubo un error al procesar la solicitud.");
-        setLoading(false);
-      });
-  };
+  // const deleteDataBase = () => {
+  //   axios
+  //     //.delete("https://app-excel-production.up.railway.app/data")
+  //     .delete("http://localhost:3001/data")
+  //     .then(() => {
+  //       alert("Base de Datos eliminada")
+  //       setTypeSuccess("Eliminado correctamente");
+  //       setFileName(null);
+  //       setExcelData(null);
+  //       setArchivo(null);
+  //       setimpoCompraVenta(null);
+  //       setDataNew(null);
+  //       fileInputRef.current.value = "";
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error en la solicitud:", error);
+  //       alert("Hubo un error al procesar la solicitud.");
+  //       setLoading(false);
+  //     });
+  // };
+
   useEffect(() => {
     if (excelData) {
       valores(excelData)
@@ -816,8 +847,8 @@ function App() {
             <button type="button"
               // className={`btn-no`}
               style={{ 'display': 'none' }}
-              // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
-              onClick={deleteDataBase}
+            // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
+            // onClick={deleteDataBase}
             >
               ELIMINAR BASE DE DATOS{" "}
               <span className="icons">
