@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 function View({ excelData, title }) {
-
     return(
         <div className="view">
         {excelData ? (
@@ -25,12 +24,13 @@ function View({ excelData, title }) {
                           <td className="excelTableTitle" key={key}>
                             {individualExcelData[key]}
                           </td>
-                        ) : individualExcelData[key].length !== undefined? (
+                            )
+                            : individualExcelData[key]?.length !== undefined? (
                           <td className="excelTableValores" key={key}>
-                            { individualExcelData[key].includes(".") && !isNaN(parseFloat(individualExcelData[key]))  ?
+                             {individualExcelData[key].includes(".") && !isNaN(parseFloat(individualExcelData[key]))  ?
                             <p style={{textAlign: "right"}}> {individualExcelData[key]}</p> :
-                            <p style={{textAlign: "center"}}> {individualExcelData[key]}</p>
-                        }
+                            <p style={{textAlign: "center"}}> {individualExcelData[key]}</p> 
+                          }
                           </td>
                         ):null
                       )}

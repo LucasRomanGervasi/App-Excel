@@ -3,16 +3,16 @@ export function getCloserDate(fechas, fechaObjetivo) {
  const fechasEdit = Object.values(fechas).map(item => item.fecha.replace(/-/g, '/'));
   // Convierte la fecha objetivo en un objeto Date
   const fechaObjetivoDate = new Date(fechaObjetivo);
-
+  // Resta un día a la fecha
+  fechaObjetivoDate.setDate(fechaObjetivoDate.getDate() - 1);
   // Inicializa la fecha más cercana y la diferencia mínima
   let fechaMasCercana = fechasEdit[0];
   let diferenciaMinima = Math.abs(fechaObjetivoDate - new Date(fechasEdit[0]));
-
   // Itera a través de las fechas
   for (const fecha of fechasEdit) {
     // Convierte la fecha actual en un objeto Date
     const fechaActualDate = new Date(fecha);
-
+    
     // Calcula la diferencia en milisegundos entre la fecha objetivo y la fecha actual
     const diferencia = Math.abs(fechaObjetivoDate - fechaActualDate);
 
