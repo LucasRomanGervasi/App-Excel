@@ -246,7 +246,7 @@ function App() {
         setLoading(false)
       });
   }
-
+  
   //----------------------> COTIZACION USD EXCEL <-------------------------//      
   function valoresCotizacion() {
     const fechaCotizacion = [];
@@ -279,17 +279,17 @@ function App() {
         const montoretperUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoretper'] : dataNew[index]['montoretper'] * resultado.montoventa;
         const montocredfiscalUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montocredfiscal'] : dataNew[index]['montocredfiscal'] * resultado.montoventa;
         var nuevoImporte = {
-            fecha: dataNew[index]['fecha'],
-            tipoCFE: dataNew[index]['tipoCFE'],
-            tipo: dataNew[index]['tipo'],
-            serie: dataNew[index]['serie'],
-            numero: dataNew[index]['numero'],
-            RUTEmisor: dataNew[index]['RUTEmisor'],
-            razonsocial: dataNew[index]['razonsocial'],
-            domicilio: dataNew[index]['domicilio'],
-            moneda: dataNew[index]['moneda'],
-            montonetoUYU: Number(montonetoUYU).toFixed(2),
-            montoivaUYU: Number(montoivaUYU).toFixed(2),
+          fecha: dataNew[index]['fecha'],
+          tipoCFE: dataNew[index]['tipoCFE'],
+          tipo: dataNew[index]['tipo'],
+          serie: dataNew[index]['serie'],
+          numero: dataNew[index]['numero'],
+          RUTEmisor: dataNew[index]['RUTEmisor'],
+          razonsocial: dataNew[index]['razonsocial'],
+          domicilio: dataNew[index]['domicilio'],
+          moneda: dataNew[index]['moneda'],
+          montonetoUYU: Number(montonetoUYU).toFixed(2),
+          montoivaUYU: Number(montoivaUYU).toFixed(2),
             montototalUYU: Number(montototalUYU).toFixed(2),
             montoretperUYU: Number(montoretperUYU).toFixed(2),
             montocredfiscalUYU: Number(montocredfiscalUYU).toFixed(2),
@@ -301,37 +301,37 @@ function App() {
               montoretper:  dataNew[index]['montoretper'],
               montocredfiscal: dataNew[index]['montocredfiscal'] 
             }};
-        excelCotizacionData.push(nuevoImporte);
-      }
-      setExcelDataCotizacion(excelCotizacionData)
-      setDataNew(excelCotizacionData)
-      setExcelFinal(excelCotizacionData)
-      // addDataBase(excelCotizacionData)
-    } else {
+            excelCotizacionData.push(nuevoImporte);
+          }
+          setExcelDataCotizacion(excelCotizacionData)
+          setDataNew(excelCotizacionData)
+          setExcelFinal(excelCotizacionData)
+          addDataBase(excelCotizacionData)
+        } else {
       const excelCotizacionData =
-        [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
-        { 'fechadesde': dataNew[1]['fechadesde'], 'valor': dataNew[1]['valor'] },
-        { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
+      [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
+      { 'fechadesde': dataNew[1]['fechadesde'], 'valor': dataNew[1]['valor'] },
+      { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
         {
           'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'moneda': dataNew[3]['moneda'],
           'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Ventas UYU', 'montototal': 'Monto Total UYU','montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
           'tipoCambio': "Tipo de Cambio de la Fecha", 'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Ventas Original', 'montototalorginal': 'Monto Total Original',
         }]
-      for (let index = 0; index < cotizacionUSD?.length; index++) {
-        if (cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD') {
-          var cotizacion = {
-            'montoventa': cotizacionUSD[index]['montoventa'],
-            'fecha': cotizacionUSD[index]['fecha'].slice(0, 10)
+        for (let index = 0; index < cotizacionUSD?.length; index++) {
+          if (cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD') {
+            var cotizacion = {
+              'montoventa': cotizacionUSD[index]['montoventa'],
+              'fecha': cotizacionUSD[index]['fecha'].slice(0, 10)
+            }
+            fechaCotizacion.push(cotizacion);
           }
-          fechaCotizacion.push(cotizacion);
         }
-      }
-      for (let index = 4; index < dataNew?.length; index++) {
-        const fechaBuscada = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'))
-        const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
-        // const montoendolares = dataNew[index]['moneda'] === 'UYU'?  dataNew[index]['montototal'] : dataNew[index]['montototal'] / resultado.montoventa;
-        const montonetoUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoneto'] : dataNew[index]['montoneto'] * resultado.montoventa;
-        const montoivaUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoiva'] : dataNew[index]['montoiva'] * resultado.montoventa;
+        for (let index = 4; index < dataNew?.length; index++) {
+          const fechaBuscada = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'))
+          const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
+          // const montoendolares = dataNew[index]['moneda'] === 'UYU'?  dataNew[index]['montototal'] : dataNew[index]['montototal'] / resultado.montoventa;
+          const montonetoUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoneto'] : dataNew[index]['montoneto'] * resultado.montoventa;
+          const montoivaUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoiva'] : dataNew[index]['montoiva'] * resultado.montoventa;
         const montototalUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montototal'] : dataNew[index]['montototal'] * resultado.montoventa;
         const montoretperUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoretper'] : dataNew[index]['montoretper'] * resultado.montoventa;
         const montocredfiscalUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montocredfiscal'] : dataNew[index]['montocredfiscal'] * resultado.montoventa;
@@ -460,7 +460,7 @@ function App() {
       }
         var excelRazonSocial = excelRazonSocialValues
         setExcelFinal(excelRazonSocial)
-        // addDataBase(excelRazonSocial)
+        addDataBase(excelRazonSocial)
       } else {
         const excelRazonSocialValues =
           [{ 'CFE Recibidos': dataNew[0]['CFE Recibidos'], 'cant': dataNew[0]['cant'] },
@@ -570,7 +570,7 @@ function App() {
       const retencionesFiscalesLimite = retencionesFiscalesInicio + retencionesFiscales.length;
       const remitosInicio = retencionesFiscalesLimite + 6;
       const remitosLimite = remitosInicio + remitos.length;
-      const pagosInicio = remitosLimite + 6;
+      const pagosInicio = remitosLimite;
       const pagosLimite = pagosInicio + pagos.length;
       
       const totalesCompra = compras.length+8+3;
@@ -680,7 +680,7 @@ function App() {
           }),
           [],
           ["", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${pagosInicio}:J${pagosLimite})` }, { t: "n", f: `=SUM(K${pagosInicio}:K${pagosLimite})` }, { t: "n", f: `=SUM(L${pagosInicio}:L${pagosLimite})` }, { t: "n", f: `=SUM(M${pagosInicio}:M${pagosLimite})` }],
+          ["Total", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${pagosInicio}:J${pagosLimite})`}, { t: "n", f: `=SUM(K${pagosInicio}:K${pagosLimite})` }, { t: "n", f: `=SUM(L${pagosInicio}:L${pagosLimite})` }, { t: "n", f: `=SUM(M${pagosInicio}:M${pagosLimite})` }],
           []
         );
       }
@@ -693,6 +693,28 @@ function App() {
         ...pagosData
         // Agrega las partes de remitos y pagos de manera similar
       ]);
+      for (const cellRef in hoja) {
+        if (hoja.hasOwnProperty(cellRef)) {
+          const cell = hoja[cellRef];
+          // Aplicar el formato de moneda solo a celdas numéricas
+          if (typeof cell === 'object' && cell.t === 'n') {
+            if (cell.v < 0) {
+              // Formato para números negativos
+              cell.z = '[$$-es-UY]#,##0.00;-[$$-es-UY]#,##0.00';
+            } else {
+              // Formato para números positivos
+              if (cell.v >= 10000) {
+                // Si el número es mayor o igual a 10,000, ajustamos el formato
+                cell.z = '[$$-es-UY]#,##0.00';
+              } else {
+                // Si el número es menor que 10,000, usamos un formato más simple
+                cell.z = '[$$-es-UY]#,##0.00';
+              }
+            }
+            cell.w = cell.v;
+          }
+        }
+      }
         const hoja2 = XLSX.utils.aoa_to_sheet([
           ["Período", `${constante1[1]['valor']}`+' a '+`${constante1[2]['valor']}`],
           ["Resumen de Impuestos"],
@@ -710,6 +732,30 @@ function App() {
           ["TOTAL IVA A PAGAR", "$", "", "TOTAL IMPUESTOS A PAGAR", "$"]
         ])
       // Agregar la hoja al libro
+      for (const cellRef in hoja2) {
+        if (hoja2.hasOwnProperty(cellRef)) {
+          const cell = hoja2[cellRef];
+          // Aplicar el formato de moneda solo a celdas numéricas
+          if (typeof cell === 'object' && cell.t === 'n') {
+            if (cell.v < 0) {
+              // Formato para números negativos
+              cell.z = '[$$-es-UY]#,##0.00;-[$$-es-UY]#,##0.00';
+            } else {
+              // Formato para números positivos
+              if (cell.v >= 10000) {
+                // Si el número es mayor o igual a 10,000, ajustamos el formato
+                cell.z = '[$$-es-UY]#,##0.00';
+              } else {
+                // Si el número es menor que 10,000, usamos un formato más simple
+                cell.z = '[$$-es-UY]#,##0.00';
+              }
+            }
+            cell.w = cell.v;
+          }
+        }
+      }
+      hoja['!cols'] = Array(18).fill({ wch: 10 }); 
+      hoja2['!cols'] = Array(18).fill({ wch: 15 }); 
       XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
       XLSX.utils.book_append_sheet(libro, hoja2, "Resumen de Impuestos" );
       const timer = setTimeout(() => {
@@ -732,62 +778,65 @@ function App() {
   };
 
   //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
-  // const addDataBase = (excelDataBase) => {
-  //   if (excelDataBase) {
-  //     const restOfArray = excelDataBase.slice(4);
-  //     const parsedData = restOfArray.map((data) => {
-  //       const values = Object.values(data);
-  //       //ISO impoCompraVentaadd
-  //       let isoDate = null;
-  //       if (validateDate(values[0])) {
-  //         const dateParts = values[0].split("/");
-  //         const [day, month, year] = dateParts;
-  //         const dateObject = new Date(`${year}-${month}-${day}`);
-  //         isoDate = dateObject.toISOString().substring(0, 10);
-  //         let nextIdImpo = 0;
-  //         //REVICION
-  //         return {
-  //           id: nextIdImpo + 1,
-  //           idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
-  //           fecha: isoDate, //formato ISO
-  //           tipoCFE: values[1],
-  //           serie: values[2],
-  //           numero: values[3],
-  //           RUTEmisor: values[4],
-  //           razonsocial: values[5],
-  //           domicilio: values[6],
-  //           moneda: values[7]? values[7]: "-",
-  //           montoneto: values[15]['montoneto'], //formato money
-  //           montonetoUYU: values[8], //formato money
-  //           montoiva: values[15]['montoiva'], //formato money
-  //           montoivaUYU: values[9], //formato money
-  //           montototal: values[10], //formato money
-  //           montoretperUYU: values[11], //formato money
-  //           montocredfiscalUYU: values[12], //formato money
-  //           tipodecambiodelafecha: values[13],
-  //           montoendolares: values[14],
-  //           montoretper: values[15]['montoretper'], //formato money
-  //           montocredfiscal: values[15]['montocredfiscal'], //formato money
-  //         };
-  //       }
-  //     });
-  //     if (typeError) {
-  //       console.log("error");
-  //     }
-  //     axios
-  //       //.post("https://app-excel-production.up.railway.app/data", {
-  //       .post("http://localhost:3001/data", {
-  //         impoCompraVenta: [...parsedData],
-  //         archivo: archivo,
-  //       })
-  //       .then(() => {
-  //         // console.log('se guardo en base de datos')
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error en la solicitud:", error);
-  //       });
-  //   };
-  // }
+  const addDataBase = (excelDataBase) => {
+    if (excelDataBase) {
+      const restOfArray = excelDataBase.slice(4);
+      const parsedData = restOfArray.map((data) => {
+        const values = Object.values(data);
+        //ISO impoCompraVentaadd
+        let isoDate = null;
+        if (validateDate(values[0])) {
+          const dateParts = values[0].split("/");
+          const [day, month, year] = dateParts;
+          const dateObject = new Date(`${year}-${month}-${day}`);
+          isoDate = dateObject.toISOString().substring(0, 10);
+          let nextIdImpo = 0;
+          //REVICION
+              return {
+                id: nextIdImpo + 1,
+                idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
+                fecha: isoDate, //formato ISO
+                tipoCFE: values[1],
+                tipo: values[2],
+                serie: values[3],
+                numero: values[4],
+                RUTEmisor: values[5],
+                razonsocial: values[6],
+                domicilio: values[7],
+                moneda: values[8]? values[8]: "-",
+                montonetoUYU: values[9], //formato money
+                montoivaUYU: values[10], //formato money
+                montototal: values[11], //formato money
+                montoretperUYU: values[12], //formato money
+                montocredfiscalUYU: values[13], //formato money
+                montoneto: values[15], //formato money
+                montoiva: values[16], //formato money
+                montototaloriginal: values[17],
+                montoretper: values[18]['montoretper'], //formato money
+                montocredfiscal: values[18]['montocredfiscal'], //formato money
+              };
+        }
+      });
+      if (typeError) {
+        console.log("error");
+      }
+      axios
+        .post("https://app-excel-production.up.railway.app/data", {
+        //.post("http://localhost:3001/data", {
+          impoCompraVenta: [...parsedData],
+          archivo: archivo,
+        })
+        .then(() => {
+          // console.log('se guardo en base de datos')
+        })
+        .catch((error) => {
+          console.error("Error en la solicitud:", error);
+        });
+    };
+  }
+
+
+
   //----------------------> ELIMINAR BASE DE DATOS <-------------------------//  
   // const deleteDataBase = () => {
   //   axios

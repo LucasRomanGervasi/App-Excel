@@ -6,7 +6,7 @@ export const getOrderDataNew = (data) => {
   let dataNewOrdenado = [];
   for (let index = 0; index < data?.length; index++) {
     if (data[index]['__EMPTY'] === "e-Factura" || data[index]['__EMPTY'] === "Nota de Crédito de e-Factura" || data[index]['__EMPTY'] === "Nota de Débito de e-Factura") {
-      if (data[index]['__EMPTY_5'] !== 0.00 && data[index]['__EMPTY_6'] !== 0.00) {
+      if (data[index]['__EMPTY_5'] !== 0 || 0.00 && data[index]['__EMPTY_6'] !== 0 || 0.00) {
         const values = {
           'fecha': data[index]['CFE Recibidos'],
           'tipoCFE': data[index]['__EMPTY'],
