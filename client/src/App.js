@@ -574,7 +574,7 @@ function App() {
       const pagosLimite = pagosInicio + pagos.length;
       
       const totalesCompra = compras.length+8+3;
-
+      const totalesRetenciones = retencionesFiscales.length + totalesCompra + 6;
       const libro = XLSX.utils.book_new();
 
       // Crear una hoja de Excel
@@ -721,15 +721,15 @@ function App() {
           [],
           [],
           ["IVA", "", "", "IRAE", "", "", "ICOSA"],
-          ["Ventas", "$", "", "IRAE Mínimo", "", "", "ICOSA A Pagar", "$"],
-          ["IVA Ventas", 0, "", "IRAE del Mes", "", "", "ICOSA del Mes"],
+          ["Ventas", "", "", "IRAE Mínimo", 9940, "", "ICOSA A Pagar"],
+          ["IVA Ventas", "", "", "IRAE del Mes", { t: "n", f: `IF(B6*0.027>E6, B6*0.027, E6)` }, "", "ICOSA del Mes", { t: "n", f: `=H6` }],
           ["Total Compras", { t: "n", f: `='CFE Recibidos'!L${totalesCompra}`}],
           ["IVA Compras", { t: "n", f: `='CFE Recibidos'!K${totalesCompra}` }],
           ["Neto IVA", { t: "n", f: `=B7-B9` }, "", "", "", "", "IP"],
-          ["IVA del Mes","", "", "Resguardos de IRAE", "", "", "IP A Pagar", "0"],
-          ["IVA Mes Anterior", "", "", "", "", "", "IP del Mes", "$0.00"],
-          ["IVA A Pagar", "$"],
-          ["TOTAL IVA A PAGAR", "$", "", "TOTAL IMPUESTOS A PAGAR", "$"]
+          ["IVA del Mes", { t: "n", f: `IF(B10 < 0, 0, B10)` }, "", "Resguardos de IRAE", { t: "n", f: `='CFE Recibidos'!M${totalesRetenciones}` }, "", "IP A Pagar"],
+          ["IVA Mes Anterior", "", "", "", "", "", "IP del Mes", { t: "n", f: `=H11`}],
+          ["IVA A Pagar", { t: "n", f: `=B11-B12` }],
+          ["TOTAL IVA A PAGAR", { t: "n", f: `=B13` }, "", "TOTAL IMPUESTOS A PAGAR", { t: "n", f: `=E7+H7` }]
         ])
       // Agregar la hoja al libro
       for (const cellRef in hoja2) {
@@ -739,7 +739,7 @@ function App() {
           if (typeof cell === 'object' && cell.t === 'n') {
             if (cell.v < 0) {
               // Formato para números negativos
-              cell.z = '[$$-es-UY]#,##0.00;-[$$-es-UY]#,##0.00';
+              cell.z = '[$$-es-UY]#,##0.00;[RED]-[$$-es-UY]#,##0.00';
             } else {
               // Formato para números positivos
               if (cell.v >= 10000) {
@@ -754,8 +754,12 @@ function App() {
           }
         }
       }
-      hoja['!cols'] = Array(18).fill({ wch: 10 }); 
+      hoja['!cols'] = Array(18).fill({ wch: 12 }); 
       hoja2['!cols'] = Array(18).fill({ wch: 15 }); 
+      const columnConfig = { wch: 15, bold: true }; // Puedes ajustar 'wch' (ancho) y otras propiedades según tus necesidades
+      // Luego, asigna el objeto de configuración a la quinta columna (índice 4)
+      hoja2['!cols'] = hoja2['!cols'] || [];
+      hoja2['!cols'][4] = columnConfig;
       XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
       XLSX.utils.book_append_sheet(libro, hoja2, "Resumen de Impuestos" );
       const timer = setTimeout(() => {
