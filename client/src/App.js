@@ -270,8 +270,9 @@ function App() {
         }
       }
       for (let index = 4; index < dataNew?.length; index++) {
-        const fechaBuscada = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'))
-        const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
+        const fechaBuscada = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'));
+        const fechaAnterior = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'));
+        const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaAnterior);
         const montoendolaresUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montototal'] : dataNew[index]['montototal'] / resultado.montoventa;
         const montonetoUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoneto'] : dataNew[index]['montoneto'] * resultado.montoventa;
         const montoivaUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoiva'] : dataNew[index]['montoiva'] * resultado.montoventa;
@@ -327,8 +328,9 @@ function App() {
           }
         }
         for (let index = 4; index < dataNew?.length; index++) {
-          const fechaBuscada = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'))
-          const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaBuscada);
+          const fechaAnterior = getCloserDate(fechaCotizacion, dataNew[index]['fecha'].replace(/-/g, '/'));
+          const resultado = fechaCotizacion.find(item => item.fecha.replace(/-/g, '/') === fechaAnterior);
+          console.log(resultado, fechaAnterior)
           // const montoendolares = dataNew[index]['moneda'] === 'UYU'?  dataNew[index]['montototal'] : dataNew[index]['montototal'] / resultado.montoventa;
           const montonetoUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoneto'] : dataNew[index]['montoneto'] * resultado.montoventa;
           const montoivaUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoiva'] : dataNew[index]['montoiva'] * resultado.montoventa;
@@ -956,7 +958,7 @@ function App() {
             <button
               className={`btn ${typeError ===
                 "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos" ||
-                typeError || fileName === null || dataNew !== null ? "btn-no" : ""}`}
+                typeError || fileName === null || dataNew !== null? "btn-no" : ""}`}
               type="submit"
               onClick={() => valores(excelData)}
             >

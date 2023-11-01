@@ -26,10 +26,12 @@
 //   return fechaMasCercana;
 // }
 
+
 export function getCloserDate(fechas, fechaObjetivo) {
+  console.log(fechas, fechaObjetivo)
   // Función para convertir fechas en objetos Date
   const fechasEdit = Object.values(fechas).map(item => item.fecha.replace(/-/g, '/'));
-
+  console.log(fechasEdit)
   // Dividir la fecha objetivo en partes (día, mes, año)
   const parts = fechaObjetivo.split('/');
   const day = parseInt(parts[0], 10);
@@ -38,9 +40,9 @@ export function getCloserDate(fechas, fechaObjetivo) {
 
   // Convierte la fecha objetivo en un objeto Date con el formato dd/mm/yyyy
   const fechaObjetivoDate = new Date(year, month - 1, day); // Resta 1 al mes, ya que los meses en JavaScript van de 0 a 11
-
-  // Resta un día a la fecha objetivo
-  fechaObjetivoDate.setDate(fechaObjetivoDate.getDate() - 1);
+  // Resta un día a la fecha objetivo para encontrar la fecha anterior
+  fechaObjetivoDate.setDate(fechaObjetivoDate.getDate());
+  console.log(fechaObjetivoDate)
 
   // Inicializa la fecha más cercana y la diferencia mínima
   let fechaMasCercana = fechasEdit[0];
@@ -50,8 +52,9 @@ export function getCloserDate(fechas, fechaObjetivo) {
   for (const fecha of fechasEdit) {
     // Calcula la diferencia en milisegundos entre la fecha objetivo y la fecha actual
     const diferencia = Math.abs(fechaObjetivoDate - new Date(fecha));
-    // Si la diferencia actual es menor que la diferencia mínima, actualiza la fecha más cercana y la diferencia mínima
-    if (diferencia < diferenciaMinima) {
+    // Si la diferencia actual es menor o igual que la diferencia mínima y la fecha actual es menor que la fecha objetivo,
+    // actualiza la fecha más cercana y la diferencia mínima
+    if (diferencia <= diferenciaMinima && new Date(fecha) < fechaObjetivoDate) {
       fechaMasCercana = fecha;
       diferenciaMinima = diferencia;
     }
