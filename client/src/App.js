@@ -987,7 +987,7 @@ function App() {
               // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
               onClick={descargarXLS}
             >
-              DESCARGAR XLS{" "}
+              DESCARGAR POSICION IVA{" "}
               <span className="icons">
                 {/* <FaHandHoldingUsd /> */}
               </span>
