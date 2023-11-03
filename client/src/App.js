@@ -256,9 +256,9 @@ function App() {
         { 'fechadesde': dataNew[1]['fechadesde'], 'valor': dataNew[1]['valor'] },
         { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
         {
-          'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda': dataNew[3]['moneda'], 'tipoCambio': "Tipo de Cambio de la Fecha",  
+          'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda': dataNew[3]['moneda'],
           'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Ventas UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
-          'montoNeto': 'Monto Neto Original','montoIva': 'IVA Ventas Original', 'montototalorginal': 'Monto Total Original'
+          'tipoCambio': "Tipo de Cambio de la Fecha",  'montoNeto': 'Monto Neto Original','montoIva': 'IVA Ventas Original', 'montototalorginal': 'Monto Total Original'
         }]
       for (let index = 0; index < cotizacionUSD?.length; index++) {
         if (cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD') {
@@ -289,12 +289,12 @@ function App() {
           razonsocial: dataNew[index]['razonsocial'],
           domicilio: dataNew[index]['domicilio'],
           moneda: dataNew[index]['moneda'],
-            tipodecambiodelafecha: dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === "" ? '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
           montonetoUYU: Number(montonetoUYU).toFixed(2),
           montoivaUYU: Number(montoivaUYU).toFixed(2),
             montototalUYU: Number(montototalUYU).toFixed(2),
             montoretperUYU: Number(montoretperUYU).toFixed(2),
             montocredfiscalUYU: Number(montocredfiscalUYU).toFixed(2),
+            tipodecambiodelafecha: dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === "" ? '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
             montoneto:  dataNew[index]['montoneto'] ,
             montoiva:  dataNew[index]['montoiva'],
             montototaloriginal: dataNew[index]['montototal'],
@@ -314,9 +314,9 @@ function App() {
       { 'fechadesde': dataNew[1]['fechadesde'], 'valor': dataNew[1]['valor'] },
       { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
         {
-          'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'moneda': dataNew[3]['moneda'], 'tipoCambio': "Tipo de Cambio de la Fecha", 
+          'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'moneda': dataNew[3]['moneda'],
           'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Ventas UYU', 'montototal': 'Monto Total UYU','montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
-          'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Ventas Original', 'montototalorginal': 'Monto Total Original',
+          'tipoCambio': "Tipo de Cambio de la Fecha", 'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Ventas Original', 'montototalorginal': 'Monto Total Original',
         }]
         for (let index = 0; index < cotizacionUSD?.length; index++) {
           if (cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD') {
@@ -345,12 +345,12 @@ function App() {
           numero: dataNew[index]['numero'],
           RUTEmisor: dataNew[index]['RUTEmisor'],
           moneda: dataNew[index]['moneda'],
-          tipodecambiodelafecha: dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === "" ? '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
           montonetoUYU: Number(montonetoUYU).toFixed(2),
           montoivaUYU: Number(montoivaUYU).toFixed(2),
           montototalUYU: Number(montototalUYU).toFixed(2),
           montoretperUYU: Number(montoretperUYU).toFixed(2),
           montocredfiscalUYU: Number(montocredfiscalUYU).toFixed(2),
+          tipodecambiodelafecha: dataNew[index]['moneda'] === 'UYU' || dataNew[index]['moneda'] === "" ? '1.00' : resultado.montoventa.replace(/(\.\d{2})\d+$/, '$1'),
           montoneto:  dataNew[index]['montoneto'] ,
           montoiva:  dataNew[index]['montoiva'],
           montototaloriginal: dataNew[index]['montototal'],
@@ -404,9 +404,9 @@ function App() {
           { 'fechadesde': dataNew[1]['fechadesde'], 'valor': dataNew[1]['valor'] },
           { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
           {
-            'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda': dataNew[3]['moneda'], 'tipoCambio': "Tipo de Cambio de la Fecha", 
+            'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda': dataNew[3]['moneda'],
             'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Ventas UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
-            'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Ventas Original','montototalorginal': 'Monto Total Original'
+            'tipoCambio': "Tipo de Cambio de la Fecha", 'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Ventas Original','montototalorginal': 'Monto Total Original'
           }]
         if (dataNew) {
         for (let index = 4; index < dataNew?.length; index++) {
@@ -428,12 +428,12 @@ function App() {
                 razonsocial: razonSocialData.nombre,
                 domicilio: razonSocialData.domicilio,
                 moneda: dataNew[index]['moneda'],
-                tipodecambiodelafecha: dataNew[index]['tipodecambiodelafecha'],
                 montonetoUYU: dataNew[index]['montonetoUYU'],
                 montoivaUYU: dataNew[index]['montoivaUYU'],
                 montototalUYU: dataNew[index]['montototalUYU'],
                 montoretperUYU: dataNew[index]['montoretperUYU'],
                 montocredfiscalUYU: dataNew[index]['montocredfiscalUYU'],
+                tipodecambiodelafecha: dataNew[index]['tipodecambiodelafecha'],
                 montoneto: dataNew[index]['montoneto'],
                 montoiva:   dataNew[index]['montoiva'],
                 montototalorginal: dataNew[index]['montototaloriginal'],
@@ -600,8 +600,8 @@ function App() {
         ["Compras"],
         [
           "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
-          "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
-          "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
+          "Domicilio", "Moneda", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
+          "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", "Tipo de Cambio de la Fecha",
           "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
         ],
           ...compras.map((individualExcelData) => {
@@ -611,7 +611,7 @@ function App() {
             return valoresTransformados.slice(0, 18);
           }),
           [],
-          ["", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
+          ["", "", "", "", "", "", "", "", "","Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
           ["Total", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J9:J${comprasLimite})` }, { t: "n", f: `=SUM(K9:K${comprasLimite})` }, { t: "n", f: `=SUM(L9:L${comprasLimite})` }, { t: "n", f: `=SUM(M9:M${comprasLimite})` }],
           []
           );
@@ -623,8 +623,8 @@ function App() {
       ["Retenciones Fiscales"],
       [
         "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
-        "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
-        "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
+        "Domicilio", "Moneda", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
+        "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", "Tipo de Cambio de la Fecha",
         "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
       ],
           ...retencionesFiscales.map((individualExcelData) => {
@@ -646,8 +646,8 @@ function App() {
       ["Remitos"],
       [
         "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
-        "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
-        "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
+        "Domicilio", "Moneda", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
+        "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", "Tipo de Cambio de la Fecha",
         "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
       ],
           ...remitos.map((individualExcelData) => {
@@ -657,7 +657,7 @@ function App() {
             return valoresTransformados.slice(0, 18);
           }),
           [],
-          ["", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
+          ["", "", "", "", "", "", "", "", "","Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
           ["Total", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${remitosInicio}:J${remitosLimite})` }, { t: "n", f: `=SUM(K${remitosInicio}:K${remitosLimite})` }, { t: "n", f: `=SUM(L${remitosInicio}:L${remitosLimite})` }, { t: "n", f: `=SUM(M${remitosInicio}:M${remitosLimite})` }],
           []
           );
@@ -670,8 +670,8 @@ function App() {
         ["Pagos"],
         [
           "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
-          "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
-          "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
+          "Domicilio", "Moneda", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
+          "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", "Tipo de Cambio de la Fecha",
           "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
         ],
           ...pagos.map((individualExcelData) => {
