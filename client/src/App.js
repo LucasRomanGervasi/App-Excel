@@ -257,8 +257,8 @@ function App() {
         { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
         {
           'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda': dataNew[3]['moneda'], 'tipoCambio': "Tipo de Cambio de la Fecha",  
-          'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Ventas UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
-          'montoNeto': 'Monto Neto Original','montoIva': 'IVA Ventas Original', 'montototalorginal': 'Monto Total Original'
+          'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Compras UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
+          'montoNeto': 'Monto Neto Original','montoIva': 'IVA Compras Original', 'montototalorginal': 'Monto Total Original'
         }]
       for (let index = 0; index < cotizacionUSD?.length; index++) {
         if (cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD') {
@@ -315,8 +315,8 @@ function App() {
       { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
         {
           'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'moneda': dataNew[3]['moneda'], 'tipoCambio': "Tipo de Cambio de la Fecha", 
-          'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Ventas UYU', 'montototal': 'Monto Total UYU','montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
-          'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Ventas Original', 'montototalorginal': 'Monto Total Original',
+          'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Compras UYU', 'montototal': 'Monto Total UYU','montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
+          'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Compras Original', 'montototalorginal': 'Monto Total Original',
         }]
         for (let index = 0; index < cotizacionUSD?.length; index++) {
           if (cotizacionUSD[index]['codigoiso_monedacotiz'] === 'USD') {
@@ -405,8 +405,8 @@ function App() {
           { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
           {
             'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda': dataNew[3]['moneda'], 'tipoCambio': "Tipo de Cambio de la Fecha", 
-            'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Ventas UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
-            'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Ventas Original','montototalorginal': 'Monto Total Original'
+            'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Compras UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
+            'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Compras Original','montototalorginal': 'Monto Total Original'
           }]
         if (dataNew) {
         for (let index = 4; index < dataNew?.length; index++) {
@@ -600,7 +600,7 @@ function App() {
         ["Compras"],
         [
           "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
-          "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
+          "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
           "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
           "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
         ],
@@ -611,8 +611,8 @@ function App() {
             return valoresTransformados.slice(0, 18);
           }),
           [],
-          ["", "", "", "", "", "", "", "", "","Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J9:J${comprasLimite})` }, { t: "n", f: `=SUM(K9:K${comprasLimite})` }, { t: "n", f: `=SUM(L9:L${comprasLimite})` }, { t: "n", f: `=SUM(M9:M${comprasLimite})` }],
+          ["", "", "", "", "", "", "", "", "", "","Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
+          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J9:J${comprasLimite})` }, { t: "n", f: `=SUM(K9:K${comprasLimite})` }, { t: "n", f: `=SUM(L9:L${comprasLimite})` }, { t: "n", f: `=SUM(M9:M${comprasLimite})` }],
           []
           );
       } 
@@ -623,7 +623,7 @@ function App() {
       ["Retenciones Fiscales"],
       [
         "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
-        "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
+        "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
         "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
         "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
       ],
@@ -634,8 +634,8 @@ function App() {
             return valoresTransformados.slice(0, 18);
           }),
           [],
-          ["", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${retencionesFiscalesInicio}:J${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(K${retencionesFiscalesInicio}:K${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(L${retencionesFiscalesInicio}:L${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(M${retencionesFiscalesInicio}:M${retencionesFiscalesLimite})` }],
+          ["", "", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
+          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${retencionesFiscalesInicio}:J${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(K${retencionesFiscalesInicio}:K${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(L${retencionesFiscalesInicio}:L${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(M${retencionesFiscalesInicio}:M${retencionesFiscalesLimite})` }],
           []
           );
       }
@@ -646,7 +646,7 @@ function App() {
       ["Remitos"],
       [
         "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
-        "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
+        "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
         "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU",
         "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
       ],
@@ -657,8 +657,8 @@ function App() {
             return valoresTransformados.slice(0, 18);
           }),
           [],
-          ["", "", "", "", "", "", "", "", "","Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${remitosInicio}:J${remitosLimite})` }, { t: "n", f: `=SUM(K${remitosInicio}:K${remitosLimite})` }, { t: "n", f: `=SUM(L${remitosInicio}:L${remitosLimite})` }, { t: "n", f: `=SUM(M${remitosInicio}:M${remitosLimite})` }],
+          ["", "", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
+          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${remitosInicio}:J${remitosLimite})` }, { t: "n", f: `=SUM(K${remitosInicio}:K${remitosLimite})` }, { t: "n", f: `=SUM(L${remitosInicio}:L${remitosLimite})` }, { t: "n", f: `=SUM(M${remitosInicio}:M${remitosLimite})` }],
           []
           );
       }
@@ -670,7 +670,7 @@ function App() {
         ["Pagos"],
         [
           "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
-          "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU",
+          "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
           "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
           "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
         ],
@@ -681,8 +681,8 @@ function App() {
             return valoresTransformados.slice(0, 18);
           }),
           [],
-          ["", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Ventas UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${pagosInicio}:J${pagosLimite})`}, { t: "n", f: `=SUM(K${pagosInicio}:K${pagosLimite})` }, { t: "n", f: `=SUM(L${pagosInicio}:L${pagosLimite})` }, { t: "n", f: `=SUM(M${pagosInicio}:M${pagosLimite})` }],
+          ["", "", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
+          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${pagosInicio}:J${pagosLimite})`}, { t: "n", f: `=SUM(K${pagosInicio}:K${pagosLimite})` }, { t: "n", f: `=SUM(L${pagosInicio}:L${pagosLimite})` }, { t: "n", f: `=SUM(M${pagosInicio}:M${pagosLimite})` }],
           []
         );
       }
@@ -725,10 +725,13 @@ function App() {
           ["IVA", "", "", "IRAE", "", "", "ICOSA"],
           ["Ventas", "", "", "IRAE Mínimo", 9940, "", "ICOSA A Pagar"],
           ["IVA Ventas", "", "", "IRAE del Mes", { t: "n", f: `IF(B6*0.027>E6, B6*0.027, E6)` }, "", "ICOSA del Mes", { t: "n", f: `=H6` }],
-          ["Total Compras", { t: "n", f: `='CFE Recibidos'!L${totalesCompra}`}],
-          ["IVA Compras", { t: "n", f: `='CFE Recibidos'!K${totalesCompra}` }],
+          //["Total Compras", { t: "n", f: `='CFE Recibidos'!L${totalesCompra}`}],
+          ["Total Compras", { t: "n", f: `='CFE Recibidos'!m${totalesCompra}`}],
+          //["IVA Compras", { t: "n", f: `='CFE Recibidos'!K${totalesCompra}` }],
+          ["IVA Compras", { t: "n", f: `='CFE Recibidos'!L${totalesCompra}` }],
           ["Neto IVA", { t: "n", f: `=B7-B9` }, "", "", "", "", "IP"],
-          ["IVA del Mes", { t: "n", f: `IF(B10 < 0, 0, B10)` }, "", "Resguardos de IRAE", { t: "n", f: `='CFE Recibidos'!M${totalesRetenciones}` }, "", "IP A Pagar"],
+          //["IVA del Mes", { t: "n", f: `IF(B10 < 0, 0, B10)` }, "", "Resguardos de IRAE", { t: "n", f: `='CFE Recibidos'!M${totalesRetenciones}` }, "", "IP A Pagar"],
+          ["IVA del Mes", { t: "n", f: `IF(B10 < 0, 0, B10)` }, "", "Resguardos de IRAE", { t: "n", f: `='CFE Recibidos'!N${totalesRetenciones}` }, "", "IP A Pagar"],
           ["IVA Mes Anterior", "", "", "", "", "", "IP del Mes", { t: "n", f: `=H11`}],
           ["IVA A Pagar", { t: "n", f: `=B11-B12` }],
           ["TOTAL IVA A PAGAR", { t: "n", f: `=B13` }, "", "TOTAL IMPUESTOS A PAGAR", { t: "n", f: `=E7+H7` }]
