@@ -104,7 +104,7 @@ function App() {
         { 'fechahasta': data[2]['CFE Recibidos'], 'valor': data[2]['__EMPTY'] },
         {
           'fecha': data[3]['CFE Recibidos'], 'tipoCFE': data[3]['__EMPTY'], 'tipo': 'Tipo', 'serie': data[3]['__EMPTY_1'], 'numero': data[3]['__EMPTY_2'], 'rutemisor': data[3]['__EMPTY_3'], 'moneda': data[3]['__EMPTY_4'],
-          'montoneto': data[3]['__EMPTY_5'], 'ivaventas': data[3]['__EMPTY_6'], 'montototal': data[3]['__EMPTY_7'], 'montoRet/Per': data[3]['__EMPTY_8'], 'montoCredFiscal': data[3]['__EMPTY_9']
+          'montoneto': data[3]['__EMPTY_5'], 'ivaventas': data[3]['__EMPTY_6'], 'montototal': data[3]['__EMPTY_7'], 'montoRet/Per': data[3]['__EMPTY_8']
         }]
         const dataNewOrdenado = getOrderDataNew(data)
         for (let index = 4; index < dataNewOrdenado?.length; index++) {
@@ -208,7 +208,6 @@ function App() {
           montoiva: values[7], //formato money
           montototal: values[8], //formato money
           montoretper: values[9], //formato money
-          montocredfiscal: values[10], //formato money
         };
       });
       let nextId = 0;
@@ -257,7 +256,7 @@ function App() {
         { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
         {
           'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda': dataNew[3]['moneda'], 'tipoCambio': "Tipo de Cambio de la Fecha",  
-          'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Compras UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
+          'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Compras UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 
           'montoNeto': 'Monto Neto Original','montoIva': 'IVA Compras Original', 'montototalorginal': 'Monto Total Original'
         }]
       for (let index = 0; index < cotizacionUSD?.length; index++) {
@@ -278,7 +277,6 @@ function App() {
         const montoivaUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoiva'] : dataNew[index]['montoiva'] * resultado.montoventa;
         const montototalUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montototal'] : dataNew[index]['montototal'] * resultado.montoventa;
         const montoretperUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoretper'] : dataNew[index]['montoretper'] * resultado.montoventa;
-        const montocredfiscalUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montocredfiscal'] : dataNew[index]['montocredfiscal'] * resultado.montoventa;
         var nuevoImporte = {
           fecha: dataNew[index]['fecha'],
           tipoCFE: dataNew[index]['tipoCFE'],
@@ -294,13 +292,11 @@ function App() {
           montoivaUYU: Number(montoivaUYU).toFixed(2),
             montototalUYU: Number(montototalUYU).toFixed(2),
             montoretperUYU: Number(montoretperUYU).toFixed(2),
-            montocredfiscalUYU: Number(montocredfiscalUYU).toFixed(2),
             montoneto:  dataNew[index]['montoneto'] ,
             montoiva:  dataNew[index]['montoiva'],
             montototaloriginal: dataNew[index]['montototal'],
             valuesLast :{
-              montoretper:  dataNew[index]['montoretper'],
-              montocredfiscal: dataNew[index]['montocredfiscal'] 
+              montoretper:  dataNew[index]['montoretper']
             }};
             excelCotizacionData.push(nuevoImporte);
           }
@@ -315,7 +311,7 @@ function App() {
       { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
         {
           'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'moneda': dataNew[3]['moneda'], 'tipoCambio': "Tipo de Cambio de la Fecha", 
-          'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Compras UYU', 'montototal': 'Monto Total UYU','montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
+          'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Compras UYU', 'montototal': 'Monto Total UYU','montoRet/Per': 'Monto Ret/Per UYU', 
           'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Compras Original', 'montototalorginal': 'Monto Total Original',
         }]
         for (let index = 0; index < cotizacionUSD?.length; index++) {
@@ -336,7 +332,6 @@ function App() {
           const montoivaUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoiva'] : dataNew[index]['montoiva'] * resultado.montoventa;
         const montototalUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montototal'] : dataNew[index]['montototal'] * resultado.montoventa;
         const montoretperUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montoretper'] : dataNew[index]['montoretper'] * resultado.montoventa;
-        const montocredfiscalUYU = dataNew[index]['moneda'] === 'UYU' ? dataNew[index]['montocredfiscal'] : dataNew[index]['montocredfiscal'] * resultado.montoventa;
         var nuevoImporte = {
           fecha: dataNew[index]['fecha'],
           tipoCFE: dataNew[index]['tipoCFE'],
@@ -350,13 +345,11 @@ function App() {
           montoivaUYU: Number(montoivaUYU).toFixed(2),
           montototalUYU: Number(montototalUYU).toFixed(2),
           montoretperUYU: Number(montoretperUYU).toFixed(2),
-          montocredfiscalUYU: Number(montocredfiscalUYU).toFixed(2),
           montoneto:  dataNew[index]['montoneto'] ,
           montoiva:  dataNew[index]['montoiva'],
           montototaloriginal: dataNew[index]['montototal'],
           valuesLast :{
-            montoretper:  dataNew[index]['montoretper'],
-            montocredfiscal: dataNew[index]['montocredfiscal'] 
+            montoretper:  dataNew[index]['montoretper']
           }};
         excelCotizacionData.push(nuevoImporte);
       }
@@ -405,7 +398,7 @@ function App() {
           { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
           {
             'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'],'tipo':  dataNew[3]['tipo'],  'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda': dataNew[3]['moneda'], 'tipoCambio': "Tipo de Cambio de la Fecha", 
-            'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Compras UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 'montoCredFiscal': 'Monto Cred. Fiscal UYU',
+            'montonetoUYU': 'Monto Neto UYU', 'ivaventasUYU': 'IVA Compras UYU', 'montototal': 'Monto Total UYU', 'montoRet/Per': 'Monto Ret/Per UYU', 
             'montoNeto': 'Monto Neto Original', 'montoIva': 'IVA Compras Original','montototalorginal': 'Monto Total Original'
           }]
         if (dataNew) {
@@ -433,13 +426,11 @@ function App() {
                 montoivaUYU: dataNew[index]['montoivaUYU'],
                 montototalUYU: dataNew[index]['montototalUYU'],
                 montoretperUYU: dataNew[index]['montoretperUYU'],
-                montocredfiscalUYU: dataNew[index]['montocredfiscalUYU'],
                 montoneto: dataNew[index]['montoneto'],
                 montoiva:   dataNew[index]['montoiva'],
                 montototalorginal: dataNew[index]['montototaloriginal'],
                 valuesLast :{
-                  montoretper: dataNew[index]['valuesLast']['montoretper'],
-                  montocredfiscal:dataNew[index]['valuesLast']['montocredfiscal']
+                  montoretper: dataNew[index]['valuesLast']['montoretper']
                 }
               };
                 
@@ -470,7 +461,7 @@ function App() {
           { 'fechahasta': dataNew[2]['fechahasta'], 'valor': dataNew[2]['valor'] },
           {
             'fecha': dataNew[3]['fecha'], 'tipoCFE': dataNew[3]['tipoCFE'], 'tipo':  dataNew[3]['tipo'], 'serie': dataNew[3]['serie'], 'numero': dataNew[3]['numero'], 'rutemisor': dataNew[3]['rutemisor'], 'razonsocial': 'Razon Social', 'domicilio': 'Domicilio', 'moneda': dataNew[3]['moneda'],
-            'montoneto': dataNew[3]['montoneto'], 'ivaventas': dataNew[3]['ivaventas'], 'montototal': dataNew[3]['montototal'], 'montoRet/Per': dataNew[3]['montoRet/Per'], 'montoCredFiscal': dataNew[3]['montoCredFiscal']
+            'montoneto': dataNew[3]['montoneto'], 'ivaventas': dataNew[3]['ivaventas'], 'montototal': dataNew[3]['montototal'], 'montoRet/Per': dataNew[3]['montoRet/Per']
           }]
         for (let index = 0; index < dataNew?.length; index++) {
 
@@ -497,7 +488,6 @@ function App() {
                 montoiva: dataNew[index]['montoiva'],
                 montototal: dataNew[index]['montototal'],
                 montoretper: dataNew[index]['montoretper'],
-                montocredfiscal: dataNew[index]['montocredfiscal'],
               };
 
               excelRazonSocialValues.push(nuevoImporte);
@@ -560,7 +550,7 @@ function App() {
               compras.push(excelFinal[i]);
           } else if (excelFinal[i]['tipo'] === 'pagos') {
               pagos.push(excelFinal[i]);
-          } else if (excelFinal[i]['tipo'] === 'retenciones fiscales') {
+          } else if (excelFinal[i]['tipo'] === 'resguardos') {
               retencionesFiscales.push(excelFinal[i]);
           } else {
               remitos.push(excelFinal[i]);
@@ -601,7 +591,7 @@ function App() {
         [
           "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
           "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
-          "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
+          "Monto Ret/Per UYU", 
           "Monto Neto Original", "IVA Compra Original", "Monto Total Original"
         ],
           ...compras.map((individualExcelData) => {
@@ -620,11 +610,11 @@ function App() {
       const retencionesData = [];
       if (retencionesFiscales.length > 0) {
         retencionesData.push(
-      ["Retenciones Fiscales"],
+      ["Resguardos"],
       [
         "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
         "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
-        "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
+        "Monto Ret/Per UYU", 
         "Monto Neto Original", "IVA Compra Original", "Monto Total Original"
       ],
           ...retencionesFiscales.map((individualExcelData) => {
@@ -648,7 +638,7 @@ function App() {
       [
         "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
         "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
-        "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU",
+        "Monto Ret/Per UYU", 
         "Monto Neto Original", "IVA Compra Original", "Monto Total Original"
       ],
           ...remitos.map((individualExcelData) => {
@@ -673,7 +663,7 @@ function App() {
         [
           "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
           "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
-          "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
+          "Monto Ret/Per UYU", 
           "Monto Neto Original", "IVA Compra Original", "Monto Total Original"
         ],
           ...pagos.map((individualExcelData) => {
@@ -726,14 +716,11 @@ function App() {
           [],
           [],
           ["IVA", "", "", "IRAE", "", "", "ICOSA"],
-          ["Ventas", "", "", "IRAE Mínimo", 9940, "", "ICOSA A Pagar"],
-          ["IVA Ventas", "", "", "IRAE del Mes", { t: "n", f: `IF(B6*0.027>E6, B6*0.027, E6)` }, "", "ICOSA del Mes", { t: "n", f: `=H6` }],
-          //["Total Compras", { t: "n", f: `='CFE Recibidos'!L${totalesCompra}`}],
+          ["Ventas", "ingresar monto", "", "IRAE Mínimo", 9940, "", "ICOSA A Pagar"],
+          ["IVA Ventas", "ingresar monto", "", "IRAE del Mes", { t: "n", f: `IF(B6*0.027>E6, B6*0.027, E6)` }, "", "ICOSA del Mes", { t: "n", f: `=H6` }],
           ["Total Compras", { t: "n", f: `='CFE Recibidos'!m${totalesCompra}`}],
-          //["IVA Compras", { t: "n", f: `='CFE Recibidos'!K${totalesCompra}` }],
           ["IVA Compras", { t: "n", f: `='CFE Recibidos'!L${totalesCompra}` }],
           ["Neto IVA", { t: "n", f: `=B7-B9` }, "", "", "", "", "IP"],
-          //["IVA del Mes", { t: "n", f: `IF(B10 < 0, 0, B10)` }, "", "Resguardos de IRAE", { t: "n", f: `='CFE Recibidos'!M${totalesRetenciones}` }, "", "IP A Pagar"],
           ["IVA del Mes", { t: "n", f: `IF(B10 < 0, 0, B10)` }, "", "Resguardos de IRAE", { t: "n", f: `='CFE Recibidos'!N${totalesRetenciones}` }, "", "IP A Pagar"],
           ["IVA Mes Anterior", "", "", "", "", "", "IP del Mes", { t: "n", f: `=H11`}],
           ["IVA A Pagar", { t: "n", f: `=B11-B12` }],
@@ -820,12 +807,10 @@ function App() {
                 montoivaUYU: values[10], //formato money
                 montototal: values[11], //formato money
                 montoretperUYU: values[12], //formato money
-                montocredfiscalUYU: values[13], //formato money
                 montoneto: values[15], //formato money
                 montoiva: values[16], //formato money
                 montototaloriginal: values[17],
                 montoretper: values[18]['montoretper'], //formato money
-                montocredfiscal: values[18]['montocredfiscal'], //formato money
               };
         }
       });
