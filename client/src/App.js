@@ -612,7 +612,7 @@ function App() {
           }),
           [],
           ["", "", "", "", "", "", "", "", "", "","Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(K9:K${comprasLimite})` }, { t: "n", f: `=SUM(L9:L${comprasLimite})` }, { t: "n", f: `=SUM(M9:M${comprasLimite})` }, { t: "n", f: `=SUM(M9:M${comprasLimite})` }],
+          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(K9:K${comprasLimite})` }, { t: "n", f: `=SUM(L9:L${comprasLimite})` }, { t: "n", f: `=SUM(M9:M${comprasLimite})` }, { t: "n", f: `=SUM(N9:N${comprasLimite})` }],
           []
           );
       } 
