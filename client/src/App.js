@@ -602,7 +602,7 @@ function App() {
           "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
           "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
           "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
-          "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
+          "Monto Neto Original", "IVA Compra Original", "Monto Total Original"
         ],
           ...compras.map((individualExcelData) => {
             const valoresTransformados = Object.values(individualExcelData).map((valor, i) => {
@@ -625,7 +625,7 @@ function App() {
         "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
         "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
         "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
-        "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
+        "Monto Neto Original", "IVA Compra Original", "Monto Total Original"
       ],
           ...retencionesFiscales.map((individualExcelData) => {
             const valoresTransformados = Object.values(individualExcelData).map((valor, i) => {
@@ -648,7 +648,7 @@ function App() {
         "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
         "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
         "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU",
-        "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
+        "Monto Neto Original", "IVA Compra Original", "Monto Total Original"
       ],
           ...remitos.map((individualExcelData) => {
             const valoresTransformados = Object.values(individualExcelData).map((valor, i) => {
@@ -672,7 +672,7 @@ function App() {
           "Fecha", "Tipo CFE", "Tipo", "Serie", "Número", "Rut Emisor", "Razón Social",
           "Domicilio", "Moneda", "Tipo de Cambio de la Fecha", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU",
           "Monto Ret/Per UYU", "Monto Cred. Fiscal UYU", 
-          "Monto Neto Original", "IVA Venta Original", "Monto Total Original"
+          "Monto Neto Original", "IVA Compra Original", "Monto Total Original"
         ],
           ...pagos.map((individualExcelData) => {
             const valoresTransformados = Object.values(individualExcelData).map((valor, i) => {
