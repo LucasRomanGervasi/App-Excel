@@ -612,7 +612,7 @@ function App() {
           }),
           [],
           ["", "", "", "", "", "", "", "", "", "","Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J9:J${comprasLimite})` }, { t: "n", f: `=SUM(K9:K${comprasLimite})` }, { t: "n", f: `=SUM(L9:L${comprasLimite})` }, { t: "n", f: `=SUM(M9:M${comprasLimite})` }],
+          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(K9:K${comprasLimite})` }, { t: "n", f: `=SUM(L9:L${comprasLimite})` }, { t: "n", f: `=SUM(M9:M${comprasLimite})` }, { t: "n", f: `=SUM(M9:M${comprasLimite})` }],
           []
           );
       } 
@@ -635,7 +635,8 @@ function App() {
           }),
           [],
           ["", "", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${retencionesFiscalesInicio}:J${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(K${retencionesFiscalesInicio}:K${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(L${retencionesFiscalesInicio}:L${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(M${retencionesFiscalesInicio}:M${retencionesFiscalesLimite})` }],
+          //["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${retencionesFiscalesInicio}:J${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(K${retencionesFiscalesInicio}:K${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(L${retencionesFiscalesInicio}:L${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(M${retencionesFiscalesInicio}:M${retencionesFiscalesLimite})` }],
+          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(K${retencionesFiscalesInicio}:K${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(L${retencionesFiscalesInicio}:L${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(M${retencionesFiscalesInicio}:M${retencionesFiscalesLimite})` }, { t: "n", f: `=SUM(N${retencionesFiscalesInicio}:N${retencionesFiscalesLimite})` }],
           []
           );
       }
@@ -658,7 +659,8 @@ function App() {
           }),
           [],
           ["", "", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${remitosInicio}:J${remitosLimite})` }, { t: "n", f: `=SUM(K${remitosInicio}:K${remitosLimite})` }, { t: "n", f: `=SUM(L${remitosInicio}:L${remitosLimite})` }, { t: "n", f: `=SUM(M${remitosInicio}:M${remitosLimite})` }],
+          //["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${remitosInicio}:J${remitosLimite})` }, { t: "n", f: `=SUM(K${remitosInicio}:K${remitosLimite})` }, { t: "n", f: `=SUM(L${remitosInicio}:L${remitosLimite})` }, { t: "n", f: `=SUM(M${remitosInicio}:M${remitosLimite})` }],
+          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(K${remitosInicio}:K${remitosLimite})` }, { t: "n", f: `=SUM(L${remitosInicio}:L${remitosLimite})` }, { t: "n", f: `=SUM(M${remitosInicio}:M${remitosLimite})` }, { t: "n", f: `=SUM(N${remitosInicio}:N${remitosLimite})` }],
           []
           );
       }
@@ -682,7 +684,8 @@ function App() {
           }),
           [],
           ["", "", "", "", "", "", "", "", "", "", "Monto Neto UYU", "IVA Compras UYU", "Monto Total UYU", "Monto Ret/Per UYU"],
-          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${pagosInicio}:J${pagosLimite})`}, { t: "n", f: `=SUM(K${pagosInicio}:K${pagosLimite})` }, { t: "n", f: `=SUM(L${pagosInicio}:L${pagosLimite})` }, { t: "n", f: `=SUM(M${pagosInicio}:M${pagosLimite})` }],
+          //["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(J${pagosInicio}:J${pagosLimite})`}, { t: "n", f: `=SUM(K${pagosInicio}:K${pagosLimite})` }, { t: "n", f: `=SUM(L${pagosInicio}:L${pagosLimite})` }, { t: "n", f: `=SUM(M${pagosInicio}:M${pagosLimite})` }],
+          ["Total", "", "", "", "", "", "", "", "", "", { t: "n", f: `=SUM(K${pagosInicio}:K${pagosLimite})`}, { t: "n", f: `=SUM(L${pagosInicio}:L${pagosLimite})` }, { t: "n", f: `=SUM(M${pagosInicio}:M${pagosLimite})` }, { t: "n", f: `=SUM(N${pagosInicio}:N${pagosLimite})` }],
           []
         );
       }
