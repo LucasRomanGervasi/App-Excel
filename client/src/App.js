@@ -810,7 +810,7 @@ function App() {
                 montoneto: values[15], //formato money
                 montoiva: values[16], //formato money
                 montototaloriginal: values[17],
-                //montoretper: values[18]['montoretper'], //formato money
+                //montoretper: values[18]['montoretper'], //formato money   fhatzen esto me daba error Uncaught TypeError: Cannot read properties of undefined (reading 'montoretper'), puede que no exista columna 18
               };
         }
       });
