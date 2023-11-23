@@ -63,16 +63,14 @@ app.post("/data", (req, res) => {
         montoivaUYU,
         montototal,
         montoretperUYU,
-        montocredfiscalUYU,
         montoneto,
         montoiva,
         montoretper,
-        montocredfiscal,
         montototaloriginal
-
+        
       } = data1;
-      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, tipo, serie, numero, RUTEmisor, razonsocial, domicilio, moneda, montoNetoUYU,montoIvaUYU, montototal, montoRetPerUYU,  montoCredFiscalUYU, montoneto ,montoiva, montoretper, montocredFiscal, montototaloriginal) VALUES 
-      ( ${idarchivo}, '${fecha}', '${tipoCFE}','${tipo}', '${serie}', ${numero}, '${RUTEmisor}',  '${razonsocial}', '${domicilio}', '${moneda}', ${montonetoUYU}, ${montoivaUYU},${montototal}, ${montoretperUYU}, ${montocredfiscalUYU || 0},  ${montoneto},  ${montoiva},${montoretper}, ${montocredfiscal || 0},  ${montototaloriginal || 0})`;
+      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, tipo, serie, numero, RUTEmisor, razonsocial, domicilio, moneda, montoNetoUYU,montoIvaUYU, montototal, montoRetPerUYU, montoneto ,montoiva, montoretper, montototaloriginal) VALUES 
+      ( ${idarchivo}, '${fecha}', '${tipoCFE}','${tipo}', '${serie}', ${numero}, '${RUTEmisor}',  '${razonsocial}', '${domicilio}', '${moneda}', ${montonetoUYU}, ${montoivaUYU},${montototal}, ${montoretperUYU}, ${montoneto},  ${montoiva},${montoretper},  ${montototaloriginal || 0})`;
 
       db.query(sqlImpo, (err, resultImpo) => {
         if (err) {
