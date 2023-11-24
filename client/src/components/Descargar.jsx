@@ -226,7 +226,7 @@ return(
             ANTERIOR{" "}
             </Link>
             <button type="button"
-            className={`btn ${dataMemory === null && dataMemoryVentas === null || dataMemory === null && dataMemoryVentas !== null || excelFinalDowload === "descargado" ? "btn-no" : ""}`}
+            className={`btn ${dataMemory === null && dataMemoryVentas === null || dataMemory === null && dataMemoryVentas !== null || dataMemory !== null && dataMemoryVentas === null || excelFinalDowload === "descargado" ? "btn-no" : ""}`}
             // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
             onClick={descargarXLS}
             >
