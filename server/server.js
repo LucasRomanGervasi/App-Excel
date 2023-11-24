@@ -18,7 +18,7 @@ const db = mysql.createPool({
   password: "fpBGPVooo4V5ad1TxiCs",
 });
 
-//const MYSQL_URL = 'mysql://root:fpBGPVooo4V5ad1TxiCs@containers-us-west-190.railway.app:7782/railway',
+//const MYSQL_URL = 'mysql://root:fpBGPVooo4V5ad1TxiCs@containers-us-west-190.railway.app:7782/railway';
 
 app.get("/", (req, res) => {
   return res.status(200).send("Backend Conectado");
