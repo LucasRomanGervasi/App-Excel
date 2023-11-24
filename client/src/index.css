@@ -205,6 +205,14 @@ code {
   
 }
 
+.dataBaseDescarga{
+  display: flex;
+  justify-content: space-between;
+  width: 90;
+  margin: 10px 30px;
+  
+}
+
 .btnDataBase{
   margin: 10px 0;
   font-family: 'DIN-Medium', sans-serif ;

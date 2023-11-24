@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import View from "./Compras/View";
 import { Link } from "react-router-dom";
 import ReactLoading from "react-loading";
+import logo from "../images/asystax.png";
 import * as XLSX from "xlsx";
 import { dowloadBuys } from "../utils/Dowload/dowloadBuys";
 import  {compras, retencionesFiscales, remitos, pagos, hojaData, comprasData, retencionesData, remitosData, pagosData} from "../utils/Dowload/dowloadBuys";
@@ -148,7 +149,7 @@ function Descargar() {
         }
       }
       hoja['!cols'] = Array(18).fill({ wch: 12 });       
-      hoja1['!cols'] = Array(18).fill({ wch: 1 }); 
+      hoja1['!cols'] = Array(18).fill({ wch: 13 }); 
       hoja2['!cols'] = Array(18).fill({ wch: 15 }); 
       const columnConfig = { wch: 15, bold: true }; // Puedes ajustar 'wch' (ancho) y otras propiedades según tus necesidades
       // Luego, asigna el objeto de configuración a la quinta columna (índice 4)
@@ -199,10 +200,10 @@ function Descargar() {
 
 
 return(
-  <div>
-        <div className="view">
-        <h1>DESCARGAR</h1>
-        </div>
+  <div >
+  <div className="containerLogo">
+        <img className="logo" src={logo} alt="logo"></img>
+      </div>
         {loading === true ? (
             <div className="loading">
               <ReactLoading
@@ -214,7 +215,7 @@ return(
               <p style={{ marginTop: "10px" }}>Esto puede tardar unos segundos</p>
             </div>
           ) : null}
-        <div className="dataBase">
+        <div className="dataBaseDescarga">
           <Link to='/ventas' 
           className="btn"
           // className={`btn ${
