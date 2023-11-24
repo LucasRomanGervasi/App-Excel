@@ -42,7 +42,7 @@ export function dowloadSale(dataMemoryVentas) {
               ...ventas.map((individualExcelData) => {
                 delete individualExcelData['TipoCambioDeLaFecha'];
                 const valoresTransformados = Object.values(individualExcelData).map((valor, i) => {
-                  return i >= 9 ? Number(valor) : valor;
+                  return i >= 8 ? Number(valor) : valor;
                 });
                 return valoresTransformados.slice(0, 12);
               }),
