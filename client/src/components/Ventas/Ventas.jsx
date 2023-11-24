@@ -112,23 +112,19 @@ function Ventas() {
         }]
          for (let index = 3; index < data?.length; index++) {
            if (data[index]) {
-          if (typeof data[index]['Libro de Ventas'] === 'number') {
-            let isoDate = null;
-              const dateParts = Number(data[index]['Libro de Ventas']);
-              if (!isNaN(dateParts)) {
-              const milisegundos = dateParts * 24 * 60 * 60 * 1000;
-              const fecha = new Date(milisegundos);
-              const year = fecha.getFullYear();
-              const month = String(fecha.getMonth() + 1).padStart(2, '0'); // Sumamos 1 al mes ya que en JavaScript los meses van de 0 a 11
-              const day = String(fecha.getDate()).padStart(2, '0');
-              const dateObject = new Date(`${year}-${month}-${day}`);
-              isoDate = dateObject.toISOString().substring(0, 10);
-             } else {
-                console.error('values[0] no es un número válido.');
-              }
-            const serie = data[index]['__EMPTY_2'].charAt(0);
-            const numero = data[index]['__EMPTY_2'].slice(1);
-            const values = {
+            if (typeof data[index]['Libro de Ventas'] === 'number') {
+              const fechaExcel = data[index]['Libro de Ventas'];
+              const fechaJS = XLSX.SSF.parse_date_code(fechaExcel);
+              
+              if (fechaJS) {
+                const year = fechaJS.y;
+                const month = String(fechaJS.m).padStart(2, '0');
+                const day = String(fechaJS.d).padStart(2, '0');
+                const isoDate = `${day}/${month}/${year}`;
+            
+                const serie = data[index]['__EMPTY_2'].charAt(0);
+                const numero = data[index]['__EMPTY_2'].slice(1);
+                const values = {
               'fecha': isoDate,
               'tipoCFE': data[index]['__EMPTY_1'],
               'tipo': "ventas",
@@ -146,8 +142,8 @@ function Ventas() {
             }
             dataValues.push(values)
             }
+          }
           }}
-          console.log(dataValues)
           setTitle('CFE Emitidos');
           if (A0[0] === "Libro de Ventas" && A2[0] === "FECHA") {
             setExcelData(
@@ -155,9 +151,6 @@ function Ventas() {
               );
               setDataNew(dataValues)
               localStorage.setItem('dataNewVentas', JSON.stringify(dataValues))
-          // setExcelFinalDowload(null)
-          // setExcelFinal(null)
-          // setExcelFinalDowload(null)
         } else {
           setTypeError(
             "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
@@ -165,12 +158,19 @@ function Ventas() {
             setExcelData(null);
             setDataNew(null);
             setFileName(null);
-            // setExcelFinal(null)
-            // setExcelFinalDowload(null)
             fileInputRef.current.value = "";
           }
-        }
-      }}
+      } else {
+        setTypeError(
+          "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
+          );
+          setExcelData(null);
+          setDataNew(null);
+          setFileName(null);
+          fileInputRef.current.value = "";
+      }
+    }
+    }
       
   const valores = (excelData) => {
     if (excelData) {
@@ -178,7 +178,6 @@ function Ventas() {
       setTypeInfo(null)
       const firstFourElements = excelData.slice(0, 4);
       const restOfArray = excelData.slice(4, 33);
-      console.log(restOfArray, firstFourElements)
       //ISO ARCHIVO
       //  let fechadesde = Object.values(firstFourElements[1]);
       //  const [day, month, year] = fechadesde[1].split("/");
@@ -202,9 +201,7 @@ function Ventas() {
             const day = String(fecha.getDate()).padStart(2, '0');
             const dateObject = new Date(`${year}-${month}-${day}`);
             isoDate = dateObject.toISOString().substring(0, 10);
-          } else {
-            console.error('values[0] no es un número válido.');
-          }
+          } 
         } else {
           setExcelData("");
           setDataNew(null)
@@ -218,7 +215,6 @@ function Ventas() {
           }
           let nextIdImpo = 0;
           //REVICION
-          console.log(isoDate)
           return {
             id: nextIdImpo + 1,
             idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
@@ -247,7 +243,7 @@ function Ventas() {
       };
       if (typeError) {
         console.log("error");
-      }
+     }
       setimpoCompraVenta([...parsedData]);
       setArchivo({ ...archivo });
       setTypeSuccess("Se creo ventas correctamente")
@@ -258,13 +254,12 @@ function Ventas() {
 
   //----------------------> REINICIAR VISTA EXCEL <-------------------------//  
   const reiniciarExcel = () => {
-    setDataNew(null)
+    setDataNew(null);
     localStorage.removeItem("dataNewVentas");  
     localStorage.removeItem("titleVentas");  
-    setDataMemoryTitleVentas(null)
-    setDataMemoryVentas(null)
-    // setExcelFinal(null)
-    // setExcelFinalDowload(null)
+    setDataMemoryTitleVentas(null);
+    setDataMemoryVentas(null);
+    setFileName(null)
   };
 
   const siguienteValidate = () => {
