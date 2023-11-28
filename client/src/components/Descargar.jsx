@@ -34,7 +34,7 @@ function Descargar() {
       const comprasLimite = compras.length + 8;
       const retencionesFiscalesInicio = comprasLimite + 6;
       const retencionesFiscalesLimite = retencionesFiscalesInicio + retencionesFiscales.length;
-      const remitosInicio = retencionesFiscalesLimite + 6;
+      const remitosInicio = retencionesFiscalesLimite;
       const remitosLimite = remitosInicio + remitos.length;
       const pagosInicio = remitosLimite;
       const pagosLimite = pagosInicio + pagos.length;
@@ -165,7 +165,7 @@ function Descargar() {
         XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
       }
       const timer = setTimeout(() => {
-        XLSX.writeFile(libro, "CFE Recibidos.xlsx");
+        XLSX.writeFile(libro, "Asystax - Resumen Impositivo.xlsx");
         setLoading(false);
         setTypeSuccess("Se descargó el archivo correctamente");
         setExcelFinalDowload("descargado");
@@ -230,7 +230,7 @@ return(
             // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
             onClick={descargarXLS}
             >
-             DESCARGAR POSICION IVA{" "}
+             DESCARGAR POSICIÓN IMPOSITIVA{" "}
             {/* <span className="icons">
                <FaHandHoldingUsd /> 
             </span> */}

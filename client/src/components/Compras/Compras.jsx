@@ -12,7 +12,7 @@ import View from "./View";
 import { getOrderDataNew } from "../../utils/getOrderDataNew";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
-
+import ModalRestart from "../Modal/ModalRestart";
 
 function Compras() {
   //Estados nombres de archivos
@@ -42,6 +42,12 @@ function Compras() {
   const [razonSocial, setRazonSocial] = useState(null)
   //Estados siguiente
   const [siguiente, setSiguiente] = useState(true)
+  //Modal
+  const [modal, setModal] = useState(false)
+  const [modalRestart, setModalRestart] = useState(false)
+
+
+
   //----------------------> TRANSFORMAR XLS EN JSON <-------------------------//  
   const handleFile = (e) => {
     setExcelData(null)
@@ -235,8 +241,8 @@ function Compras() {
   //----------------------> BASE DE DATOS COTIZACION USD <-------------------------//  
   const getCotizacionUSD = () => {
     axios
-      .get("https://app-excel-production.up.railway.app/cotizacion-usd")
-      // .get("http://localhost:3001/cotizacion-usd")
+      //.get("https://app-excel-production.up.railway.app/cotizacion-usd")
+       .get("http://localhost:3001/cotizacion-usd")
       .then((response) => {
         setCotizacionUSD(response.data)
       })
@@ -374,8 +380,8 @@ function Compras() {
 
   const getRazonSocial = () => {
     axios
-      .get("https://app-excel-production.up.railway.app/razonsocial")
-      // .get("http://localhost:3001/razonsocial")
+      //.get("https://app-excel-production.up.railway.app/razonsocial")
+       .get("http://localhost:3001/razonsocial")
       .then((response) => {
         setRazonSocial(response.data)
       })
@@ -521,15 +527,24 @@ function Compras() {
     }
   };
   //----------------------> REINICIAR VISTA EXCEL <-------------------------//  
-  const reiniciarExcel = () => {
-    setDataNew(excelData)
-    localStorage.removeItem("dataNew");
-    localStorage.removeItem("title");
-    setDataMemory(null);
-    setDataMemoryTitle(null)
-    setExcelDataCotizacion(null)
-    setExcelDataRazonSocial(null)
-    setExcelFinal(null)
+  const modalChanges = () => {
+    setModal(true)
+  }
+
+  const reiniciar = (mensaje) => {
+    if(mensaje === true ){
+      setDataNew(null);
+      localStorage.removeItem("dataNew");  
+      localStorage.removeItem("title");  
+      setDataMemory(null);
+      setDataMemoryTitle(null);
+      fileInputRef.current.value = "";
+      setFileName(null)
+      setModal(false)
+    } else {
+      console.log('cancel')
+      setModal(false)
+    }
   };
 
   // //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
@@ -590,13 +605,22 @@ function Compras() {
   // }
 
 
+
   useEffect(() => {
     setDataMemory(JSON.parse(localStorage.getItem('dataNew')))
     setDataMemoryTitle(JSON.parse(localStorage.getItem('title')))
+    window.addEventListener('keydown', (e) => {
+      if(e.keyCode==13 ){
+        console.log('gola')
+      }
+      else{
+        console.log('no')
+      }
+    })
     if (excelData) {
       valores(excelData)
-      fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
-      // fetch("http://localhost:3001/razonsocial", requestOptions)
+      //fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
+       fetch("http://localhost:3001/razonsocial", requestOptions)
         .then(response => response.json())
     }
     getRazonSocial();
@@ -607,13 +631,44 @@ function Compras() {
     return () => clearTimeout(timer);
   }, [excelData]);
 
+  
 
   return (
     <div className="wrapper">
       <div className="containerLogo">
+      {typeError && typeError !== "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || dataNew === null && dataMemory === null? 
+         <img className="logo" src={logo} alt="logo"></img> :
+         <button className="logobtn"
+             onClick={modalChanges}
+             >     
         <img className="logo" src={logo} alt="logo"></img>
+        </button>
+          
+        }  
+                <button type="button"
+              className={`btn ${typeError && typeError !== "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || dataNew === null && dataMemory === null? "btn-no" : ""}`}
+              // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
+              onClick={modalChanges}
+            >
+              REINICIAR{" "}
+              <span className="icons">
+                {/* <FiRefreshCw /> */}
+              </span>
+            </button>
+      </div>
+      <div className="containerSubtitle">
+        <h2 style={{ fontSize: '20px', fontWeight: '100'}}>
+          Posición Impositiva UY <span style={{ fontSize: '14px' }}>v1.1</span> 
+        </h2>
       </div>
       <div>
+              {modal === true ? 
+      <div className="modal">
+                <ModalRestart
+                reiniciar={reiniciar}
+                />
+        </div>: null
+            }
         <form className="form" onSubmit={handleFileSubmit} id="myForm">
           <div className="containerForm">
             <label htmlFor="input-file" className="btnLabel">
@@ -625,6 +680,7 @@ function Compras() {
               name="fileInput"
               required
               ref={fileInputRef}
+            
               onChange={(e, excelData) => {
                 handleFile(e);
                 valores(excelData);
@@ -718,16 +774,6 @@ function Compras() {
                  <FaHandHoldingUsd /> 
               </span>
             </button> */}
-            <button type="button"
-              className={`btn ${typeError && typeError !== "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || dataMemory === null && dataNew === excelData ? "btn-no" : ""}`}
-              // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
-              onClick={reiniciarExcel}
-            >
-              REINICIAR TABLA{" "}
-              <span className="icons">
-                {/* <FiRefreshCw /> */}
-              </span>
-            </button>
             <Link to='/ventas'
               className={`btn ${siguiente !== true ? "btn-no" : ""}`}
             // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}

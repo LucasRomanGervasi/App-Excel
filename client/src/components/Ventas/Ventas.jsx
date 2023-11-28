@@ -12,6 +12,7 @@ import ReactLoading from "react-loading";
 import View from "./View";
 import { getOrderDataNew } from "../../utils/getOrderDataNew";
 import { Link } from "react-router-dom";
+import ModalRestart from "../Modal/ModalRestart";
 
 function Ventas() {
   //Estados nombres de archivos
@@ -37,7 +38,8 @@ function Ventas() {
   const [archivo, setArchivo] = useState({});
   //Estados Siguiente página
   const [siguiente, setSiguiente] = useState(true)
-
+  //Modal
+  const [modal, setModal] = useState(false)
   //----------------------> TRANSFORMAR XLS EN JSON <-------------------------//  
   const handleFile = (e) => {
     setExcelData(null)
@@ -246,30 +248,46 @@ function Ventas() {
      }
       setimpoCompraVenta([...parsedData]);
       setArchivo({ ...archivo });
-      setTypeSuccess("Se creo ventas correctamente")
+      setTypeSuccess("Se cargaron ventas correctamente")
     } else {
       console.log("error");
     }
   };
-
+  
   //----------------------> REINICIAR VISTA EXCEL <-------------------------//  
-  const reiniciarExcel = () => {
-    setDataNew(null);
-    localStorage.removeItem("dataNewVentas");  
-    localStorage.removeItem("titleVentas");  
-    setDataMemoryTitleVentas(null);
-    setDataMemoryVentas(null);
-    setFileName(null)
-  };
-
-  const siguienteValidate = () => {
-    if(excelData){
-      setSiguiente(true)
-    }else{
-      setSiguiente(false)
-    }
+  const modalChanges = () => {
+    setModal(true)
   }
-
+  
+  const reiniciar = (mensaje) => {
+    if(mensaje === true ){
+        setDataNew(null);
+        localStorage.removeItem("dataNew");  
+        localStorage.removeItem("title");  
+        localStorage.removeItem("dataNewVentas");  
+        localStorage.removeItem("titleVentas");  
+        setDataMemoryTitleVentas(null);
+        setDataMemoryVentas(null);
+        setDataMemoryTitle(null);
+        setDataMemory(null);
+        fileInputRef.current.value = "";
+        setFileName(null)
+        setModal(false)
+        window.location.href = "/";
+      } else {
+        console.log('cancel')
+        setModal(false)
+      }
+    };
+    
+    
+      const siguienteValidate = () => {
+        if(excelData){
+          setSiguiente(true)
+        }else{
+          setSiguiente(false)
+        }
+      }
 
   // //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
   // const addDataBase = (excelDataBase) => {
@@ -346,9 +364,39 @@ function Ventas() {
   return (
     <div className="wrapper">
       <div className="containerLogo">
+      {typeError || dataMemoryVentas === null && dataMemory === null  ? 
+         <img className="logo" src={logo} alt="logo"></img> :
+         <button className="logobtn"
+             onClick={modalChanges}
+             >     
         <img className="logo" src={logo} alt="logo"></img>
+        </button>
+          
+        }  
+        <button type="button"
+              className={`btn ${typeError || dataMemoryVentas === null && dataMemory === null ? "btn-no" : ""}`}
+              //className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
+              onClick={modalChanges}
+            >
+              REINICIAR{" "}
+              <span className="icons">
+                {/* <FiRefreshCw /> */}
+              </span>
+            </button>
+      </div>
+      <div className="containerSubtitle">
+        <h2 style={{ fontSize: '20px', fontWeight: '100'}}>
+          Posición Impositiva UY <span style={{ fontSize: '14px' }}>v1.1</span> 
+        </h2>
       </div>
       <div>
+        {modal === true ? 
+      <div className="modal">
+                <ModalRestart
+                reiniciar={reiniciar}
+                />
+        </div>: null
+            }
         <form className="form" onSubmit={handleFileSubmit} id="myForm">
           <div className="containerForm">
             <label htmlFor="input-file" className="btnLabel">
@@ -416,15 +464,6 @@ function Ventas() {
             </div>
           ) : null}
           <div className="dataBase">
-          <Link to='/' 
-              className="btn"
-              // className={`btn ${
-              //   siguiente !== true ? "btn-no" : ""}`}
-              // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
-              //onClick={}
-            >
-              ANTERIOR{" "}
-            </Link>
             <button
               className={`btn ${typeError ===
                 "Debes seleccionar y examinar tu archivo XLS o XLSX antes de enviar a la base de datos" ||
@@ -444,16 +483,7 @@ function Ventas() {
                  <FaHandHoldingUsd /> 
               </span>
             </button> */}
-            <button type="button"
-              className={`btn ${typeError || dataMemoryVentas === null || dataNew === null  ? "btn-no" : ""}`}
-              //className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
-              onClick={reiniciarExcel}
-            >
-              REINICIAR TABLA{" "}
-              <span className="icons">
-                {/* <FiRefreshCw /> */}
-              </span>
-            </button>
+  
               <Link to='/descargar'
               className={`btn ${ dataMemory === null && dataMemoryVentas === null && excelData === null? "btn-no" : ""}`}
             // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}

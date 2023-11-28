@@ -34,6 +34,7 @@ export function dowloadBuys(dataMemory) {
       const retencionesFiscalesLimite = retencionesFiscalesInicio + retencionesFiscales.length;
       const remitosInicio = retencionesFiscalesLimite + 6;
       const remitosLimite = remitosInicio + remitos.length;
+      console.log(remitosInicio, remitosLimite)
       const pagosInicio = remitosLimite;
       const pagosLimite = pagosInicio + pagos.length;
       
