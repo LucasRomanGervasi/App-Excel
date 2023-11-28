@@ -609,14 +609,6 @@ function Compras() {
   useEffect(() => {
     setDataMemory(JSON.parse(localStorage.getItem('dataNew')))
     setDataMemoryTitle(JSON.parse(localStorage.getItem('title')))
-    window.addEventListener('keydown', (e) => {
-      if(e.keyCode==13 ){
-        console.log('gola')
-      }
-      else{
-        console.log('no')
-      }
-    })
     if (excelData) {
       valores(excelData)
       fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
