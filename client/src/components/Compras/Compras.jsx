@@ -101,9 +101,11 @@ function Compras() {
       const worksheetName = workbook.SheetNames[0];
       const data = XLSX.utils.sheet_to_json(workbook.Sheets[worksheetName]);
       const file0 = Object.keys(data[0]);
+      const file1 = Object.keys(data[1]);
       const file10 = data[3];
       const file11 = data[4];
       const A0 = Object.values(file0);
+      const A1 = Object.values(file1);
       const A10 = Object.values(file10);
       const A11 = Object.values(file11);
       if (data[3]['__EMPTY_5'] === 'Monto Neto') {
