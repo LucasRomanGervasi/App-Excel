@@ -120,7 +120,7 @@ function Compras() {
         }
         setTitle(A0[0]);
         localStorage.setItem('title', JSON.stringify(A0[0]))
-        if (A0[0] === "CFE Recibidos" && A10[0] === "Fecha" && A11[0] !== "") {
+        if (A0[0] === "CFE Recibidos" && (A10[0] === "Fecha" || A10[0] === "Fecha comprobante") && A11[0] !== "") {
           setExcelData(
             dataValues
           );
