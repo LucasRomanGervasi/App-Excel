@@ -241,8 +241,8 @@ function Compras() {
   //----------------------> BASE DE DATOS COTIZACION USD <-------------------------//  
   const getCotizacionUSD = () => {
     axios
-      //.get("https://app-excel-production.up.railway.app/cotizacion-usd")
-       .get("http://localhost:3001/cotizacion-usd")
+      .get("https://app-excel-production.up.railway.app/cotizacion-usd")
+      // .get("http://localhost:3001/cotizacion-usd")
       .then((response) => {
         setCotizacionUSD(response.data)
       })
@@ -380,8 +380,8 @@ function Compras() {
 
   const getRazonSocial = () => {
     axios
-      //.get("https://app-excel-production.up.railway.app/razonsocial")
-       .get("http://localhost:3001/razonsocial")
+      .get("https://app-excel-production.up.railway.app/razonsocial")
+      // .get("http://localhost:3001/razonsocial")
       .then((response) => {
         setRazonSocial(response.data)
       })
@@ -619,8 +619,8 @@ function Compras() {
     })
     if (excelData) {
       valores(excelData)
-      //fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
-       fetch("http://localhost:3001/razonsocial", requestOptions)
+      fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
+      // fetch("http://localhost:3001/razonsocial", requestOptions)
         .then(response => response.json())
     }
     getRazonSocial();
