@@ -123,7 +123,6 @@ function Ventas() {
                 const month = String(fechaJS.m).padStart(2, '0');
                 const day = String(fechaJS.d).padStart(2, '0');
                 const isoDate = `${day}/${month}/${year}`;
-            
                 const serie = data[index]['__EMPTY_2'].charAt(0);
                 const numero = data[index]['__EMPTY_2'].slice(1);
                 const values = {
@@ -140,7 +139,7 @@ function Ventas() {
               'IVAVentasUYU': data[index]['__EMPTY_7'].toFixed(2),
               'MontoRedondeoUYU': data[index]['__EMPTY_8'].toFixed(2),
               'MontoTotalUYU': data[index]['__EMPTY_9'].toFixed(2),
-              'Notas': data[index]['__EMPTY_10']? data[index]['__EMPTY_10'] : "-",
+              'Notas': data[index]['__EMPTY_10']?  data[index]['__EMPTY_10']: "-",
             }
             dataValues.push(values)
             }
@@ -179,59 +178,10 @@ function Ventas() {
       setTypeError(null);
       setTypeInfo(null)
       const firstFourElements = excelData.slice(0, 4);
-      const restOfArray = excelData.slice(4, 33);
+      const restOfArray = excelData.slice(4);
       //ISO ARCHIVO
-      //  let fechadesde = Object.values(firstFourElements[1]);
-      //  const [day, month, year] = fechadesde[1].split("/");
-      //  const dateObjectFechaDesde = new Date(`${year}-${month}-${day}`);
-      //  const isoFechaDesde = dateObjectFechaDesde.toISOString().substring(0, 10);
-      //  let fechahasta = Object.values(firstFourElements[2]);
-      //  const [day2, month2, year2] = fechahasta[1].split("/");
-      //  const dateObject = new Date(`${year2}-${month2}-${day2}`);
-      //  const isoFechaHasta = dateObject.toISOString().substring(0, 10);
-      const parsedData = restOfArray.map((data) => {
-        const values = Object.values(data);
-        //ISO impoCompraVenta
-        let isoDate = null;
-        if (typeof values[0] === 'string') {
-          const dateParts = Number(values[0]);
-          if (!isNaN(dateParts)) {
-            const milisegundos = dateParts * 24 * 60 * 60 * 1000;
-            const fecha = new Date(milisegundos);
-            const year = fecha.getFullYear();
-            const month = String(fecha.getMonth() + 1).padStart(2, '0'); // Sumamos 1 al mes ya que en JavaScript los meses van de 0 a 11
-            const day = String(fecha.getDate()).padStart(2, '0');
-            const dateObject = new Date(`${year}-${month}-${day}`);
-            isoDate = dateObject.toISOString().substring(0, 10);
-          } 
-        } else {
-          setExcelData("");
-          setDataNew(null)
-          setTypeError(
-            "Hay una fecha no encontrada, revisa el archivo"
-            );
-            setExcelData(null)
-            setDataNew(null)
-            setFileName(null)
-            fileInputRef.current.value = "";
-          }
-          let nextIdImpo = 0;
-          //REVICION
-          return {
-            id: nextIdImpo + 1,
-            idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
-            fecha: isoDate, //formato ISO
-            tipoCFE: values[1],
-            serie: values[2],
-            numero: values[3],
-            RUTEmisor: values[4],
-            moneda: values[5],
-            montoneto: values[6], //formato money
-          montoiva: values[7], //formato money
-          montototal: values[8], //formato money
-          montoretper: values[9], //formato money
-        };
-      });
+      let fechadesde = Object.values(firstFourElements[1]);
+      let fechahasta = Object.values(firstFourElements[2]);
       let nextId = 0;
       const archivo = {
         id: nextId + 1,
@@ -239,15 +189,15 @@ function Ventas() {
         idempresa: 1,
         archivo: file,
         tipo: title,
-        // fechadesde: isoFechaDesde,
-        // fechahasta: isoFechaHasta,
+        fechadesde: fechadesde[1],
+        fechahasta: fechahasta[1],
         fechaupload: getDate(),
       };
       if (typeError) {
         console.log("error");
      }
-      setimpoCompraVenta([...parsedData]);
       setArchivo({ ...archivo });
+      addDataBase(excelData, archivo)
       setTypeSuccess("Se cargaron ventas correctamente")
     } else {
       console.log("error");
@@ -289,69 +239,72 @@ function Ventas() {
         }
       }
 
-  // //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
-  // const addDataBase = (excelDataBase) => {
-  //   if (excelDataBase) {
-  //     setSiguiente(true)
-  //     const restOfArray = excelDataBase.slice(4);
-  //     const parsedData = restOfArray.map((data) => {
-  //       const values = Object.values(data);
-  //       //ISO impoCompraVentaadd
-  //       let isoDate = null;
-  //       if (validateDate(values[0])) {
-  //         const dateParts = values[0].split("/");
-  //         const [day, month, year] = dateParts;
-  //         const dateObject = new Date(`${year}-${month}-${day}`);
-  //         isoDate = dateObject.toISOString().substring(0, 10);
-  //         let nextIdImpo = 0;
-  //         //REVICION
-  //             return {
-  //               id: nextIdImpo + 1,
-  //               idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
-  //               fecha: isoDate, //formato ISO
-  //               tipoCFE: values[1],
-  //               tipo: values[2],
-  //               serie: values[3],
-  //               numero: values[4],
-  //               RUTEmisor: values[5],
-  //               razonsocial: values[6],
-  //               domicilio: values[7],
-  //               moneda: values[8]? values[8]: "-",
-  //               montonetoUYU: values[9], //formato money
-  //               montoivaUYU: values[10], //formato money
-  //               montototal: values[11], //formato money
-  //               montoretperUYU: values[12], //formato money
-  //               montoneto: values[15], //formato money
-  //               montoiva: values[16], //formato money
-  //               montoretper: values[17]['montoretper'], //formato money   fhatzen esto me daba error Uncaught TypeError: Cannot read properties of undefined (reading 'montoretper'), puede que no exista columna 18
-  //               montototaloriginal: values[18], 
-  //             };
-  //       }
-  //     });
-  //     if (typeError) {
-  //       console.log("error");
-  //     }
-  //     axios
-  //       // .post("https://app-excel-production.up.railway.app/data", {
-  //       .post("http://localhost:3001/data", {
-  //         impoCompraVenta: [...parsedData],
-  //         archivo: archivo,
-  //       })
-  //       .then(() => {
-  //         // console.log('se guardo en base de datos')
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error en la solicitud:", error);
-  //       });
-  //   };
-  // }
+ //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
+  const addDataBase = (excelDataBase, archivo) => {
+    if (excelDataBase) {
+      setSiguiente(true)
+      const restOfArray = excelDataBase.slice(4);
+      const parsedData = restOfArray.map((data) => {
+         const values = Object.values(data);
+         let isoDate = null;
+         if (validateDate(values[0])) {
+           const dateParts = values[0].split("/");
+           const [day, month, year] = dateParts;
+           const dateObject = new Date(`${year}-${month}-${day}`);
+           isoDate = dateObject.toISOString().substring(0, 10);
+           let nextIdImpo = 0;
+           //REVICION
+              return {
+                id: nextIdImpo + 1,
+                idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
+                fecha: isoDate, //formato ISO
+                tipoCFE: values[1],
+                tipo: values[2],
+                serie: values[3],
+                numero: values[4],
+                RUTEmisor: values[5],
+                razonsocial: values[6],
+                domicilio: '-',
+                moneda: values[7] ? values[7] : null,
+                montonetoUYU: values[9], //formato money
+                montoivaUYU: values[10], //formato money
+                montoredondeoUYU: values[11], //formato money
+                montototal: values[12], //formato money
+                montoretperUYU: null,
+                montoneto: null,
+                montoiva: null,
+                montoretper: null,
+                montototaloriginal: null,
+                emisor: 1,
+                notas: values[13].replace(/\n/g, '')
+              };
+            }
+          });
+          console.log('parsed', parsedData)
+      if (typeError) {
+        console.log("error");
+      }
+      axios
+      .post("https://app-excel-production.up.railway.app/data", {
+       // .post("http://localhost:3001/data", {
+          impoCompraVenta: [...parsedData],
+          archivo: archivo,
+        })
+        .then(() => {
+          console.log('se guardo en base de datos')
+        })
+        .catch((error) => {
+          console.error("Error en la solicitud:", error);
+        });
+    };
+  }
 
   useEffect(() => {
     setDataMemory(JSON.parse(localStorage.getItem('dataNew')))
     setDataMemoryTitle(JSON.parse(localStorage.getItem('title')))
     setDataMemoryVentas(JSON.parse(localStorage.getItem('dataNewVentas')))
     setDataMemoryTitleVentas(JSON.parse(localStorage.getItem('titleVentas')))
-    if (excelData) {
+    if (excelData && dataMemoryVentas === null) {
       valores(excelData)
       siguienteValidate()
     }

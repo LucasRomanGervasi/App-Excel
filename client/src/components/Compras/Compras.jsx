@@ -180,44 +180,6 @@ function Compras() {
       const [day2, month2, year2] = fechahasta[1].split("/");
       const dateObject = new Date(`${year2}-${month2}-${day2}`);
       const isoFechaHasta = dateObject.toISOString().substring(0, 10);
-
-      const parsedData = restOfArray.map((data) => {
-        const values = Object.values(data);
-        //ISO impoCompraVenta
-        let isoDate = null;
-        if (validateDate(values[0])) {
-          const dateParts = values[0].split("/");
-          const [day, month, year] = dateParts;
-          const dateObject = new Date(`${year}-${month}-${day}`);
-          isoDate = dateObject.toISOString().substring(0, 10);
-        } else {
-          setExcelData("");
-          setDataNew(null)
-          setTypeError(
-            "Hay una fecha no encontrada, revisa el archivo"
-          );
-          setExcelData(null)
-          setDataNew(null)
-          setFileName(null)
-          fileInputRef.current.value = "";
-        }
-        let nextIdImpo = 0;
-        //REVICION
-        return {
-          id: nextIdImpo + 1,
-          idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
-          fecha: isoDate, //formato ISO
-          tipoCFE: values[1],
-          serie: values[2],
-          numero: values[3],
-          RUTEmisor: values[4],
-          moneda: values[5],
-          montoneto: values[6], //formato money
-          montoiva: values[7], //formato money
-          montototal: values[8], //formato money
-          montoretper: values[9], //formato money
-        };
-      });
       let nextId = 0;
       const archivo = {
         id: nextId + 1,
@@ -232,7 +194,6 @@ function Compras() {
       if (typeError) {
         console.log("error");
       }
-      setimpoCompraVenta([...parsedData]);
       setArchivo({ ...archivo });
     } else {
       console.log("error");
@@ -312,7 +273,7 @@ function Compras() {
       setExcelDataCotizacion(excelCotizacionData)
       setDataNew(excelCotizacionData)
       setExcelFinal(excelCotizacionData)
-      // addDataBase(excelCotizacionData)
+      addDataBase(excelCotizacionData)
       localStorage.setItem('dataNew', JSON.stringify(excelCotizacionData))
     } else {
       const excelCotizacionData =
@@ -463,7 +424,7 @@ function Compras() {
         }
         var excelRazonSocial = excelRazonSocialValues
         setExcelFinal(excelRazonSocial)
-        // addDataBase(excelRazonSocial)
+        addDataBase(excelRazonSocial)
         localStorage.setItem('dataNew', JSON.stringify(excelRazonSocial))
       } else {
         const excelRazonSocialValues =
@@ -549,62 +510,65 @@ function Compras() {
     }
   };
 
-  // //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
-  // const addDataBase = (excelDataBase) => {
-  //   if (excelDataBase) {
-  //     setSiguiente(true)
-  //     const restOfArray = excelDataBase.slice(4);
-  //     const parsedData = restOfArray.map((data) => {
-  //       const values = Object.values(data);
-  //       //ISO impoCompraVentaadd
-  //       let isoDate = null;
-  //       if (validateDate(values[0])) {
-  //         const dateParts = values[0].split("/");
-  //         const [day, month, year] = dateParts;
-  //         const dateObject = new Date(`${year}-${month}-${day}`);
-  //         isoDate = dateObject.toISOString().substring(0, 10);
-  //         let nextIdImpo = 0;
-  //         //REVICION
-  //         return {
-  //           id: nextIdImpo + 1,
-  //           idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
-  //           fecha: isoDate, //formato ISO
-  //           tipoCFE: values[1],
-  //           tipo: values[2],
-  //           serie: values[3],
-  //           numero: values[4],
-  //           RUTEmisor: values[5],
-  //           razonsocial: values[6],
-  //           domicilio: values[7],
-  //           moneda: values[8] ? values[8] : "-",
-  //           montonetoUYU: values[9], //formato money
-  //           montoivaUYU: values[10], //formato money
-  //           montototal: values[11], //formato money
-  //           montoretperUYU: values[12], //formato money
-  //           montoneto: values[15], //formato money
-  //           montoiva: values[16], //formato money
-  //           montoretper: values[17]['montoretper'], //formato money   fhatzen esto me daba error Uncaught TypeError: Cannot read properties of undefined (reading 'montoretper'), puede que no exista columna 18
-  //           montototaloriginal: values[18],
-  //         };
-  //       }
-  //     });
-  //     if (typeError) {
-  //       console.log("error");
-  //     }
-  //     axios
-  //       // .post("https://app-excel-production.up.railway.app/data", {
-  //       .post("http://localhost:3001/data", {
-  //         impoCompraVenta: [...parsedData],
-  //         archivo: archivo,
-  //       })
-  //       .then(() => {
-  //         // console.log('se guardo en base de datos')
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error en la solicitud:", error);
-  //       });
-  //   };
-  // }
+  //----------------------> ENVIAR BASE DE DATOS <-------------------------//  
+  const addDataBase = (excelDataBase) => {
+    if (excelDataBase) {
+      setSiguiente(true)
+      const restOfArray = excelDataBase.slice(4);
+      const parsedData = restOfArray.map((data) => {
+        const values = Object.values(data);
+        //ISO impoCompraVentaadd
+        let isoDate = null;
+        if (validateDate(values[0])) {
+          const dateParts = values[0].split("/");
+          const [day, month, year] = dateParts;
+          const dateObject = new Date(`${year}-${month}-${day}`);
+          isoDate = dateObject.toISOString().substring(0, 10);
+          let nextIdImpo = 0;
+          //REVICION
+          return {
+            id: nextIdImpo + 1,
+            idarchivo: 1, //el id autonumérico obtenido al insertar un registro en tabla "archivo",
+            fecha: isoDate, //formato ISO
+            tipoCFE: values[1],
+            tipo: values[2],
+            serie: values[3],
+            numero: values[4],
+            RUTEmisor: values[5],
+            razonsocial: values[6],
+            domicilio: values[7],
+            moneda: values[8] ? values[8] : "-",
+            montonetoUYU: values[9], //formato money
+            montoivaUYU: values[10], //formato money
+            montoredondeoUYU: null, //formato money
+            montototal: values[11], //formato money
+            montoretperUYU: values[12], //formato money
+            montoneto: values[15], //formato money
+            montoiva: values[16], //formato money
+            montoretper: values[17]['montoretper'], //formato money   fhatzen esto me daba error Uncaught TypeError: Cannot read properties of undefined (reading 'montoretper'), puede que no exista columna 18
+            montototaloriginal: values[18],
+            emisor: 0,
+            notas: "-"
+          };
+        }
+      });
+      if (typeError) {
+        console.log("error");
+      }
+      axios
+         .post("https://app-excel-production.up.railway.app/data", {
+        //.post("http://localhost:3001/data", {
+          impoCompraVenta: [...parsedData],
+          archivo: archivo,
+        })
+        .then(() => {
+           console.log('se guardo en base de datos')
+          })
+        .catch((error) => {
+          console.error("Error en la solicitud:", error);
+        });
+    };
+  }
 
 
 
