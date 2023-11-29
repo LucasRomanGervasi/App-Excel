@@ -61,16 +61,18 @@ app.post("/data", (req, res) => {
         moneda,
         montonetoUYU,
         montoivaUYU,
+        montoredondeoUYU,
         montototal,
         montoretperUYU,
         montoneto,
         montoiva,
         montoretper,
-        montototaloriginal
-        
+        montototaloriginal,
+        emisor,
+        notas
       } = data1;
-      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, tipo, serie, numero, RUTEmisor, razonsocial, domicilio, moneda, montoNetoUYU,montoIvaUYU, montototal, montoRetPerUYU, montoneto ,montoiva, montoretper, montototaloriginal) VALUES 
-      ( ${idarchivo}, '${fecha}', '${tipoCFE}','${tipo}', '${serie}', ${numero}, '${RUTEmisor}',  '${razonsocial}', '${domicilio}', '${moneda}', ${montonetoUYU}, ${montoivaUYU},${montototal}, ${montoretperUYU}, ${montoneto},  ${montoiva},${montoretper},  ${montototaloriginal || 0})`;
+      const sqlImpo = `INSERT INTO impo_compraventa ( idarchivo, fecha, tipoCFE, tipo, serie, numero, RUTEmisor, razonsocial, domicilio, moneda, montoNetoUYU,montoIvaUYU,montototal, montoRetPerUYU, montoneto ,montoiva, montoretper, montototaloriginal, emisor, montoredondeoUYU, notas) VALUES 
+      ( ${idarchivo}, '${fecha}', '${tipoCFE}','${tipo}', '${serie}', ${numero}, '${RUTEmisor}',  '${razonsocial}', '${domicilio}', '${moneda}', ${montonetoUYU}, ${montoivaUYU},${montototal}, ${montoretperUYU}, ${montoneto},  ${montoiva},${montoretper},  ${montototaloriginal || 0}, ${emisor}, ${montoredondeoUYU || 0}, '${notas}')`;
 
       db.query(sqlImpo, (err, resultImpo) => {
         if (err) {
@@ -164,7 +166,7 @@ app.get("/razonsocial", async (req, res) => {
   let razonsocial = []
   async function getInfoByRUT(index) {
     return new Promise(async (resolve, reject) => {
-      if (excelData[index]['RUTEmisor']) {
+      if (excelData[index]['RUTEmisor'] && excelData[index]['tipo'] !== 'ventas') {
         
         const cliente = await crearCliente(url, soapOptions)
         var wsSecurity = new WSSecurityCert(privateKey, publicKey, password, securityOptions);
@@ -257,10 +259,10 @@ app.get("/razonsocial", async (req, res) => {
 
 const port = process.env.PORT || 3001;
 
-app.listen(port , function () {
-  console.log(`Servidor escuchando en el puerto ${port}`);
-});
-
-// app.listen(3001 , function () {
+// app.listen(port , function () {
 //   console.log(`Servidor escuchando en el puerto ${port}`);
 // });
+
+app.listen(3001 , function () {
+  console.log(`Servidor escuchando en el puerto ${port}`);
+});
