@@ -286,7 +286,7 @@ function Ventas() {
       }
       axios
       .post("https://app-excel-production.up.railway.app/data", {
-      //  .post("http://localhost:3001/data", {
+      // .post("http://localhost:3001/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })

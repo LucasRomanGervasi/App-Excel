@@ -18,11 +18,11 @@ export function dowloadBuys(dataMemory) {
           }
       
       for (let i = 5; i < Object.keys(dataMemory).length; i++) {
-          if (dataMemory[i]['tipo'] === 'compras') {
+          if (dataMemory[i]['tipo'].toLowerCase() === 'compras') {
               compras.push(dataMemory[i]);
-          } else if (dataMemory[i]['tipo'] === 'pagos') {
+          } else if (dataMemory[i]['tipo'].toLowerCase() === 'pagos') {
               pagos.push(dataMemory[i]);
-          } else if (dataMemory[i]['tipo'] === 'resguardos' || dataMemory[i]['tipo'] === 'retenciones fiscales') {
+          } else if (dataMemory[i]['tipo'].toLowerCase() === 'resguardos' || dataMemory[i]['tipo'] === 'e-resguardos' || dataMemory[i]['tipo'] === 'retenciones fiscales') {
               retencionesFiscales.push(dataMemory[i]);
           } else {
               remitos.push(dataMemory[i]);
@@ -32,9 +32,8 @@ export function dowloadBuys(dataMemory) {
       const comprasLimite = compras.length + 8;
       const retencionesFiscalesInicio = comprasLimite + 6;
       const retencionesFiscalesLimite = retencionesFiscalesInicio + retencionesFiscales.length;
-      const remitosInicio = retencionesFiscalesLimite + 6;
+      const remitosInicio = retencionesFiscalesLimite;
       const remitosLimite = remitosInicio + remitos.length;
-      console.log(remitosInicio, remitosLimite)
       const pagosInicio = remitosLimite;
       const pagosLimite = pagosInicio + pagos.length;
       
