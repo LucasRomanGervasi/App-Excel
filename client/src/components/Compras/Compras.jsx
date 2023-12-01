@@ -504,6 +504,7 @@ function Compras() {
       fileInputRef.current.value = "";
       setFileName(null)
       setModal(false)
+      window.location.href = "/";
     } else {
       console.log('cancel')
       setModal(false)
@@ -557,7 +558,7 @@ function Compras() {
       }
       axios
          .post("https://app-excel-production.up.railway.app/data", {
-        //.post("http://localhost:3001/data", {
+        // .post("http://localhost:3001/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })
@@ -594,21 +595,21 @@ function Compras() {
   return (
     <div className="wrapper">
       <div className="containerLogo">
-      {typeError && typeError !== "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || dataNew === null && dataMemory === null? 
+      {/* {typeError && typeError !== "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || dataNew === null && dataMemory === null? 
          <img className="logo" src={logo} alt="logo"></img> :
+          */}
          <button className="logobtn"
              onClick={modalChanges}
              >     
         <img className="logo" src={logo} alt="logo"></img>
         </button>
-          
-        }  
+        
                 <button type="button"
               className={`btn ${typeError && typeError !== "Cargando datos desde los servicios web de DGI, aguarde unos segundos y presione nuevamente" || dataNew === null && dataMemory === null? "btn-no" : ""}`}
               // className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
               onClick={modalChanges}
             >
-              REINICIAR{" "}
+              REINICIAR TODO{" "}
               <span className="icons">
                 {/* <FiRefreshCw /> */}
               </span>

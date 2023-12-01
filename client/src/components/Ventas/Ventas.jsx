@@ -286,7 +286,7 @@ function Ventas() {
       }
       axios
       .post("https://app-excel-production.up.railway.app/data", {
-       // .post("http://localhost:3001/data", {
+      //  .post("http://localhost:3001/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })
@@ -317,21 +317,20 @@ function Ventas() {
   return (
     <div className="wrapper">
       <div className="containerLogo">
-      {typeError || dataMemoryVentas === null && dataMemory === null  ? 
+      {/* {typeError || dataMemoryVentas === null && dataMemory === null  ? 
          <img className="logo" src={logo} alt="logo"></img> :
+        */}
          <button className="logobtn"
              onClick={modalChanges}
              >     
         <img className="logo" src={logo} alt="logo"></img>
-        </button>
-          
-        }  
+        </button> 
         <button type="button"
-              className={`btn ${typeError || dataMemoryVentas === null && dataMemory === null ? "btn-no" : ""}`}
+              className={`btn`}
               //className={`btnDataBaseDelete  ${typeError ? "btn-no" : ""}`}
               onClick={modalChanges}
             >
-              REINICIAR{" "}
+              REINICIAR TODO{" "}
               <span className="icons">
                 {/* <FiRefreshCw /> */}
               </span>
