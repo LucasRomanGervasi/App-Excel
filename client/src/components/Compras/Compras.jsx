@@ -205,7 +205,7 @@ function Compras() {
   const getCotizacionUSD = () => {
     axios
       .get("https://app-excel-production.up.railway.app/cotizacion-usd")
-      //.get("http://localhost:3001/cotizacion-usd")
+      // .get("http://localhost:3002/cotizacion-usd")
       .then((response) => {
         setCotizacionUSD(response.data)
       })
@@ -334,26 +334,7 @@ function Compras() {
     return () => clearTimeout(timer)
   }
 
-  //----------------------> BASE DE DATOS RAZON SOCIAL <-------------------------//  
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dataNew)
-  };
-
-  const getRazonSocial = () => {
-    axios
-       .get("https://app-excel-production.up.railway.app/razonsocial")
-      //.get("http://localhost:3001/razonsocial")
-      .then((response) => {
-        setRazonSocial(response.data)
-      })
-      .catch((error) => {
-        console.log("eeror")
-        setLoading(false)
-      });
-  }
-  //----------------------> RAZON SOCIAL EXCEL <-------------------------//  
+  //----------------------> BASE DE DATOS RAZON SOCIAL <-------------------------//
   function valoresRazonSocial() {
     if (razonSocial === null || razonSocial?.length === 0) {
       setTypeInfo(
@@ -558,7 +539,7 @@ function Compras() {
       }
       axios
           .post("https://app-excel-production.up.railway.app/data", {
-        //.post("http://localhost:3001/data", {
+        // .post("http://localhost:3002/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })
@@ -568,22 +549,41 @@ function Compras() {
         .catch((error) => {
           console.error("Error en la solicitud:", error);
         });
-    };
+     };
   }
 
 
 
   useEffect(() => {
+
     setDataMemory(JSON.parse(localStorage.getItem('dataNew')))
     setDataMemoryTitle(JSON.parse(localStorage.getItem('title')))
-    if (excelData) {
+    
+    if (excelData && !dataMemory) {
       valores(excelData)
+
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: dataNew.filter(r => r.RUTEmisor).map(r => r.RUTEmisor) })
+      }
+      
        fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
-      //fetch("http://localhost:3001/razonsocial", requestOptions)
-        .then(response => response.json())
-    }
-    getRazonSocial();
-    getCotizacionUSD();
+      // fetch("http://localhost:3002/razonsocial", requestOptions)
+      .then(response => response.json())
+
+      .then(data => {
+          setRazonSocial(data)
+        })       
+        .catch(error => {
+          // Manejar errores en la solicitud fetch
+          console.error("Error al realizar la solicitud fetch:", error);
+        });
+      }
+
+      getCotizacionUSD();
+
+
     const timer = setTimeout(() => {
       setTypeSuccess(null);
     }, 3000);
