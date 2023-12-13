@@ -93,40 +93,46 @@ app.post("/data", (req, res) => {
             return res
               .status(200)
               .send("Todos los datos insertados correctamente");
-            }
           }
+        }
       });
     });
   });
 });
 
-  // Pedir datos de moneda_cotizacion
+// Pedir datos de moneda_cotizacion
 
-  app.get("/cotizacion-usd", (req, res) => {
-    // Query SQL para obtener datos de la tabla "actualizas"
-    const sqlQuery = "SELECT * FROM moneda_cotizacion";
-    db.query(sqlQuery, (err, result) => {
-      if (err) {
-        console.error("Error al consultar la tabla moneda_cotizacion:", err);
-        return res.status(500).send("Error interno del servidor");
-      }
-      // Aquí solo envía la respuesta JSON
-      return res.status(200).json(result);
-    });
-  });  
-  
-  let excelData = []
-  app.post('/razonsocial', (req, res) => {
-    const data = req.body;
-    excelData = [];
-    for (let index = 0; index < data?.length; index++) {
-    if(data[index]){
-    excelData.push(data[index])
-  }
-}
-return res.status(200).send({ mensaje: 'Estado recibido correctamente en el backend' });
+app.get("/cotizacion-usd", (req, res) => {
+  // Query SQL para obtener datos de la tabla "actualizas"
+  const sqlQuery = "SELECT * FROM moneda_cotizacion";
+
+  db.query(sqlQuery, (err, result) => {
+    if (err) {
+      console.error("Error al consultar la tabla moneda_cotizacion:", err);
+      return res.status(500).send("Error interno del servidor");
+    }
+    // Aquí solo envía la respuesta JSON
+    return res.status(200).json(result);
+  });
 });
 
+// LA IDEA ES QUE NO HAYA ESTADOS DENTRO DEL SERVIDOR WEB, REST 
+
+// let excelData = []
+
+// app.post('/razonsocial', (req, res) => {
+//   const data = req.body;
+
+//   excelData = [];
+
+//   for (let index = 0; index < data?.length; index++) {
+//     if (data[index]) {
+//       excelData.push(data[index])
+//     }
+//   }
+
+//   return res.status(200).send({ mensaje: 'Estado recibido correctamente en el backend' });
+// });
 
 //API RAZON SOCIAL 
 const crearCliente = (url, options) => {
@@ -140,11 +146,13 @@ const crearCliente = (url, options) => {
 
 
 const url = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad?wsdl'
+
 const soapOptions = {
   envelopeKey: 'SOAP', // Prefijo del espacio de nombres del sobre SOAP
   forceSoap12Headers: false, // Establece esto como false para usar SOAP 1.0
 };
-const xsd = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad.xsd1.xsd' 
+
+const xsd = 'https://serviciosdp.dgi.gub.uy:6491/RUTWSPGetEntidad/servlet/arutpersonagetentidad.xsd1.xsd'
 
 var securityOptions = {
   hasTimeStamp: false,
@@ -155,63 +163,78 @@ var securityOptions = {
     prefix: 'ds',
     attrs: { Id: 'SIG-C7F2874F2B188481A9169565362166845' },
     existingPrefixes: {
-        wsse: 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
+      wsse: 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
     }
-}}
+  }
+}
+
 var privateKey = fs.readFileSync("clave.key");
 var publicKey = fs.readFileSync("certificado.pem");
-var password = 'hola123'; 
+var password = 'hola123';
 
-app.get("/razonsocial", async (req, res) => {
+app.post("/razonsocial", async (req, res) => {
   let razonsocial = []
-  async function getInfoByRUT(index) {
-    return new Promise(async (resolve, reject) => {
-      if (excelData[index]['RUTEmisor'] && excelData[index]['tipo'] !== 'ventas') {
-        
-        const cliente = await crearCliente(url, soapOptions)
-        var wsSecurity = new WSSecurityCert(privateKey, publicKey, password, securityOptions);
-       cliente.setSecurity(wsSecurity);
-       
-       cliente.ExecuteAsync({Ruc:excelData[index]['RUTEmisor']}, (err, result) => {
-         const data = result.data
-         xml2js.parseString(data, function(err, result) {
-            if (result === undefined) {
-              console.error('Error al llamar a la operación del servicio SOAP', err);
-              return;
-            }
-            if(result){
-              if(result['SOAP-ENV:Envelope']['SOAP-ENV:Body']){
-                const SOAPENV = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0]['WS_RUTPersonaGetEntidad.ExecuteResponse'][0]['Data'][0]
-                xml2js.parseString(SOAPENV, function(err, result) {
-                  if(result){
-                    if(result['WS_Entidad']['RUC'][0]){
-                      const datas = {
-                        rut: result['WS_Entidad']['RUC'][0],
-                        razonsocial: result['WS_Entidad']['RazonSocial'][0],
-                        domicilio: `${result['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Calle_Nom']} ${result['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Dom_Pta_Nro']}` 
-                      }
-                      resolve(datas)}
-                    }
-                      else{console.log('Aun no hay datos')}
-              });
-            }
-                
-                      }else{
-                        console.log('Error', err)
-                      }
-                    });
-                  })
-                }else{
-                  resolve(null)
-                }
-              })
-            }
-            for (let index = 0; index < excelData?.length; index++) {
-              const data = await getInfoByRUT(index); // Esperar a que se complete la llamada SOAP
-              if (data) {
-                razonsocial.push(data);
-              }
-            }
+
+  const cliente = await crearCliente(url, soapOptions)
+  var wsSecurity = new WSSecurityCert(privateKey, publicKey, password, securityOptions);
+  cliente.setSecurity(wsSecurity);
+
+  function parseaCadena(data) {
+    return new Promise((resolve, reject) => {
+      xml2js.parseString(data, (err, result) => {
+        if (err) reject(err)
+        else resolve(result)
+      })
+    })
+  }
+
+  async function getInfoByRUT(item) {    
+    let data
+    try {
+      await cliente.ExecuteAsync({ Ruc: item })
+    }
+    catch(err) {
+      data = err.body
+    }
+
+    const result = await parseaCadena(data)
+
+    if (!result) {
+      throw Error('Error al llamar a la operación del servicio SOAP');
+    }
+    else if (result['SOAP-ENV:Envelope']['SOAP-ENV:Body']) {
+      const SOAPENV = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0]['WS_RUTPersonaGetEntidad.ExecuteResponse'][0]['Data'][0]
+
+      const envparsed = await parseaCadena(SOAPENV)
+
+      if (envparsed && envparsed['WS_Entidad']['RUC'][0]) {
+        return {
+          rut: envparsed['WS_Entidad']['RUC'][0],
+          razonsocial: envparsed['WS_Entidad']['RazonSocial'][0],
+          domicilio: `${envparsed['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Calle_Nom']} ${envparsed['WS_Entidad']['WS_DomicilioFiscalPrincipal'][0]['Dom_Pta_Nro']}`
+        }
+      } else {
+        throw Error('No se encontro la entidad')
+      }
+    }
+    else {
+      throw Error('El resultado no esta bien formado')
+    }
+  }
+
+  console.time('tiempototal')
+  const excelData = req.body.data ?? []
+
+  for (const item of excelData) {
+    console.time('getInfoByRut')
+    const data = await getInfoByRUT(item); // Esperar a que se complete la llamada SOAP
+    console.timeEnd('getInfoByRut')
+
+    if (data) {
+      razonsocial.push(data);
+    }
+  }
+
   // Esperar a que todas las Promesas se resuelvan
   try {
     const razonsocialResults = await Promise.all(razonsocial);
@@ -219,45 +242,48 @@ app.get("/razonsocial", async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'Error al obtener la información de razón social' });
+  } finally {
+    console.timeEnd('tiempototal')
   }
 });
 
 
-  app.delete("/data", (req, res) => {
-    let operationsCompleted = 0;
-    
-  // Eliminar datos de impo_compraventa
-  db.query("DELETE FROM impo_compraventa", (err, result) => {
-    if (err) {
-      console.error("Error al eliminar datos previos:", err);
-      return res.status(500).send("Error interno del servidor");
-    }
-    console.log("Datos de impo_compraventa eliminados correctamente");
-    operationsCompleted++;
-    checkAllOperationsCompleted();
-  });
 
-  // Eliminar datos de archivo
-  db.query("DELETE FROM archivo", (err, result) => {
-    if (err) {
-      console.error("Error al eliminar datos previos:", err);
-      return res.status(500).send("Error interno del servidor");
-    }
-    console.log("Datos de archivo eliminados correctamente");
-    operationsCompleted++;
-    checkAllOperationsCompleted();
-  });
+// app.delete("/data", (req, res) => {
+//   let operationsCompleted = 0;
 
-  function checkAllOperationsCompleted() {
-    if (operationsCompleted === 3) {
-      // Ajusta el número total de operaciones
-      return res.send("Operaciones completadas correctamente");
-    }
-  }
-});
+//   // Eliminar datos de impo_compraventa
+//   db.query("DELETE FROM impo_compraventa", (err, result) => {
+//     if (err) {
+//       console.error("Error al eliminar datos previos:", err);
+//       return res.status(500).send("Error interno del servidor");
+//     }
+//     console.log("Datos de impo_compraventa eliminados correctamente");
+//     operationsCompleted++;
+//     checkAllOperationsCompleted();
+//   });
+
+//   // Eliminar datos de archivo
+//   db.query("DELETE FROM archivo", (err, result) => {
+//     if (err) {
+//       console.error("Error al eliminar datos previos:", err);
+//       return res.status(500).send("Error interno del servidor");
+//     }
+//     console.log("Datos de archivo eliminados correctamente");
+//     operationsCompleted++;
+//     checkAllOperationsCompleted();
+//   });
+
+//   function checkAllOperationsCompleted() {
+//     if (operationsCompleted === 3) {
+//       // Ajusta el número total de operaciones
+//       return res.send("Operaciones completadas correctamente");
+//     }
+//   }
+// });
 
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 
 app.listen(port , function () {
   console.log(`Servidor escuchando en el puerto ${port}`);
