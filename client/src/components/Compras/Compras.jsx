@@ -10,6 +10,7 @@ import axios from "axios";
 import ReactLoading from "react-loading";
 import View from "./View";
 import { getOrderDataNew } from "../../utils/getOrderDataNew";
+import { convertISO } from "../../utils/convertISO.js";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import ModalRestart from "../Modal/ModalRestart";
@@ -110,17 +111,22 @@ function Compras() {
       const A11 = Object.values(file11);
       if (data[3]['__EMPTY_5'] === 'Monto Neto') {
         const dataValues = [{ 'CFE Recibidos': data[0]['CFE Recibidos'], 'cant': data[0]['__EMPTY'] },
-        { 'fechadesde': data[1]['CFE Recibidos'], 'valor': data[1]['__EMPTY'] },
-        { 'fechahasta': data[2]['CFE Recibidos'], 'valor': data[2]['__EMPTY'] },
+        { 'fechadesde': data[1]['CFE Recibidos'], 'valor': typeof data[1]['__EMPTY'] === "number"? convertISO(data[1]['__EMPTY']) : data[1]['__EMPTY']},
+        { 'fechahasta': data[2]['CFE Recibidos'], 'valor': typeof data[2]['__EMPTY'] === "number"? convertISO(data[2]['__EMPTY']) : data[2]['__EMPTY'] },
         {
           'fecha': data[3]['CFE Recibidos'], 'tipoCFE': data[3]['__EMPTY'], 'tipo': 'Tipo', 'serie': data[3]['__EMPTY_1'], 'numero': data[3]['__EMPTY_2'], 'rutemisor': data[3]['__EMPTY_3'], 'moneda': data[3]['__EMPTY_4'],
           'montoneto': data[3]['__EMPTY_5'], 'ivaventas': data[3]['__EMPTY_6'], 'montototal': data[3]['__EMPTY_7'], 'montoRet/Per': data[3]['__EMPTY_8']
         }]
         const dataNewOrdenado = getOrderDataNew(data)
-        for (let index = 4; index < dataNewOrdenado?.length; index++) {
+        for (let index = 0; index < dataNewOrdenado?.length; index++) {
           if (dataNewOrdenado[index]) {
+            if (typeof dataNewOrdenado[index]['fecha'] === "number") {
+              dataNewOrdenado[index]['fecha'] = convertISO(dataNewOrdenado[index]['fecha']);
+            } else {
+              dataNewOrdenado[index]['fecha'] = dataNewOrdenado[index]['fecha'];
+            }
             delete dataNewOrdenado[index]['montocredfiscal'];
-            dataValues.push(dataNewOrdenado[index])
+            dataValues.push(dataNewOrdenado[index]);
           }
         }
         if (A11.length < 11) {
