@@ -285,8 +285,8 @@ function Ventas() {
         console.log("error");
       }
       axios
-      .post("https://app-excel-production.up.railway.app/data", {
-      // .post("http://localhost:3002/data", {
+      // .post("https://app-excel-production.up.railway.app/data", {
+      .post("http://localhost:3002/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })

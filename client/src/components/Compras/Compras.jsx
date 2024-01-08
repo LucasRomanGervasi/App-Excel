@@ -95,16 +95,16 @@ function Compras() {
   };
 
   //----------------------> ANALIZAR EXCEL <-------------------------//  
-  const handleFileSubmit = (e) => {
+  const handleFileSubmit = async (e) => {
     e.preventDefault();
     if (excelFile !== null) {
-      const bufferSizeInKilobytes = excelFile.byteLength / 1024;
-      console.log(bufferSizeInKilobytes);  
-      if(bufferSizeInKilobytes > 42.9 ){
-        setTypeError(
-          "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
-          );
-      }else{
+      const MAX_FILE_SIZE_BYTES = 47616;
+      console.log(excelFile.byteLength)
+      if (excelFile.byteLength > MAX_FILE_SIZE_BYTES) {
+        setTypeError("El archivo es demasiado grande. Por favor, selecciona un archivo más pequeño.");
+        return;
+      }
+
         const workbook = XLSX.read(excelFile, { type: "buffer" });
         const worksheetName = workbook.SheetNames[0];
         const data = XLSX.utils.sheet_to_json(workbook.Sheets[worksheetName]);
@@ -118,39 +118,40 @@ function Compras() {
         const A11 = Object.values(file11);
         if (data[3]['__EMPTY_5'] === 'Monto Neto') {
           const dataValues = [{ 'CFE Recibidos': data[0]['CFE Recibidos'], 'cant': data[0]['__EMPTY'] },
-        { 'fechadesde': data[1]['CFE Recibidos'], 'valor': typeof data[1]['__EMPTY'] === "number"? convertISO(data[1]['__EMPTY']) : data[1]['__EMPTY']},
-        { 'fechahasta': data[2]['CFE Recibidos'], 'valor': typeof data[2]['__EMPTY'] === "number"? convertISO(data[2]['__EMPTY']) : data[2]['__EMPTY'] },
-        {
-          'fecha': data[3]['CFE Recibidos'], 'tipoCFE': data[3]['__EMPTY'], 'tipo': 'Tipo', 'serie': data[3]['__EMPTY_1'], 'numero': data[3]['__EMPTY_2'], 'rutemisor': data[3]['__EMPTY_3'], 'moneda': data[3]['__EMPTY_4'],
-          'montoneto': data[3]['__EMPTY_5'], 'ivaventas': data[3]['__EMPTY_6'], 'montototal': data[3]['__EMPTY_7'], 'montoRet/Per': data[3]['__EMPTY_8']
-        }]
-        const dataNewOrdenado = getOrderDataNew(data)
-        for (let index = 0; index < dataNewOrdenado?.length; index++) {
-          if (dataNewOrdenado[index]) {
-            if (typeof dataNewOrdenado[index]['fecha'] === "number") {
-              dataNewOrdenado[index]['fecha'] = convertISO(dataNewOrdenado[index]['fecha']);
-            } else {
-              dataNewOrdenado[index]['fecha'] = dataNewOrdenado[index]['fecha'];
+          { 'fechadesde': data[1]['CFE Recibidos'], 'valor': typeof data[1]['__EMPTY'] === "number"? convertISO(data[1]['__EMPTY']) : data[1]['__EMPTY']},
+          { 'fechahasta': data[2]['CFE Recibidos'], 'valor': typeof data[2]['__EMPTY'] === "number"? convertISO(data[2]['__EMPTY']) : data[2]['__EMPTY'] },
+          {
+            'fecha': data[3]['CFE Recibidos'], 'tipoCFE': data[3]['__EMPTY'], 'tipo': 'Tipo', 'serie': data[3]['__EMPTY_1'], 'numero': data[3]['__EMPTY_2'], 'rutemisor': data[3]['__EMPTY_3'], 'moneda': data[3]['__EMPTY_4'],
+            'montoneto': data[3]['__EMPTY_5'], 'ivaventas': data[3]['__EMPTY_6'], 'montototal': data[3]['__EMPTY_7'], 'montoRet/Per': data[3]['__EMPTY_8']
+          }]
+          const dataNewOrdenado = getOrderDataNew(data)
+          for (let index = 0; index < dataNewOrdenado?.length; index++) {
+            if (dataNewOrdenado[index]) {
+              if (typeof dataNewOrdenado[index]['fecha'] === "number") {
+                dataNewOrdenado[index]['fecha'] = convertISO(dataNewOrdenado[index]['fecha']);
+              } else {
+                dataNewOrdenado[index]['fecha'] = dataNewOrdenado[index]['fecha'];
+              }
+              delete dataNewOrdenado[index]['montocredfiscal'];
+              dataValues.push(dataNewOrdenado[index]);
             }
-            delete dataNewOrdenado[index]['montocredfiscal'];
-            dataValues.push(dataNewOrdenado[index]);
           }
-        }
-        if (A11.length < 11) {
-          A11.unshift("");
-        }
-        setTitle(A0[0]);
-        localStorage.setItem('title', JSON.stringify(A0[0]))
-        if ((A0[0] === "CFE Recibidos" || A1[0] === "CFE Recibidos") && (A10[0] === "Fecha" || A10[0] === "Fecha comprobante") && A11[0] !== "") {
-          setExcelData(
-            dataValues
+          if (A11.length < 11) {
+            A11.unshift("");
+          }
+          setTitle(A0[0]);
+          localStorage.setItem('title', JSON.stringify(A0[0]))
+          if ((A0[0] === "CFE Recibidos" || A1[0] === "CFE Recibidos") && (A10[0] === "Fecha" || A10[0] === "Fecha comprobante") && A11[0] !== "") {
+            setExcelData(
+              dataValues
             );
-          setDataNew(dataValues)
-          setExcelDataCotizacion(null);
-          setExcelDataRazonSocial(null);
-          setExcelFinal(null)
-          setTypeError(
-            "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
+            setDataNew(dataValues)
+            setExcelDataCotizacion(null);
+            setExcelDataRazonSocial(null);
+            setExcelFinal(null)
+          } else {
+            setTypeError(
+              "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
             );
             setExcelData(null);
             setDataNew(null);
@@ -163,16 +164,15 @@ function Compras() {
         } else {
           setTypeError(
             "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
-            );
-            setExcelData(null);
-            setDataNew(null);
-            setFileName(null);
-            setExcelDataCotizacion(null);
-            setExcelDataRazonSocial(null);
-            setExcelFinal(null)
-          }
+          );
+          setExcelData(null);
+          setDataNew(null);
+          setFileName(null);
+          setExcelDataCotizacion(null);
+          setExcelDataRazonSocial(null);
+          setExcelFinal(null)
         }
-      } 
+      }
     }
     
     const valores = (excelData) => {
@@ -218,7 +218,7 @@ function Compras() {
   const getCotizacionUSD = () => {
     axios
       .get("https://app-excel-production.up.railway.app/cotizacion-usd")
-      // .get("http://localhost:3002/cotizacion-usd")
+      // .get("http://localhost:3001/cotizacion-usd")
       .then((response) => {
         setCotizacionUSD(response.data)
       })
@@ -552,7 +552,7 @@ function Compras() {
       }
       axios
           .post("https://app-excel-production.up.railway.app/data", {
-        // .post("http://localhost:3002/data", {
+        // .post("http://localhost:3001/data", {
           impoCompraVenta: [...parsedData],
           archivo: archivo,
         })
@@ -582,7 +582,7 @@ function Compras() {
       }
       
        fetch("https://app-excel-production.up.railway.app/razonsocial", requestOptions)
-      // fetch("http://localhost:3002/razonsocial", requestOptions)
+      // fetch("http://localhost:3001/razonsocial", requestOptions)
       .then(response => response.json())
 
       .then(data => {
