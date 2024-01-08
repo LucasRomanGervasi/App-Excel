@@ -285,10 +285,10 @@ app.post("/razonsocial", async (req, res) => {
 
 const port = process.env.PORT || 3002;
 
-// app.listen(port , function () {
-//   console.log(`Servidor escuchando en el puerto ${port}`);
-// });
-
-app.listen(3001 , function () {
+app.listen(port , function () {
   console.log(`Servidor escuchando en el puerto ${port}`);
 });
+
+// app.listen(3001 , function () {
+//   console.log(`Servidor escuchando en el puerto ${port}`);
+// });
