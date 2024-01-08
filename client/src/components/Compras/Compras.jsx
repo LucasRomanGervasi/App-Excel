@@ -98,19 +98,26 @@ function Compras() {
   const handleFileSubmit = (e) => {
     e.preventDefault();
     if (excelFile !== null) {
-      const workbook = XLSX.read(excelFile, { type: "buffer" });
-      const worksheetName = workbook.SheetNames[0];
-      const data = XLSX.utils.sheet_to_json(workbook.Sheets[worksheetName]);
-      const file0 = Object.keys(data[0]);
-      const file1 = Object.keys(data[1]);
-      const file10 = data[3];
-      const file11 = data[4];
-      const A0 = Object.values(file0);
-      const A1 = Object.values(file1);
-      const A10 = Object.values(file10);
-      const A11 = Object.values(file11);
-      if (data[3]['__EMPTY_5'] === 'Monto Neto') {
-        const dataValues = [{ 'CFE Recibidos': data[0]['CFE Recibidos'], 'cant': data[0]['__EMPTY'] },
+      const bufferSizeInKilobytes = excelFile.byteLength / 1024;
+      console.log(bufferSizeInKilobytes);  
+      if(bufferSizeInKilobytes > 42.9 ){
+        setTypeError(
+          "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
+          );
+      }else{
+        const workbook = XLSX.read(excelFile, { type: "buffer" });
+        const worksheetName = workbook.SheetNames[0];
+        const data = XLSX.utils.sheet_to_json(workbook.Sheets[worksheetName]);
+        const file0 = Object.keys(data[0]);
+        const file1 = Object.keys(data[1]);
+        const file10 = data[3];
+        const file11 = data[4];
+        const A0 = Object.values(file0);
+        const A1 = Object.values(file1);
+        const A10 = Object.values(file10);
+        const A11 = Object.values(file11);
+        if (data[3]['__EMPTY_5'] === 'Monto Neto') {
+          const dataValues = [{ 'CFE Recibidos': data[0]['CFE Recibidos'], 'cant': data[0]['__EMPTY'] },
         { 'fechadesde': data[1]['CFE Recibidos'], 'valor': typeof data[1]['__EMPTY'] === "number"? convertISO(data[1]['__EMPTY']) : data[1]['__EMPTY']},
         { 'fechahasta': data[2]['CFE Recibidos'], 'valor': typeof data[2]['__EMPTY'] === "number"? convertISO(data[2]['__EMPTY']) : data[2]['__EMPTY'] },
         {
@@ -137,39 +144,39 @@ function Compras() {
         if ((A0[0] === "CFE Recibidos" || A1[0] === "CFE Recibidos") && (A10[0] === "Fecha" || A10[0] === "Fecha comprobante") && A11[0] !== "") {
           setExcelData(
             dataValues
-          );
+            );
           setDataNew(dataValues)
           setExcelDataCotizacion(null);
           setExcelDataRazonSocial(null);
           setExcelFinal(null)
+          setTypeError(
+            "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
+            );
+            setExcelData(null);
+            setDataNew(null);
+            setFileName(null);
+            setExcelDataCotizacion(null);
+            setExcelDataRazonSocial(null);
+            setExcelFinal(null)
+            fileInputRef.current.value = "";
+          }
         } else {
           setTypeError(
             "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
-          );
-          setExcelData(null);
-          setDataNew(null);
-          setFileName(null);
-          setExcelDataCotizacion(null);
-          setExcelDataRazonSocial(null);
-          setExcelFinal(null)
-          fileInputRef.current.value = "";
+            );
+            setExcelData(null);
+            setDataNew(null);
+            setFileName(null);
+            setExcelDataCotizacion(null);
+            setExcelDataRazonSocial(null);
+            setExcelFinal(null)
+          }
         }
-      } else {
-        setTypeError(
-          "El archivo subido no es un tipo de archivo que podamos procesar, intentar nuevamente con otro archivo"
-        );
-        setExcelData(null);
-        setDataNew(null);
-        setFileName(null);
-        setExcelDataCotizacion(null);
-        setExcelDataRazonSocial(null);
-        setExcelFinal(null)
-      }
+      } 
     }
-  }
-
-  const valores = (excelData) => {
-    if (excelData) {
+    
+    const valores = (excelData) => {
+      if (excelData) {
       setExcelDataRazonSocial(null)
       setExcelDataCotizacion(null)
       setRazonSocial(null)
