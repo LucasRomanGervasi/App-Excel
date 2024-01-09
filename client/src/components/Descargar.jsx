@@ -26,6 +26,150 @@ function Descargar() {
     setLoading(true);
     if (dataMemory === null && dataMemoryVentas === null) {
       setTypeError("Error al descargar el archivo")
+    }
+    if (dataMemory !== null && dataMemoryVentas === null) {
+      console.log("memori")
+      dowloadBuys(dataMemory)
+      
+      //COMPRAS
+      const comprasLimite = compras.length + 8;
+      const retencionesFiscalesInicio = comprasLimite + 6;
+      const retencionesFiscalesLimite = retencionesFiscalesInicio + retencionesFiscales.length;
+      const remitosInicio = retencionesFiscalesLimite;
+      const remitosLimite = remitosInicio + remitos.length;
+      const pagosInicio = remitosLimite;
+      const pagosLimite = pagosInicio + pagos.length;
+      const totalesCompra = comprasLimite +3;
+      const totalesRetenciones = retencionesFiscales.length + totalesCompra + 6;
+      const libro = XLSX.utils.book_new();
+      
+      const hoja = XLSX.utils.aoa_to_sheet([
+        ...hojaData,
+        ...comprasData,
+        ...retencionesData,
+        ...remitosData,
+        ...pagosData
+        // Agrega las partes de remitos y pagos de manera similar
+      ]);
+      for (const cellRef in hoja) {
+        if (hoja.hasOwnProperty(cellRef)) {
+          const cell = hoja[cellRef];
+          // Aplicar el formato de moneda solo a celdas numéricas
+          if (typeof cell === 'object' && cell.t === 'n') {
+            if (cell.v < 0) {
+              // Formato para números negativos
+              cell.z = '[$$-es-UY]#,##0.00;-[$$-es-UY]#,##0.00';
+            } else {
+              // Formato para números positivos
+              if (cell.v >= 10000) {
+                // Si el número es mayor o igual a 10,000, ajustamos el formato
+                cell.z = '[$$-es-UY]#,##0.00';
+              } else {
+                // Si el número es menor que 10,000, usamos un formato más simple
+                cell.z = '[$$-es-UY]#,##0.00';
+              }
+            }
+            cell.w = cell.v;
+          }
+        }
+      }
+      hoja['!cols'] = Array(18).fill({ wch: 12 });    
+      // hoja2['!cols'] = Array(18).fill({ wch: 15 }); 
+      const columnConfig = { wch: 15, bold: true }; // Puedes ajustar 'wch' (ancho) y otras propiedades según tus necesidades
+      // Luego, asigna el objeto de configuración a la quinta columna (índice 4)
+      // hoja2['!cols'] = hoja2['!cols'] || [];
+      // hoja2['!cols'][4] = columnConfig;
+      if( dataMemory !== null && dataMemoryVentas === null){
+        // XLSX.utils.book_append_sheet(libro, hoja1, "CFE Emitidos");
+        XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
+        // XLSX.utils.book_append_sheet(libro, hoja2, "Resumen de Impuestos" );
+      }
+      const timer = setTimeout(() => {
+        XLSX.writeFile(libro, "Asystax - Resumen Impositivo.xlsx");
+        setLoading(false);
+        setTypeSuccess("Se descargó el archivo correctamente");
+        setExcelFinalDowload("descargado");
+        localStorage.removeItem("dataNew");
+        localStorage.removeItem("title");
+        localStorage.removeItem("dataNewVentas");
+        localStorage.removeItem("titleVentas");
+        window.location.href = "/";
+        // Agregar otro setTimeout aquí
+        setTimeout(() => {
+          // Tu código aquí para el segundo setTimeout
+          setTypeSuccess(null);
+        }, 4000); // Por ejemplo, 2 segundos después del primer setTimeout
+      }, 4000);
+
+      setTypeSuccess(null);
+      return () => clearTimeout(timer);
+    }
+
+    if (dataMemory === null && dataMemoryVentas !== null) {
+      
+  //VENTAS
+      dowloadSale(dataMemoryVentas)
+
+      const totalesVenta = ventas.length + 11;
+      const libro = XLSX.utils.book_new();
+
+      const hoja1 = XLSX.utils.aoa_to_sheet([
+        ...hojaData1,
+        ...ventasData
+        // Agrega las partes de remitos y pagos de manera similar
+      ]);
+          // Agregar la hoja al libro
+          for (const cellRef in hoja1) {
+            if (hoja1.hasOwnProperty(cellRef)) {
+              const cell = hoja1[cellRef];
+              // Aplicar el formato de moneda solo a celdas numéricas
+              if (typeof cell === 'object' && cell.t === 'n') {
+                if (cell.v < 0) {
+                  // Formato para números negativos
+                  cell.z = '[$$-es-UY]#,##0.00;-[$$-es-UY]#,##0.00';
+                } else {
+                  // Formato para números positivos
+                  if (cell.v >= 10000) {
+                    // Si el número es mayor o igual a 10,000, ajustamos el formato
+                    cell.z = '[$$-es-UY]#,##0.00';
+                  } else {
+                    // Si el número es menor que 10,000, usamos un formato más simple
+                    cell.z = '[$$-es-UY]#,##0.00';
+                  }
+                }
+                cell.w = cell.v;
+              }
+            }
+          }      
+          hoja1['!cols'] = Array(18).fill({ wch: 13 }); 
+          // hoja2['!cols'] = Array(18).fill({ wch: 15 }); 
+          // const columnConfig = { wch: 15, bold: true }; // Puedes ajustar 'wch' (ancho) y otras propiedades según tus necesidades
+          // // Luego, asigna el objeto de configuración a la quinta columna (índice 4)
+          // hoja2['!cols'] = hoja2['!cols'] || [];
+          // hoja2['!cols'][4] = columnConfig;
+          if( dataMemory === null && dataMemoryVentas !== null){
+            XLSX.utils.book_append_sheet(libro, hoja1, "CFE Emitidos");
+            // XLSX.utils.book_append_sheet(libro, hoja2, "Resumen de Impuestos" );
+          }
+          const timer = setTimeout(() => {
+            XLSX.writeFile(libro, "Asystax - Resumen Impositivo.xlsx");
+            setLoading(false);
+            setTypeSuccess("Se descargó el archivo correctamente");
+            setExcelFinalDowload("descargado");
+            localStorage.removeItem("dataNew");
+            localStorage.removeItem("title");
+            localStorage.removeItem("dataNewVentas");
+            localStorage.removeItem("titleVentas");
+            window.location.href = "/";
+            // Agregar otro setTimeout aquí
+            setTimeout(() => {
+              // Tu código aquí para el segundo setTimeout
+              setTypeSuccess(null);
+            }, 4000); // Por ejemplo, 2 segundos después del primer setTimeout
+          }, 4000);
+    
+          setTypeSuccess(null);
+          return () => clearTimeout(timer);
     } else{
       
       dowloadBuys(dataMemory)
@@ -160,10 +304,6 @@ function Descargar() {
         XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
         XLSX.utils.book_append_sheet(libro, hoja2, "Resumen de Impuestos" );
       }
-      if( dataMemory !== null && dataMemoryVentas === null){
-        XLSX.utils.book_append_sheet(libro, hoja1, "CFE Emitidos");
-        XLSX.utils.book_append_sheet(libro, hoja, "CFE Recibidos");
-      }
       const timer = setTimeout(() => {
         XLSX.writeFile(libro, "Asystax - Resumen Impositivo.xlsx");
         setLoading(false);
@@ -225,8 +365,9 @@ return(
             >
             ANTERIOR{" "}
             </Link>
+
             <button type="button"
-            className={`btn ${dataMemory === null && dataMemoryVentas === null || dataMemory === null && dataMemoryVentas !== null || dataMemory !== null && dataMemoryVentas === null || excelFinalDowload === "descargado" ? "btn-no" : ""}`}
+            className={`btn ${dataMemory === null && dataMemoryVentas === null || excelFinalDowload === "descargado" ? "btn-no" : ""}`}
             // className={`btnDataBaseDescargarXLS ${excelData === null || excelDataCotizacion !==null ? "btn-no" : ""}`}
             onClick={descargarXLS}
             >
@@ -235,6 +376,7 @@ return(
                <FaHandHoldingUsd /> 
             </span> */}
             </button>
+
             </div>
           <View excelData={dataMemory === null ? null : dataMemory} title={dataMemoryTitle === null ? null : dataMemoryTitle} />
           <View excelData={dataMemoryVentas === null ? null : dataMemoryVentas} title={dataMemoryTitleVentas === null ? null : dataMemoryTitleVentas} />
